@@ -4,7 +4,7 @@ project:
   teamId: 'MuchaSepia'
   identities: {}
   notifications:
-    email: 'Enrique.Vergara@alu.uclm.es,Santiago.fdez1@alu.uclm.es,Gadea.lopez@alu.uclm.es'
+    email: 'Enrique.Vergara@alu.uclm.es,Santiago.Fdez1@alu.uclm.es,Gadea.Lopez@alu.uclm.es'
   members:
     member1:
       name: 'Enrique'
