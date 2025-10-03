@@ -71,6 +71,10 @@
         [Display(Name = "Tamaño de llanta")]
         public string TamanoLlanta { get; set; }
 
+        public Modelo Modelo { get; set; }
+
+        public IList<AlquilerItem> AlquilerItems { get; set; }
+
         public enum MantenimientoTypes
         {
             Aceite,
