@@ -12,7 +12,7 @@
             string claseCoche, string desplazamientoMotor, string tipoCombustible,
             string color, string descripcion, string fabricante, decimal precioCompra,
             int cantidadCompra, int cantidadAlquiler, double precioAlquiler,
-            string tamanoLlanta, MantenimientoTypes tiposMantenimiento)
+            string tamanoLlanta, MantenimientoTypes tiposMantenimiento, Modelo modelo)
         {
             ClaseCoche = claseCoche;
             DesplazamientoMotor = desplazamientoMotor;
@@ -26,7 +26,8 @@
             PrecioAlquiler = precioAlquiler;
             TamanoLlanta = tamanoLlanta;
             TiposMantenimiento = tiposMantenimiento;
-        }
+            Modelo = modelo;
+                 }
 
         public int Id { get; set; }
 
@@ -70,6 +71,9 @@
 
         [Display(Name = "Tamaño de llanta")]
         public string TamanoLlanta { get; set; }
+
+        public Modelo modelo { get; set; }
+        public IList<AlquilerItem> AlquilerItems { get; set; }
 
         public enum MantenimientoTypes
         {
