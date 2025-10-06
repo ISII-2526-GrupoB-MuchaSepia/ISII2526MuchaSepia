@@ -95,7 +95,7 @@ namespace AppForSEII2526.API.Models
             Refrigeracion,
             Suspension
         }
-
+        public class ComprarItem
        {
         public int Id { get; set; }
         public int Cantidad { get; set; }
