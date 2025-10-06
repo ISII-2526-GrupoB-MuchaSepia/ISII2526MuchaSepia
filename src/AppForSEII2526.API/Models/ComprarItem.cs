@@ -27,7 +27,7 @@
         public decimal Precio { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor que 1")]
-        public double Cantidad { get; set; }
+        public decimal Cantidad { get; set; }
     }
 
 }
