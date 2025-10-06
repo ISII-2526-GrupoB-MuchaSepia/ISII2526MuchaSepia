@@ -4,22 +4,37 @@
     {
         public Comprar()
         {
+            ComprarItems = new List<ComprarItem>();
         }
 
-        public Comprar(int id, string nombre, string apellido, string concesionarioEntrega,
-                      DateTime fechaCompra, decimal precioCompra, MetodoPagoTipos metodoPago, ApplicationUser applicationUser)
+        
+
+        public Comprar(int comprarId, string nombre, string apellido, ApplicationUser applicationUser, string concesionarioEntrega, DateTime fechaCompra, IList<ComprarItem> comprarItems, MetodoPagoTipos metodoPago) :
+            this(nombre, apellido, applicationUser, concesionarioEntrega, fechaCompra, comprarItems, metodoPago)
         {
-            Id = id;
+            Id = comprarId;
+
+        }
+        public Comprar(string nombre, string apellido, ApplicationUser applicationUser, string concesionarioEntrega, DateTime fechaCompra, IList<ComprarItem> comprarItems, MetodoPagoTipos metodoPago)
+        {
+
+            PrecioTotal = decimal.Round(comprarItems.Sum(pi => pi.Precio * pi.Cantidad), 2);
+
             Nombre = nombre;
             Apellido = apellido;
+            ApplicationUser = applicationUser;
             ConcesionarioEntrega = concesionarioEntrega;
             FechaCompra = fechaCompra;
-            PrecioCompra = precioCompra;
+            ComprarItems = comprarItems;
             MetodoPago = metodoPago;
-            ApplicationUser = applicationUser;
         }
 
+
+
         public int Id { get; set; }
+
+        [Precision(10, 2)]
+        public decimal PrecioTotal { get; set; }
 
         public string Nombre { get; set; }
 
@@ -39,6 +54,8 @@
 
         [Display(Name = "Método de pago")]
         public MetodoPagoTipos MetodoPago { get; set; }
+
+        public IList<ComprarItem> ComprarItems { get; set; }
 
         public enum MetodoPagoTipos
         {
