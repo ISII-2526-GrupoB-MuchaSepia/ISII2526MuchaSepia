@@ -82,8 +82,8 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Tamaño de llanta")]
         public string TamanoLlanta { get; set; }
 
-        public virtual ICollection<PurchaseItem> PurchaseItems { get; set; }
-        public virtual ICollection<RentalItem> RentalItems { get; set; }
+        public virtual ICollection<ComprarItem> ComprarItems { get; set; }
+        public virtual ICollection<AlquilerItem> AlquilerItems { get; set; }
 
         // Enumeración de tipos de mantenimiento
         public enum TipoMantenimiento
