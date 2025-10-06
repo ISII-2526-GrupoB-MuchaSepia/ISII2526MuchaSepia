@@ -7,8 +7,8 @@ namespace AppForSEII2526.API.Models
     {
         public Coche()
         {
-            ComprarItems = new List(ComprarItem);
-            AlquilerItems = new List(AlquilarItem);
+            ComprarItems = new List<ComprarItem>();
+            AlquilerItems = new List<AlquilarItem>();
         }
 
         public Coche(
@@ -29,8 +29,8 @@ namespace AppForSEII2526.API.Models
             CantidadAlquiler = cantidadAlquiler;
             PrecioAlquiler = precioAlquiler;
             TamanoLlanta = tamanoLlanta;
-            ComprarItems = new List(ComprarItem);
-            AlquilerItems = new List(AlquilarItem);
+            ComprarItems = new List<ComprarItem>();
+            AlquilerItems = new List<AlquilarItem>();
 
 
         }
