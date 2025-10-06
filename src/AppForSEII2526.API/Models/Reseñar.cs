@@ -5,6 +5,7 @@
     {
         public Reseñar()
         {
+            ReseñarItems = new List<ReseñarItem>();
         }
 
         public Reseñar(int id, string usuario, string pais, string tipoConductor, DateTime creado, ApplicationUser applicationUser)
@@ -15,6 +16,7 @@
             TipoConductor = tipoConductor;
             Creado = creado;
             ApplicationUser = applicationUser;
+            ReseñarItems = new List<ReseñarItem>();
         }
 
         public int Id { get; set; }
@@ -27,5 +29,6 @@
         [DataType(DataType.DateTime)]
         public DateTime Creado { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
+        public virtual ICollection<ReseñarItem> ReseñarItems { get; set; }
     }
 }
