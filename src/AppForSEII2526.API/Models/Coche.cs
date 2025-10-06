@@ -7,6 +7,8 @@ namespace AppForSEII2526.API.Models
     {
         public Coche()
         {
+            PurchaseItems = new List<PurchaseItem>();
+            RentalItems = new List<RentalItem>();
         }
 
         public Coche(
@@ -27,6 +29,8 @@ namespace AppForSEII2526.API.Models
             CantidadAlquiler = cantidadAlquiler;
             PrecioAlquiler = precioAlquiler;
             TamanoLlanta = tamanoLlanta;
+            PurchaseItems = new List<PurchaseItem>();
+            RentalItems = new List<RentalItem>();
         }
 
         // Propiedades
@@ -60,7 +64,7 @@ namespace AppForSEII2526.API.Models
         [Precision(10, 2)]
         public decimal PrecioCompra { get; set; }
 
-      
+
         [Range(0.5, 100, ErrorMessage = "El precio de alquiler debe estar entre 0.5 y 100")]
         [Display(Name = "Precio de alquiler")]
         public double PrecioAlquiler { get; set; }
@@ -76,6 +80,8 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Tamaño de llanta")]
         public string TamanoLlanta { get; set; }
 
+        public virtual ICollection<PurchaseItem> PurchaseItems { get; set; }
+        public virtual ICollection<RentalItem> RentalItems { get; set; }
 
         // Enumeración de tipos de mantenimiento
         public enum TipoMantenimiento
@@ -88,29 +94,19 @@ namespace AppForSEII2526.API.Models
             Suspension
         }
 
-       
+       {
+        public int Id { get; set; }
+        public int Cantidad { get; set; }
+
+
+    }
+
+
+    public class RentalItem
+    {
+        public int Id { get; set; }
+        public int Cantidad { get; set; }
+
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
