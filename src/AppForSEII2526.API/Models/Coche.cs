@@ -7,8 +7,8 @@ namespace AppForSEII2526.API.Models
     {
         public Coche()
         {
-            PurchaseItems = new List<PurchaseItem>();
-            RentalItems = new List<RentalItem>();
+            ComprarItems = new List();
+            AlquilerItems = new List();
         }
 
         public Coche(
@@ -29,8 +29,10 @@ namespace AppForSEII2526.API.Models
             CantidadAlquiler = cantidadAlquiler;
             PrecioAlquiler = precioAlquiler;
             TamanoLlanta = tamanoLlanta;
-            PurchaseItems = new List<PurchaseItem>();
-            RentalItems = new List<RentalItem>();
+            ComprarItems = new List();
+            AlquilerItems = new List();
+
+
         }
 
         // Propiedades
@@ -102,7 +104,7 @@ namespace AppForSEII2526.API.Models
     }
 
 
-    public class RentalItem
+    public class AlquilerItem
     {
         public int Id { get; set; }
         public int Cantidad { get; set; }
