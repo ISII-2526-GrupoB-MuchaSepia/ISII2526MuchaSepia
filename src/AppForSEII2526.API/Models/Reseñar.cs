@@ -26,7 +26,6 @@
         [Display(Name = "Tipo de conductor")]
         public string TipoConductor { get; set; }
         [Display(Name = "Fecha de creación")]
-        [DataType(DataType.DateTime)]
         public DateTime Creado { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<ReseñarItem> ReseñarItems { get; set; }
