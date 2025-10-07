@@ -5,7 +5,7 @@
         public Alquiler()
         {
         }
-        public Alquiler(string nombre, string apellido, string concesionarioEntrega, DateTime fechaAlquiler, PaymentMethodTypes metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItem> alquilerItems, ApplicationUser applicationUser)
+        public Alquiler(string nombre, string apellido, string concesionarioEntrega, DateTime fechaAlquiler, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItem> alquilerItems, ApplicationUser applicationUser)
         {
 
             Total = alquilerItems.Sum(ri => ri.Cantidad * (finAlquiler - inicioAlquiler).Days);
@@ -40,7 +40,7 @@
 
         public string Apellido { get; set; }
         [Display(Name = "Metodos de pago")]
-        public PaymentMethodTypes MetodoPago { get; set; }
+        public MetodoPagoTipos MetodoPago { get; set; }
 
        
         public ApplicationUser ApplicationUser { get; set; }
@@ -48,10 +48,10 @@
 
     }
 
-    public enum PaymentMethodTypes
+    public enum MetodoPagoTipos
     {
-        CreditCard,
+        TarjetaCredito,
         PayPal,
-        Cash
+        Efectivo
     }
 }
