@@ -6,6 +6,7 @@
         public Reseñar()
         {
             ReseñarItems = new List<ReseñarItem>();
+            Coches = new List<Coche>();
         }
 
         public Reseñar(int id, string usuario, string pais, string tipoConductor, DateTime creado, ApplicationUser applicationUser)
@@ -17,6 +18,7 @@
             Creado = creado;
             ApplicationUser = applicationUser;
             ReseñarItems = new List<ReseñarItem>();
+            Coches = new List<Coche>();
         }
 
         public int Id { get; set; }
@@ -28,6 +30,6 @@
         [Display(Name = "Fecha de creación")]
         public DateTime Creado { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
-        public virtual ICollection<ReseñarItem> ReseñarItems { get; set; }
+        public IList<ReseñarItem> ReseñarItems { get; set; }
     }
 }

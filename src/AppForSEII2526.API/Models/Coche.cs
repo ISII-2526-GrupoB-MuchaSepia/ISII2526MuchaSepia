@@ -9,6 +9,7 @@ namespace AppForSEII2526.API.Models
         {
             ComprarItems = new List<ComprarItem>();
             AlquilerItems = new List<AlquilerItem>();
+            ReseñarItems = new List<ReseñarItem>();
         }
 
         public Coche(
@@ -31,7 +32,7 @@ namespace AppForSEII2526.API.Models
             TamanoLlanta = tamanoLlanta;
             ComprarItems = new List<ComprarItem>();
             AlquilerItems = new List<AlquilerItem>();
-
+            ReseñarItems = new List<ReseñarItem>();
 
         }
 
@@ -82,9 +83,9 @@ namespace AppForSEII2526.API.Models
         [Display(Name = "Tamaño de llanta")]
         public string TamanoLlanta { get; set; }
 
-        public virtual ICollection<ComprarItem> ComprarItems { get; set; }
-        public virtual ICollection<AlquilerItem> AlquilerItems { get; set; }
-
+        public IList<ComprarItem> ComprarItems { get; set; }
+        public IList<AlquilerItem> AlquilerItems { get; set; }
+        public IList<ReseñarItem> ReseñarItems { get; set; }
         // Enumeración de tipos de mantenimiento
         public enum TipoMantenimiento
         {
@@ -94,21 +95,9 @@ namespace AppForSEII2526.API.Models
             Transmision,
             Refrigeracion,
             Suspension
-        }
-        public class ComprarItem
-       {
-        public int Id { get; set; }
-        public int Cantidad { get; set; }
+        }   
 
 
-    }
 
-
-    public class AlquilerItem
-    {
-        public int Id { get; set; }
-        public int Cantidad { get; set; }
-
-    }
 }
 }
