@@ -14,7 +14,9 @@ public class ApplicationUser : IdentityUser {
         Resenas = new List<Reseñar>();
     }
 
-    public ApplicationUser(string id, string nombre, string apellido, string nombreUsuario, List<MetodoPagoTipos> metodos_Pagos)
+    public ApplicationUser(string id, string nombre, string apellido, string nombreUsuario, List<MetodoPagoTipos> metodos_Pagos, string direccion,
+            string pais,
+           ConductorTipos conductor)
     {
         Id = id;
         Nombre = nombre;
@@ -25,6 +27,9 @@ public class ApplicationUser : IdentityUser {
         Compras = new List<Comprar>();
         Alquileres= new List<Alquiler>();
         Resenas = new List<Reseñar>();
+        Direccion = direccion;
+        Pais = pais;
+        Conductor = conductor;
 
     }
 
@@ -56,5 +61,33 @@ public class ApplicationUser : IdentityUser {
     public List<Alquiler> Alquileres { get; set; }
 
 
+    [Display(Name = "Dirección")]
+    [StringLength(200, ErrorMessage = "La dirección no puede superar los 200 caracteres.")]
+    public string Direccion { get; set; }
+
+
+    [Display(Name = "País")]
+    [StringLength(100, ErrorMessage = "El nombre del país no puede superar los 100 caracteres.")]
+    public string Pais { get; set; }
+
+    [Display(Name = "Tipo de Conductor")]
+    public ConductorTipos Conductor { get; set; }
+
+
+  
 
 }
+
+public enum ConductorTipos
+{
+    Novato,
+    Experto
+}
+
+
+
+
+
+
+
+
