@@ -15,7 +15,7 @@ namespace AppForSEII2526.API.Models
         public Coche(
             string claseCoche, string color, string descripcion, string desplazamientoMotor,
             string tipoCombustible, string fabricante, decimal precioCompra, int cantidadCompra,
-            int cantidadAlquiler, double precioAlquiler, string tamanoLlanta,
+            int cantidadAlquiler, double precioAlquiler, string tamanoLlanta,Modelo modelo,
             TipoMantenimiento tiposdeMantenimiento)
         {
             ClaseCoche = claseCoche;
@@ -30,6 +30,7 @@ namespace AppForSEII2526.API.Models
             CantidadAlquiler = cantidadAlquiler;
             PrecioAlquiler = precioAlquiler;
             TamanoLlanta = tamanoLlanta;
+            Modelo = modelo;
             ComprarItems = new List<ComprarItem>();
             AlquilerItems = new List<AlquilerItem>();
             ReseñarItems = new List<ReseñarItem>();
@@ -82,6 +83,9 @@ namespace AppForSEII2526.API.Models
 
         [Display(Name = "Tamaño de llanta")]
         public string TamanoLlanta { get; set; }
+
+        [Display(Name = "Modelo de coche")]
+        public Modelo Modelo { get; set; }
 
         public IList<ComprarItem> ComprarItems { get; set; }
         public IList<AlquilerItem> AlquilerItems { get; set; }

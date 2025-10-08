@@ -6,7 +6,6 @@
         public Reseñar()
         {
             ReseñarItems = new List<ReseñarItem>();
-            Coches = new List<Coche>();
         }
 
         public Reseñar(int id, string usuario, string pais, string tipoConductor, DateTime creado, ApplicationUser applicationUser)
@@ -18,7 +17,7 @@
             Creado = creado;
             ApplicationUser = applicationUser;
             ReseñarItems = new List<ReseñarItem>();
-            Coches = new List<Coche>();
+ 
         }
 
         public int Id { get; set; }
@@ -31,5 +30,6 @@
         public DateTime Creado { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public IList<ReseñarItem> ReseñarItems { get; set; }
+       
     }
 }
