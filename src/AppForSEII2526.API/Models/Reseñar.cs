@@ -1,6 +1,6 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    [Index(nameof(Reseñar), IsUnique = true)]
+    
     public class Reseñar
     {
         public Reseñar()
