@@ -13,7 +13,7 @@
             CocheId = coche.Id;
             Reseñar = reseñar;
             ReseñarId = reseñar.Id;
-            Rating = rating;
+            Calificacion = calificacion;
             Descripcion = descripcion;
         }
 
@@ -25,9 +25,9 @@
 
         public int ReseñarId { get; set; }
 
-        [Range(1, 5, ErrorMessage = "El rating debe estar entre 1 y 5")]
-        public int Rating { get; set; }
+        [Range(1, 5, ErrorMessage = "La calificacion debe estar entre 1 y 5")]
+        public int Calificacion { get; set; }
         [Display(Name = "Descripción")]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
     }
 }
