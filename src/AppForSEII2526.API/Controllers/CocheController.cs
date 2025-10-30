@@ -1,3 +1,6 @@
+﻿using AppForSEII2526.API.DTOs.CocheDTOs;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 ﻿using AppForSEII2526.Shared.CocheDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +27,59 @@ namespace AppForSEII2526.API.Controllers
             _logger = logger;
         }
 
+          [HttpGet]
+  [Route("[action]")]
+  [ProducesResponseType(typeof(IList<CocheParaAlquilerDTO>), (int)HttpStatusCode.OK)]
+  public async Task<ActionResult> GetCochesDisponibles(DateTime? fechaInicio, DateTime? fechaFin)
+  {
+      // Validación de fechas
+      if (fechaInicio != null && fechaFin != null && fechaInicio > fechaFin)
+      {
+          ModelState.AddModelError("fechaInicio&fechaFin", "La fecha de inicio debe ser anterior a la fecha de fin.");
+          _logger.LogError($"{DateTime.Now} Error: fechaInicio > fechaFin");
+          return BadRequest(new ValidationProblemDetails(ModelState)); // se devuelve HTTP 400 Bad Request con el detalle del error
+      }
+
+      // Asignación de valores por defecto si el usuario no envia fechas
+      fechaInicio ??= DateTime.Today; //hoy
+      fechaFin ??= DateTime.Today.AddDays(7); //dentro de 7 días  
+
+
+      // Consulta de coches disponibles
+      IList<CocheParaAlquilerDTO> cochesDisponibles = await _context.Coches
+
+          // Incluimos los alquileres para verificar disponibilidad
+          .Include(c => c.AlquilerItems)
+              .ThenInclude(ai => ai.Alquiler)
+
+          // Filtramos coches disponibles
+          .Where(c =>
+              c.AlquilerItems.Count(ai =>
+                  ai.Alquiler.InicioAlquiler <= fechaFin &&
+                  ai.Alquiler.FinAlquiler >= fechaInicio) < c.CantidadAlquiler
+          //Revisa cuántas unidades del coche están alquiladas durante el rango solicitado.
+          // Si el número de unidades alquiladas es menor que la cantidad total disponible, el coche está disponible.
+          )
+
+          // Ordenamos para mejorar la presentación
+          .OrderBy(c => c.Modelo.Name)
+              .ThenBy(c => c.PrecioAlquiler)
+
+          // Proyección al DTO respetando el orden de parámetros
+          .Select(c => new CocheParaAlquilerDTO(
+              c.Id,
+              c.Modelo.Name,
+              c.Color,
+              c.PrecioAlquiler,
+              c.TipoCombustible,
+              c.Fabricante
+          ))
+          .ToListAsync(); //ejecuta la consulta de manera asíncrona y devuelve la lista.
+
+      return Ok(cochesDisponibles); //Devuelve una respuesta HTTP 200 con la lista de coches disponibles
+  }
+    }
+    }
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<CocheParaReseñarDTO>), (int)HttpStatusCode.OK)]
