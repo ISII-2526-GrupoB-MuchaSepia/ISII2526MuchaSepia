@@ -7,7 +7,7 @@
         {
         }
 
-        public ReseñarItem(Coche coche, int rating, Reseñar reseñar, string descripcion)
+        public ReseñarItem(Coche coche, int calificacion, Reseñar reseñar, string descripcion)
         {
             Coche = coche;
             CocheId = coche.Id;
