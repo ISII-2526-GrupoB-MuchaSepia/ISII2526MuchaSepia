@@ -105,5 +105,24 @@ namespace AppForSEII2526.API.Controllers
 
             return Ok(coches);
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(IList<CocheParaCompraDTO>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetCochesParaComprar( string? modeloCoche, string? fcolor)
+        {
+            IList<CocheParaCompraDTO> selectCoche = await _context.Coches
+
+                .Include(m => m.Modelo)
+                .Include(m => m.ComprarItems).ThenInclude(pi => pi.Comprar)
+
+                .Where(m => m.CantidadCompra > 0 && (modeloCoche == null || m.Modelo.Name.Equals(modeloCoche))) 
+                .OrderBy(m => m.Modelo)
+
+                .Select(m => new CocheParaCompraDTO(m.Id, m.Modelo.Name, m.PrecioCompra, m.Color,m.Fabricante,m.TipoCombustible ))
+                .ToListAsync();
+
+            return Ok(selectCoche);
+        }
     }
 }
