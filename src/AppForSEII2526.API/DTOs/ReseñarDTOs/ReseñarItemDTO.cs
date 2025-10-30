@@ -33,7 +33,7 @@
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(ReseñarId, CocheId, CocheNombre, Rating, Descripcion);
+            return HashCode.Combine(ReseñarId, CocheId, CocheNombre, Calificacion, Descripcion);
         }
     }
 }
