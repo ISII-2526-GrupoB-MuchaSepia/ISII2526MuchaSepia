@@ -7,7 +7,7 @@
             ReseñarId = reseñarId;
             CocheId = cocheId;
             CocheNombre = cocheNombre;
-            Rating = rating;
+            Calificacion  = calificacion;
             Descripcion = descripcion;
         }
 
@@ -17,7 +17,7 @@
 
         public string CocheNombre { get; set; }
 
-        public int Rating { get; set; }
+        public int Calificacion  { get; set; }
 
         public string? Descripcion { get; set; }
 
@@ -27,7 +27,7 @@
                    ReseñarId == dto.ReseñarId &&
                    CocheId == dto.CocheId &&
                    CocheNombre == dto.CocheNombre &&
-                   Rating == dto.Rating &&
+                   Calificacion  == dto.Calificacion  &&
                    Descripcion == dto.Descripcion;
         }
 
