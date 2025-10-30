@@ -120,5 +120,58 @@ namespace AppForSEII2526.API.Controllers
                 return Ok(reseñas);
             }
         }
+
+
+        // POST: api/Reseñar/Create
+        [HttpPost]
+        [Route("Create")]
+        [ProducesResponseType(typeof(DetallesReseñarDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        public async Task<ActionResult> Create(CreacionesReseñarDTO reseñaForCreate)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new ValidationProblemDetails(ModelState));
+
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName == reseñaForCreate.Usuario);
+            if (user == null)
+            {
+                ModelState.AddModelError("Usuario", "Error! Usuario no registrado");
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+
+            var reseña = new Reseñar
+            {
+                Usuario = reseñaForCreate.Usuario,
+                Pais = reseñaForCreate.Pais,
+                TipoConductor = reseñaForCreate.TipoConductor,
+                Creado = reseñaForCreate.Creado,
+                ApplicationUser = user,
+                ReseñarItems = new System.Collections.Generic.List<ReseñarItem>() // Los items pueden añadirse después o con otro endpoint
+            };
+
+            _context.Reseñas.Add(reseña);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return Conflict("Error al guardar la reseña: " + ex.Message);
+            }
+
+            var detallesDTO = new DetallesReseñarDTO(
+                reseña.Id,
+                reseña.Creado,
+                reseña.Usuario,
+                reseña.Pais,
+                reseña.TipoConductor,
+                reseña.ApplicationUser,
+                new System.Collections.Generic.List<ReseñarItemDTO>());
+
+            return CreatedAtAction(nameof(GetDetails), new { id = reseña.Id }, detallesDTO);
+        }
     }
 }
