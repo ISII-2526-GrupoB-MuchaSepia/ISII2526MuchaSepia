@@ -78,20 +78,13 @@ namespace AppForSEII2526.API.Controllers
                 .ThenInclude(pi => pi.Comprar)
                 .Include(c => c.Modelo)
                 .Where(c => purchaseCars.Contains(c.Modelo.Name))
-                .Select(c => new
-                {
-                    c.Id,
-                    c.Modelo.Name,
-                    c.CantidadCompra,
-                    c.PrecioCompra,
-                    NumberOfPurchaseItems = c.ComprarItems.Sum(pi => pi.Cantidad)
-                })
                 .ToList();
+                
+                
 
             Comprar comprar = new Comprar(creacionCompras.Nombre, creacionCompras.Apellido, usuario, creacionCompras.ConcesionarioEntrega, DateTime.Now, new List<ComprarItem>(), (Comprar.MetodoPagoTipos)creacionCompras.MetodoPago);
 
             comprar.PrecioCompra = 0;
-
 
             foreach (var item in creacionCompras.ComprarItems)
             {
@@ -109,7 +102,7 @@ namespace AppForSEII2526.API.Controllers
                 else
                 {
 
-                    comprar.ComprarItems.Add(new ComprarItem(coche, comprar.Id, (decimal)item.Cantidad));// ERRORES NO SE QUE PASA
+                    comprar.ComprarItems.Add(new ComprarItem(coche, comprar, (decimal)item.Cantidad));// ERRORES NO SE QUE PASA
                     item.PrecioCompra = coche.PrecioCompra;
                     comprar.PrecioCompra += (coche.PrecioCompra * item.Cantidad);
                 }
