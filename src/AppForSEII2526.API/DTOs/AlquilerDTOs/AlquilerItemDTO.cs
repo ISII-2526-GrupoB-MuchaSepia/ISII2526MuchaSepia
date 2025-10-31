@@ -6,7 +6,7 @@
         //El sistema muestra los coches seleccionados, indicando su modelo, fabricante y
         // precio de alquiler y la cantidad de cada coche seleccionado
 
-        public AlquilerItemDTO(int cocheId, double cantidad, double precioAlquiler, string modelo, string fabricante)
+        public AlquilerItemDTO(int cocheId, int cantidad, double precioAlquiler, string modelo, string fabricante)
         {
             CocheId = cocheId; //El coche que es 
             Cantidad = cantidad; //unidades alquiladas
@@ -15,7 +15,7 @@
             Fabricante = fabricante;
         }
         public int CocheId { get; set; }
-        public double Cantidad { get; set; }
+        public int Cantidad { get; set; }
 
         public string Modelo { get; set; }
 
