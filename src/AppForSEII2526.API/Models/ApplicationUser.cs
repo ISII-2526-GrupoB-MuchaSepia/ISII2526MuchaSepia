@@ -1,10 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Net;
 using static AppForSEII2526.API.Models.Comprar;
 
 namespace AppForSEII2526.API.Models;
 
 // Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser {
+
+   
+
+    // Constructor que inicializa un usuario con los valores proporcionados
+    public ApplicationUser(string id, string nombre, string apellido, string nombreUsuario, string direccion)
+    {
+        Id = id;
+        Nombre = nombre;
+        Apellido = apellido;
+        NombreUsuario = nombreUsuario;
+        Email = nombreUsuario;
+        Direccion = direccion;
+    }
+
 
 
     public ApplicationUser()
@@ -35,6 +50,13 @@ public class ApplicationUser : IdentityUser {
 
     [Display(Name = "Nombre")]
     public string? Nombre
+    {
+        get;
+        set;
+    }
+
+    [Display(Name = "Nombre de Uusuario")]
+    public string? NombreUsuario
     {
         get;
         set;
