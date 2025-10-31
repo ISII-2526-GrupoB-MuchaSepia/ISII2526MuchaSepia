@@ -2,7 +2,7 @@
 {
     public class ReseñarItemDTO
     {
-        public ReseñarItemDTO(int reseñarId, int cocheId, string cocheNombre, int rating, string descripcion = "")
+        public ReseñarItemDTO(int reseñarId, int cocheId, string cocheNombre, int calificacion, string descripcion = "")
         {
             ReseñarId = reseñarId;
             CocheId = cocheId;
