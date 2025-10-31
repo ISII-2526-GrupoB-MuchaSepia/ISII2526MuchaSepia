@@ -18,14 +18,14 @@
 
         //crear un constructor que reciba coche, alquiler y cantidad ya que llama al de arriba y ademas inicializa la cantidad
 
-        public AlquilerItem(Coche coche, Alquiler alquiler, double cantidad) : this(coche, alquiler)
+        public AlquilerItem(Coche coche, Alquiler alquiler, int cantidad) : this(coche, alquiler)
         {
             Cantidad = cantidad;
             
         }
 
         //constructor solo con los ids de coche y alquiler y la cantidad
-        public AlquilerItem(int cocheId, int alquilerId, double cantidad)
+        public AlquilerItem(int cocheId, int alquilerId, int cantidad)
         {
             CocheId = cocheId;
             AlquilerId = alquilerId;
@@ -46,6 +46,6 @@
         public int AlquilerId { get; set; }
 
        
-        public double Cantidad { get; set; }
+        public int Cantidad { get; set; }
     }
 }
