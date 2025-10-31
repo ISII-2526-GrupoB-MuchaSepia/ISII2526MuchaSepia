@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AppForSEII2526.API.Data;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AppForSEII2526.API.Controllers
 {
@@ -30,7 +31,7 @@ namespace AppForSEII2526.API.Controllers
           [HttpGet]
   [Route("[action]")]
   [ProducesResponseType(typeof(IList<CocheParaAlquilerDTO>), (int)HttpStatusCode.OK)]
-  public async Task<ActionResult> GetCochesDisponibles(DateTime? fechaInicio, DateTime? fechaFin)
+  public async Task<ActionResult> GetCochesParaAlquilar(DateTime? fechaInicio, DateTime? fechaFin)
   {
       // Validación de fechas
       if (fechaInicio != null && fechaFin != null && fechaInicio > fechaFin)
