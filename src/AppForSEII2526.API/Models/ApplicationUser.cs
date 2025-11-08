@@ -10,7 +10,7 @@ public class ApplicationUser : IdentityUser {
    
 
     // Constructor que inicializa un usuario con los valores proporcionados
-    public ApplicationUser(string id, string nombre, string apellido, string nombreUsuario, string direccion)
+    public ApplicationUser( string id,string nombre, string apellido, string nombreUsuario, string direccion)
     {
         Id = id;
         Nombre = nombre;
@@ -18,6 +18,16 @@ public class ApplicationUser : IdentityUser {
         NombreUsuario = nombreUsuario;
         Email = nombreUsuario;
         Direccion = direccion;
+        Metodos_Pagos = new List<MetodoPagoTipos>();
+
+        
+        Compras = new List<Comprar>();
+        Alquileres = new List<Alquiler>();
+        Resenas = new List<Reseñar>();
+
+       
+        Pais = "";
+        Conductor = ConductorTipos.Novato;
     }
 
 
@@ -27,9 +37,11 @@ public class ApplicationUser : IdentityUser {
         Compras = new List<Comprar>();
         Alquileres = new List<Alquiler>();
         Resenas = new List<Reseñar>();
+       
+        
     }
 
-    public ApplicationUser(string id, string nombre, string apellido, string nombreUsuario, List<MetodoPagoTipos> metodos_Pagos, string direccion,
+    public ApplicationUser( string id,string nombre, string apellido, string nombreUsuario, List<MetodoPagoTipos> metodos_Pagos, string direccion,
             string pais,
            ConductorTipos conductor)
     {
@@ -38,7 +50,7 @@ public class ApplicationUser : IdentityUser {
         Apellido = apellido;
         UserName = nombreUsuario;
         Email = nombreUsuario;
-        Metodos_Pagos = metodos_Pagos;
+        Metodos_Pagos = new List<MetodoPagoTipos>();
         Compras = new List<Comprar>();
         Alquileres= new List<Alquiler>();
         Resenas = new List<Reseñar>();
