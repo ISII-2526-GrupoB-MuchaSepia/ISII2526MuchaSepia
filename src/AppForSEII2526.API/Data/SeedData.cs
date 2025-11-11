@@ -100,6 +100,48 @@ namespace AppForSEII2526.API.Data
             }
 
         }
+<<<<<<< Updated upstream
+=======
+
+        public static void SeedAlquiler(ApplicationDbContext dbcontext, ApplicationUser user)
+        {
+            // Si no existe un alquiler con Id = 1, crearlo
+            if (!dbcontext.Alquileres.Any(a => a.Id == 1))
+            {
+                // Creamos lista vacía que luego llenamos
+                var items = new List<AlquilerItem>();
+
+                // Creamos el alquiler
+                var alquiler = new Alquiler(
+                    nombre: "Juan",
+                    apellido: "Pérez",
+                    concesionarioEntrega: "C/Rosario 11",
+                    fechaAlquiler: DateTime.Today,
+                    metodoPago: MetodoPagoTipos.GooglePay,
+                    inicioAlquiler: DateTime.Today.AddDays(1),
+                    finAlquiler: DateTime.Today.AddDays(5),
+                    alquilerItems: items,
+                    applicationUser: user
+                );
+
+                // Obtener un coche existente para el alquiler 
+                var coche = dbcontext.Coches.FirstOrDefault();
+                if (coche != null)
+                {
+                    var alquilerItem = new AlquilerItem(coche, alquiler, cantidad: 1);
+                    alquiler.AlquilerItems.Add(alquilerItem);
+                }
+
+                // Guardar
+                dbcontext.Alquileres.Add(alquiler);
+                dbcontext.SaveChanges();
+            }
+        }
+
+
+
+
+>>>>>>> Stashed changes
     }
 }
 
