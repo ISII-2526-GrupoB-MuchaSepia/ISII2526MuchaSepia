@@ -34,7 +34,7 @@ namespace AppForSEII2526.API.Controllers
         [Route("[action]")]
         [ProducesResponseType(typeof(DetalleAlquilerDTO), (int)HttpStatusCode.OK)] //200 OK CON UN DETALLEALQUILERDTO SI LO ENCUENTRA
         [ProducesResponseType((int)HttpStatusCode.NotFound)] //404 NOT FOUND SI NO LO ENCUENTRA
-        public async Task<ActionResult> GetAlquiler(int id)
+        public async Task<ActionResult> Get_Detalle_Alquiler(int id)
         //endpoint GET asincrono que dado un id, devuelve un ActionResult( ejemplo: Ok(), NotFound(), BadRequest(), etc)
         {
             if (_context.Alquileres == null)
