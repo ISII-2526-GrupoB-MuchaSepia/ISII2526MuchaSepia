@@ -75,8 +75,8 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<int>("AlquilerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Cantidad")
-                        .HasColumnType("float");
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
 
                     b.HasKey("CocheId", "AlquilerId");
 
@@ -126,6 +126,9 @@ namespace AppForSEII2526.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NombreUsuario")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -371,12 +374,11 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<int>("ReseñarId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Rating")
+                    b.Property<int>("Calificacion")
                         .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CocheId", "ReseñarId");
 

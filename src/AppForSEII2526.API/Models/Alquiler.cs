@@ -50,8 +50,8 @@
 
     public enum MetodoPagoTipos
     {
-        TarjetaCredito,
-        PayPal,
-        Efectivo
+       Visa,
+        GooglePay,
+        PayPal
     }
 }
