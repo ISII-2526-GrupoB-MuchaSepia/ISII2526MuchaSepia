@@ -225,11 +225,7 @@ namespace AppForSEII2526.API.Data
                 dbcontext.Alquileres.Add(alquiler);
                 dbcontext.SaveChanges();
             }
-        }
-
-
-
-
+  
     }
 }
 
