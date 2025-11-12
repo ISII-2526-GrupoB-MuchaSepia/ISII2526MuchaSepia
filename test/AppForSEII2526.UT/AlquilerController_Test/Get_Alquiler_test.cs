@@ -77,7 +77,7 @@ namespace AppForSEII2526.UT.AlquilerController_Test
                 apellido: usuario.Apellido,
                 concesionarioEntrega: "Granada",
                 fechaAlquiler: DateTime.Today.AddDays(1),
-                metodoPago: MetodoPagoTipos.TarjetaCredito,
+                metodoPago: MetodoPagoTipos.GooglePay,
                 inicioAlquiler: DateTime.Today,
                 finAlquiler: DateTime.Today.AddDays(7),
                 alquilerItems: new List<AlquilerItem>(),
@@ -149,7 +149,7 @@ namespace AppForSEII2526.UT.AlquilerController_Test
                 concesionarioEntrega: "Granada",
                 inicioAlquiler: DateTime.Today,
                 finAlquiler: DateTime.Today.AddDays(7),
-                metodoPago: MetodoPagoTipos.TarjetaCredito,
+                metodoPago: MetodoPagoTipos.GooglePay,
                 alquilerItems: new List<AlquilerItemDTO>(),
                 total: 0
             );
