@@ -11,8 +11,9 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         //obligatorios.
 
 
-        public AlquilerParaCrearDTO(string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItemDTO> alquilerItems)
+        public AlquilerParaCrearDTO(string nombreUsuario,string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItemDTO> alquilerItems,DateTime fechaAlquiler, double total)
         {
+            NombreUsuario = nombreUsuario ?? throw new ArgumentNullException(nameof(nombreUsuario));
             Nombre = nombre ?? throw new ArgumentNullException(nameof(nombre)); // validar que no sea nulo, asigna a Nombre un valor de nombre, a no ser que nombre sea null. En ese caso se lanza una excepcion
             Apellido = apellido ?? throw new ArgumentNullException(nameof(apellido)); // validar que no sea nulo
             ConcesionarioEntrega = concesionarioEntrega ?? throw new ArgumentNullException(nameof(concesionarioEntrega)); // validar que no sea nulo garantiza que el DTO siempre tenga datos validos
@@ -20,6 +21,8 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
             InicioAlquiler = inicioAlquiler;
             FinAlquiler = finAlquiler;
             AlquilerItems = alquilerItems ?? throw new ArgumentNullException(nameof(alquilerItems)); // validar que no sea nulo
+            FechaAlquiler = fechaAlquiler;
+            Total = total;
         }
 
         public AlquilerParaCrearDTO()
@@ -27,8 +30,12 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
             AlquilerItems = new List<AlquilerItemDTO>(); //crear objeto sin parametros, inicializa como lista vacia para que no sea nulo
         }
 
+        public double Total { get; set; }
+
+        public string NombreUsuario { get; set; }
         public DateTime InicioAlquiler { get; set; }
         public DateTime FinAlquiler { get; set; }
+        public DateTime FechaAlquiler { get; set; }
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.MultilineText)]//multiLineText sugiere que en un formulario web podria ser un campo de texto con varias lineas
         [Display(Name = "Concesionario de entrega")]
@@ -59,7 +66,7 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         }
         [Display(Name = "Precio Total")]
         [JsonPropertyName("PrecioTotal")]
-        public double Total
+        public double TotalFinal
         {
             get
             {
@@ -77,21 +84,22 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
 
             //considera dos fechas iguales si su diferencia es menor de un minuto
         }
+
         public override bool Equals(object? obj)
         {
             return obj is AlquilerParaCrearDTO dTO &&
-                CompareDate(InicioAlquiler, dTO.InicioAlquiler) &&
-                CompareDate(FinAlquiler, dTO.FinAlquiler) &&
-                     ConcesionarioEntrega == dTO.ConcesionarioEntrega &&
-                     Nombre == dTO.Nombre &&
-                     Apellido == dTO.Apellido &&
-                    AlquilerItems.SequenceEqual(dTO.AlquilerItems) &&
-                    MetodoPago == dTO.MetodoPago &&
-                    Total == dTO.Total;
-
-
-
+                   Total == dTO.Total &&
+                   NombreUsuario == dTO.NombreUsuario &&
+                   InicioAlquiler == dTO.InicioAlquiler &&
+                   FinAlquiler == dTO.FinAlquiler &&
+                   FechaAlquiler == dTO.FechaAlquiler &&
+                   ConcesionarioEntrega == dTO.ConcesionarioEntrega &&
+                   Nombre == dTO.Nombre &&
+                   Apellido == dTO.Apellido &&
+                   AlquilerItems.SequenceEqual(dTO.AlquilerItems) &&
+                   MetodoPago == dTO.MetodoPago &&
+                   NumeroDias == dTO.NumeroDias &&
+                   Total == dTO.Total;
         }
-
     }
 }

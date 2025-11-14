@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace AppForSEII2526.API.DTOs.AlquilerDTOs
 {
-    public class DetalleAlquilerDTO : AlquilerParaCrearDTO // hereda de AlquilerParaCrearDTO
+    public class DetalleAlquilerDTO  // hereda de AlquilerParaCrearDTO
 
     //devolver al usuario el resumen del alquiler realizado.
 
@@ -14,30 +14,58 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
     //alquiler, fecha en la que se realizó el alquiler y precio total del alquiler.
     {
 
-        public DetalleAlquilerDTO(int id, DateTime fechaAlquiler, string nombre, string apellido, string concesionarioEntrega, DateTime inicioAlquiler, DateTime finAlquiler, MetodoPagoTipos metodoPago, IList<AlquilerItemDTO> alquilerItems,double total)
-           : base(nombre, apellido, concesionarioEntrega, metodoPago, inicioAlquiler, finAlquiler, alquilerItems)
+        public DetalleAlquilerDTO( DateTime fechaAlquiler, string nombre, string apellido, string concesionarioEntrega, DateTime inicioAlquiler, DateTime finAlquiler, MetodoPagoTipos metodoPago, double total, IList<AlquilerItemDTO> alquilerItems)
+           
 
         {
-            Id = id;
+            
             FechaAlquiler = fechaAlquiler;
-            Total = total;  
+            Nombre = nombre;
+            Apellido = apellido;
+            ConcesionarioEntrega = concesionarioEntrega;
+            InicioAlquiler = inicioAlquiler;
+            FinAlquiler = finAlquiler;
+            MetodoPago = metodoPago;
+            Total = total;
+            AlquilerItems = alquilerItems;
+            
         }
-        public int Id { get; set; }
+     
         public DateTime FechaAlquiler { get; set; }
+
+        public DateTime InicioAlquiler { get; set; }
+        public DateTime FinAlquiler { get; set; }
+        
+        
+        [Required]
+public MetodoPagoTipos MetodoPago { get; set; }
+
+        public IList<AlquilerItemDTO> AlquilerItems { get; set; }
+
+        [StringLength(20, ErrorMessage = "El nombre no puede tener más de 25 caracteres ni menos de 1.")]
+        public string Nombre { get; set; }
+
+        [StringLength(100, ErrorMessage = "El apellido no puede tener más de 40 caracteres ni menos de 1.")]
+        public string Apellido { get; set; }
+
+        [StringLength(50, ErrorMessage = "El concesionario de entrega no puede tener más de 35 caracteres ni menos de 1.")]
+        public string ConcesionarioEntrega { get; set; }
 
         public double Total { get; set; }
 
         public override bool Equals(object? obj)
         {
             return obj is DetalleAlquilerDTO dTO &&
-                base.Equals(obj) &&
-                Total == dTO.Total &&
-                   Id == dTO.Id &&
-                  CompareDate(FechaAlquiler, dTO.FechaAlquiler);
-        }
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), Id, FechaAlquiler,Total);
+                  
+                   FechaAlquiler == dTO.FechaAlquiler &&
+                   InicioAlquiler == dTO.InicioAlquiler &&
+                   FinAlquiler == dTO.FinAlquiler &&
+                   MetodoPago == dTO.MetodoPago &&
+                   AlquilerItems.SequenceEqual(dTO.AlquilerItems) &&
+                   Nombre == dTO.Nombre &&
+                   Apellido == dTO.Apellido &&
+                   ConcesionarioEntrega == dTO.ConcesionarioEntrega &&
+                   Total == dTO.Total;
         }
     }
 }

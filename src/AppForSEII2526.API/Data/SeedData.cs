@@ -35,7 +35,7 @@ namespace AppForSEII2526.API.Data
             {
                 logger.LogError(ex, "An error occurred seeding the Cars and Models in the Database.");
             }
-           
+
 
             try
             {
@@ -47,7 +47,7 @@ namespace AppForSEII2526.API.Data
                 logger.LogError(ex, "An error occurred seeding a Rental in the Database.");
             }
 
-          
+
         }
 
 
@@ -75,7 +75,7 @@ namespace AppForSEII2526.API.Data
         {
             if (userManager.FindByNameAsync("elena@uclm.es").Result == null)
             {
-                ApplicationUser user = new ApplicationUser( "1","Elena", "Navarro Martínez", "elena@uclm.es", "Avda. España 2, Albacete");
+                ApplicationUser user = new ApplicationUser("1", "Elena", "Navarro Martínez", "elena@uclm.es", "Avda. España 2, Albacete");
                 user.UserName = "elena@uclm.es";
                 user.EmailConfirmed = true;
 
@@ -87,7 +87,7 @@ namespace AppForSEII2526.API.Data
 
             if (userManager.FindByNameAsync("gregorio@uclm.es").Result == null)
             {
-                ApplicationUser user = new ApplicationUser( "2","Gregorio", "Diaz Descalzo", "gregorio@uclm.es", "Avda. España 25, Ciudad Real");
+                ApplicationUser user = new ApplicationUser("2", "Gregorio", "Diaz Descalzo", "gregorio@uclm.es", "Avda. España 25, Ciudad Real");
                 user.UserName = "gregorio@uclm.es";
                 user.EmailConfirmed = true;
 
@@ -99,7 +99,7 @@ namespace AppForSEII2526.API.Data
 
             if (userManager.FindByNameAsync("peter@uclm.es").Result == null)
             {
-                ApplicationUser user = new ApplicationUser( "3","Peter", "Jackson", "peter@uclm.es", "Avda. España 75, London");
+                ApplicationUser user = new ApplicationUser("3", "Peter", "Jackson", "peter@uclm.es", "Avda. España 75, London");
                 user.UserName = "peter@uclm.es";
                 user.EmailConfirmed = true;
 
@@ -136,7 +136,7 @@ namespace AppForSEII2526.API.Data
                 }
             }
 
-            dbcontext.SaveChanges(); 
+            dbcontext.SaveChanges();
 
 
 
@@ -165,7 +165,7 @@ namespace AppForSEII2526.API.Data
             }
 
 
-           
+
             if (!dbcontext.Coches.Any(c => c.Modelo.Name == "Seat León"))
             {
                 var modelo = dbcontext.Modelos.First(m => m.Name == "Seat León");
@@ -206,7 +206,7 @@ namespace AppForSEII2526.API.Data
                     apellido: "Pérez",
                     concesionarioEntrega: "C/Rosario 11",
                     fechaAlquiler: DateTime.Today,
-                    metodoPago: MetodoPagoTipos.TarjetaCredito,
+                    metodoPago: MetodoPagoTipos.GooglePay,
                     inicioAlquiler: DateTime.Today.AddDays(1),
                     finAlquiler: DateTime.Today.AddDays(5),
                     alquilerItems: items,
@@ -225,7 +225,8 @@ namespace AppForSEII2526.API.Data
                 dbcontext.Alquileres.Add(alquiler);
                 dbcontext.SaveChanges();
             }
-  
+
+        }
     }
 }
 
