@@ -2,7 +2,7 @@
 
 namespace AppForSEII2526.API.Models
 {
-    [Index(nameof(ClaseCoche), IsUnique = true)] // Índice único por la clase de coche
+   
     public class Coche
     {
         public Coche()

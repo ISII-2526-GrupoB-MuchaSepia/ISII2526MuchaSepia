@@ -1,0 +1,56 @@
+﻿Caso de uso 2. Alquilar coches
+
+Flujo Básico
+
+1. El usuario selecciona la opción Alquilar Coches en el menú principal.
+
+2. El sistema muestra el conjunto de coches disponibles para alquilar desde hoy hasta la
+próxima semana, indicando el nombre del modelo, el tipo de gasoil, el fabricante, el
+precio del alquiler y el color.
+
+3. El usuario selecciona uno o varios coches para alquilar, que se incluyen en el carrito
+de alquiler electrónico, mostrando el precio total como la suma de los precios de alquiler
+de todos los coches seleccionados, que aumenta en función de los días de alquiler.
+
+4. El usuario selecciona el botón Alquilar coches.
+
+5. El sistema muestra los coches seleccionados, indicando su modelo, fabricante y
+precio de alquiler, y solicita al usuario su nombre, apellidos, dirección y método de pago
+(Visa, Google Pay o Paypal) y la cantidad de cada coche seleccionado, siendo todos datos
+obligatorios.
+
+6. El usuario rellena los datos requeridos y selecciona Guardar.
+
+7. El sistema muestra un recibo con la información del alquiler indicando el nombre,
+apellidos y dirección del usuario, coches alquilados (indicando su modelo, fabricante,
+precio y cantidad), método de pago utilizado, fecha de inicio y fecha de finalización del
+alquiler, fecha en la que se realizó el alquiler y precio total del alquiler.
+Flujo alternativo 0 -> al paso 2:
+Si no hay coches disponibles para alquilar en el periodo designado se le notificará al
+usuario.
+
+Flujo alternativo 1.- al paso 2
+2.1 El sistema ofrece al cliente la opción de filtrar los artículos por modelo y precio.
+2.2 El cliente fija los filtros que le interesan.
+2.3 El sistema muestra solo los artículos que cumplen los criterios de los filtros
+establecidos.
+
+Flujo Alternativo 2 - al Paso 4
+Si el sistema detecta que no se ha seleccionado ningún coche, la opción para continuar
+el proceso no estará activa.
+
+Flujo Alternativo 3 - al Paso 5
+El cliente elige modificar el carrito para eliminar alguno de los coches seleccionados.
+Automáticamente, el sistema actualiza el precio total del contenido del carrito de
+compra.
+
+Flujo Alternativo 4 – al Paso 6
+Si el sistema detecta que algún dato obligatorio no se ha rellenado, notificará al usuario
+y volverá al paso 5.
+
+Flujo Alternativo 5 - al Paso 7
+El cliente elige modificar los coches seleccionados. El sistema volverá al paso 2 sin perder
+la información que el usuario ya había introducido.
+
+Precondición
+El usuario debe estar conectado como Cliente para iniciar el caso de uso
