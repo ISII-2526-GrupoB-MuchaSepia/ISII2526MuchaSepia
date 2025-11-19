@@ -7,7 +7,7 @@
 
         // Permite crear un nuevo ítem de compra asociando un coche y una compra concretos.
         // guarda el precio actual del coche y la cantidad comprada.
-        public ComprarItem(Coche coche, Comprar comprar, decimal cantidad)
+        public ComprarItem(Coche coche, Comprar comprar, int cantidad)
         {
             Coche = coche;
             CocheId = coche.Id;
@@ -24,10 +24,10 @@
         public int ComprarId { get; set; }
 
         [Precision(10, 2)]
-        public decimal Precio { get; set; }
+        public double Precio { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor que 1")]
-        public decimal Cantidad { get; set; }
+        public int Cantidad { get; set; }
     }
 
 }

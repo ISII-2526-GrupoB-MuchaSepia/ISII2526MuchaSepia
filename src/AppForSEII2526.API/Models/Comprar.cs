@@ -18,7 +18,7 @@
         public Comprar(string nombre, string apellido, ApplicationUser applicationUser, string concesionarioEntrega, DateTime fechaCompra, IList<ComprarItem> comprarItems, MetodoPagoTipos metodoPago)
         {
 
-            PrecioTotal = decimal.Round(comprarItems.Sum(pi => pi.Precio * pi.Cantidad), 2);
+            
 
             Nombre = nombre;
             Apellido = apellido;
@@ -34,7 +34,7 @@
         public int Id { get; set; }
 
         [Precision(10, 2)]
-        public decimal PrecioTotal { get; set; }
+        public double PrecioTotal { get; set; }
 
         public string Nombre { get; set; }
 
@@ -59,9 +59,9 @@
 
         public enum MetodoPagoTipos
         {
-            TarjetaCredito,
+            GooglePlay,
             PayPal,
-            Efectivo
+            
         }
     }
 }
