@@ -1,5 +1,7 @@
 ﻿namespace AppForSEII2526.API.Models
 {
+
+    [PrimaryKey(nameof(CocheId), nameof(AlquilerId))]
     public class AlquilerItem
     {
         public AlquilerItem()
@@ -25,10 +27,10 @@
         }
 
         //constructor solo con los ids de coche y alquiler y la cantidad
-        public AlquilerItem(int cocheId, int alquilerId, int cantidad)
+        public AlquilerItem(int cocheId, Alquiler alquiler, int cantidad)
         {
             CocheId = cocheId;
-            AlquilerId = alquilerId;
+            Alquiler = alquiler;
             Cantidad = cantidad;
         }
 

@@ -5,35 +5,47 @@
         public Alquiler()
         {
         }
-        public Alquiler(string nombre, string apellido, string concesionarioEntrega, DateTime fechaAlquiler, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItem> alquilerItems, ApplicationUser applicationUser)
+        public Alquiler( string concesionarioEntrega, DateTime fechaAlquiler, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItem> alquilerItems, ApplicationUser applicationUser)
         {
 
-            Total = alquilerItems.Sum(ri => ri.Cantidad * (finAlquiler - inicioAlquiler).Days);
-
+           
             InicioAlquiler = inicioAlquiler;
             FinAlquiler = finAlquiler;
             FechaAlquiler = fechaAlquiler;
             ConcesionarioEntrega = concesionarioEntrega;
-            Nombre = nombre;
-            Apellido = apellido;
+           
             AlquilerItems = alquilerItems;
             MetodoPago = metodoPago;
             ApplicationUser = applicationUser;
+
+            Nombre = applicationUser?.Nombre;      
+            Apellido = applicationUser?.Apellido;
         }
 
+        [Key]
         public int Id { get; set; }
 
         public double Total { get; set; }
 
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+
         public DateTime FechaAlquiler { get; set; }
 
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime InicioAlquiler { get; set; }
+
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FinAlquiler { get; set; }
 
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.MultilineText)]
         [Display(Name = "Concesionario de entrega ")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, ingresa tu dirección de entrega")]
+        [StringLength(20, ErrorMessage = "Maximo 20 caracteres,minimo 1", MinimumLength = 1)]
+        
         public string ConcesionarioEntrega { get; set; }
 
         public string Nombre { get; set; }

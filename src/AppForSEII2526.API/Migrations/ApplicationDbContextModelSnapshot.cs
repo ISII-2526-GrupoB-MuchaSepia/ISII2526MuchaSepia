@@ -39,7 +39,8 @@ namespace AppForSEII2526.API.Migrations
 
                     b.Property<string>("ConcesionarioEntrega")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("FechaAlquiler")
                         .HasColumnType("datetime2");
@@ -236,9 +237,6 @@ namespace AppForSEII2526.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClaseCoche")
-                        .IsUnique();
-
                     b.HasIndex("ModeloId");
 
                     b.ToTable("Coches");
@@ -325,9 +323,6 @@ namespace AppForSEII2526.API.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Modelos");
                 });

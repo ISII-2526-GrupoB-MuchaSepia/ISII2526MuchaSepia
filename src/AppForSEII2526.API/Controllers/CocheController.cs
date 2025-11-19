@@ -35,9 +35,9 @@ namespace AppForSEII2526.API.Controllers
         {
             var coches= await _context.Coches
                                 .Include(c => c.Modelo)
-                .Where(c => c.CantidadAlquiler > 0 &&
+                .Where(c=>
                     (modelo == null || c.Modelo.Name.Contains(modelo)) &&
-                    (precioAlquiler == null || c.PrecioAlquiler < precioAlquiler))
+                    (precioAlquiler == null || c.PrecioAlquiler <= precioAlquiler))
                 .Select(c => new CocheParaAlquilerDTO(
                     c.Id,
                     c.Modelo.Name ,

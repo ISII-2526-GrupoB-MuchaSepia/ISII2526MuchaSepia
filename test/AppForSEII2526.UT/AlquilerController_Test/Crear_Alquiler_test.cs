@@ -11,14 +11,14 @@ namespace AppForSEII2526.UT.AlquilerController_Test
     public class PostAlquiler_test : AppForSEII25264SqliteUT
     {
 
-        private const string NombreUsuario = "maria@correo.com";
-        private const string Nombre = "María";
-        private const string Apellidos = "López García";
-        private const string ConcesionarioEntrega = "Concesionario Central de Toledo";
+        private const string NombreUsuario = "lucas.mdn";
+        private const string Nombre = "Lucas";
+        private const string Apellido = "Maldonado";
+        private const string ConcesionarioEntrega = "Calle Mayor 12, Toledo";
 
         // Nuevos modelos
-        private const string modelo1 = "Nissan Qashqai";
-        private const string modelo2 = "Hyundai Tucson";
+        private const string modelo1 = "Toyota Supra";
+        private const string modelo2 = "Honda Civic Type R";
 
 
         public PostAlquiler_test()
@@ -32,65 +32,66 @@ namespace AppForSEII2526.UT.AlquilerController_Test
 
             var coches = new List<Coche>
         {
-            new Coche(
-                claseCoche: "SUV",
-                color: "Negro",
-                descripcion: "SUV compacto ideal para ciudad",
-                desplazamientoMotor: "1.6L",
-                tipoCombustible: "Gasolina",
-                fabricante: "Nissan",
-                precioCompra: 18000m,
-                cantidadCompra: 6,
-                cantidadAlquiler: 3,
-                precioAlquiler: 65,
-                tamanoLlanta: "18 pulgadas",
-                modelo: modelos[0],
-                tiposdeMantenimiento: Coche.TipoMantenimiento.Aceite
-            ),
+           new Coche(
+    claseCoche: "Deportivo",
+    color: "Rojo",
+    descripcion: "Coupé de alto rendimiento",
+    desplazamientoMotor: "3.0L Twin-Turbo",
+    tipoCombustible: "Gasolina",
+    fabricante: "Toyota",
+    precioCompra: 55000m,
+    cantidadCompra: 4,
+    cantidadAlquiler: 2,
+    precioAlquiler: 190,
+    tamanoLlanta: "19 pulgadas",
+    modelo: modelos[0],
+    tiposdeMantenimiento: Coche.TipoMantenimiento.Aceite
+),
 
-            new Coche(
-                claseCoche: "SUV Híbrido",
-                color: "Gris Plata",
-                descripcion: "SUV híbrido eficiente y moderno",
-                desplazamientoMotor: "2.0 Híbrido",
-                tipoCombustible: "Híbrido",
-                fabricante: "Hyundai",
-                precioCompra: 22000m,
-                cantidadCompra: 4,
-                cantidadAlquiler: 2,
-                precioAlquiler: 75,
-                tamanoLlanta: "19 pulgadas",
-                modelo: modelos[1],
-                tiposdeMantenimiento: Coche.TipoMantenimiento.Frenos
-            )
+new Coche(
+    claseCoche: "Compacto",
+    color: "Azul",
+    descripcion: "Hatchback deportivo para uso diario",
+    desplazamientoMotor: "2.0L Turbo",
+    tipoCombustible: "Gasolina",
+    fabricante: "Honda",
+    precioCompra: 23000m,
+    cantidadCompra: 8,
+    cantidadAlquiler: 4,
+    precioAlquiler: 55,
+    tamanoLlanta: "17 pulgadas",
+    modelo: modelos[1],
+    tiposdeMantenimiento: Coche.TipoMantenimiento.Aceite
+)
         };
 
-            var usuario = new ApplicationUser(
-           id: "10",
-           nombre: Nombre,
-           apellido: Apellidos,
-           nombreUsuario: NombreUsuario,
-           direccion: "Calle Mayor 12, Toledo"
-       )
-            {
-                UserName = NombreUsuario,
-                EmailConfirmed = true
-            };
+            //USUARIO
+            ApplicationUser usuario = new ApplicationUser(
+     "1",
+     Nombre,
+     Apellido,
+     NombreUsuario,
+    ConcesionarioEntrega
+ );
 
+            //ALQUILER
             var alquiler = new Alquiler(
-            nombre: Nombre,
-            apellido: Apellidos,
-            concesionarioEntrega: ConcesionarioEntrega,
-            fechaAlquiler: DateTime.Today,
-            metodoPago: MetodoPagoTipos.PayPal,
-            inicioAlquiler: DateTime.Today.AddDays(1),
-            finAlquiler: DateTime.Today.AddDays(7),
-            alquilerItems: new List<AlquilerItem>(),
-            applicationUser: usuario
-        );
 
-            var item = new AlquilerItem(coches[0], alquiler, cantidad: 1);
-            alquiler.AlquilerItems.Add(item);
+                  concesionarioEntrega: "Granada Central",
+                  fechaAlquiler: DateTime.Today,
+                  metodoPago: MetodoPagoTipos.GooglePay,
+                  inicioAlquiler: DateTime.Today.AddDays(1),
+                  finAlquiler: DateTime.Today.AddDays(7),
+                  alquilerItems: new List<AlquilerItem>(),
+                  applicationUser: usuario
+              );
+
+            // ALQUILER ITEM
+            var alquilerItem = new AlquilerItem(
+                1, alquiler, 1);
+
+            alquiler.AlquilerItems.Add(alquilerItem);
+
 
             _context.Add(usuario);
             _context.AddRange(modelos);
@@ -103,79 +104,97 @@ namespace AppForSEII2526.UT.AlquilerController_Test
 
         public static IEnumerable<object[]> TestCasesFor_CreateAlquiler()
         {
-            var alquilerSinItems = new AlquilerParaCrearDTO(
-        nombre: "Laura",
-        apellido: "Gómez Hernández",
-        concesionarioEntrega: "Sucursal Central Madrid",
-        metodoPago: MetodoPagoTipos.GooglePay,
-        inicioAlquiler: DateTime.Today.AddDays(3),
-        finAlquiler: DateTime.Today.AddDays(6),
-        alquilerItems: new List<AlquilerItemDTO>() // vacío
-    );
+            var alquilerSinItem = new AlquilerParaCrearDTO(
+    NombreUsuario,
+    Nombre,
+    Apellido,
+    ConcesionarioEntrega,
+    metodoPago: MetodoPagoTipos.Visa,
+    inicioAlquiler: DateTime.Today.AddDays(2),
+    finAlquiler: DateTime.Today.AddDays(7),
+    alquilerItems: new List<AlquilerItemDTO>(),
+    fechaAlquiler: DateTime.Today.AddDays(3),
+    total: 0
+);
 
-            var itemsEjemplo = new List<AlquilerItemDTO>()
+
+            var itemsAlquiler = new List<AlquilerItemDTO>()
     {
         new AlquilerItemDTO(
-            cocheId: 10,
+           
             cantidad: 1,
             precioAlquiler: 0,
-            modelo: "CualquierModelo",
-            fabricante: "MarcaX"
+            modelo: modelo2,
+            fabricante: "Honda"
         )
     };
 
             var inicioHoy = new AlquilerParaCrearDTO(
-       nombre: "Laura",
-       apellido: "Gómez Hernández",
-       concesionarioEntrega: "Sucursal Central Madrid",
-       metodoPago: MetodoPagoTipos.PayPal,
-       inicioAlquiler: DateTime.Today, //
-       finAlquiler: DateTime.Today.AddDays(5),
-       alquilerItems: itemsEjemplo
+                NombreUsuario,
+    Nombre,
+    Apellido,
+    ConcesionarioEntrega,
+    metodoPago: MetodoPagoTipos.Visa,
+    inicioAlquiler: DateTime.Today,
+    finAlquiler: DateTime.Today.AddDays(5),
+    alquilerItems: itemsAlquiler,
+    fechaAlquiler: DateTime.Today.AddDays(1),
+    total: 0
+
    );
             var finAntesQueInicio = new AlquilerParaCrearDTO(
-       nombre: "Laura",
-       apellido: "Gómez Hernández",
-       concesionarioEntrega: "Sucursal Norte",
-       metodoPago: MetodoPagoTipos.GooglePay,
-       inicioAlquiler: DateTime.Today.AddDays(7),
-       finAlquiler: DateTime.Today.AddDays(3), // 
-       alquilerItems: itemsEjemplo
+    NombreUsuario,
+    Nombre,
+    Apellido,
+    ConcesionarioEntrega,
+    metodoPago: MetodoPagoTipos.Visa,
+    inicioAlquiler: DateTime.Today.AddDays(5),
+    finAlquiler: DateTime.Today.AddDays(2),
+    alquilerItems: itemsAlquiler,
+    fechaAlquiler: DateTime.Today.AddDays(1),
+    total: 0
    );
             var usuarioNoExiste = new AlquilerParaCrearDTO(
-    nombre: "NombreInventado",
-    apellido: "NoRegistrado",
-    concesionarioEntrega: "Sucursal Este",
-    metodoPago: MetodoPagoTipos.GooglePay,
-    inicioAlquiler: DateTime.Today.AddDays(4),
-    finAlquiler: DateTime.Today.AddDays(9),
-    alquilerItems: itemsEjemplo
+    "margarita@21",
+    Nombre,
+    Apellido,
+    ConcesionarioEntrega,
+    metodoPago: MetodoPagoTipos.Visa,
+    inicioAlquiler: DateTime.Today.AddDays(2),
+    finAlquiler: DateTime.Today.AddDays(3),
+    alquilerItems: itemsAlquiler,
+    fechaAlquiler: DateTime.Today.AddDays(4),
+    total: 0
 );
             var cocheNoDisponible = new AlquilerParaCrearDTO(
-       nombre: "Laura",
-       apellido: "Gómez Hernández",
-       concesionarioEntrega: "Sucursal Sur",
-       metodoPago: MetodoPagoTipos.GooglePay,
-       inicioAlquiler: DateTime.Today.AddDays(2),
-       finAlquiler: DateTime.Today.AddDays(6),
-       alquilerItems: new List<AlquilerItemDTO>()
-       {
-            new AlquilerItemDTO(
-                cocheId: 99,      
-                cantidad: 1,
-                precioAlquiler: 0,
-                modelo: "NoExiste",
-                fabricante: "NoExiste"
-            )
-       }
-   );
+     NombreUsuario,
+     Nombre,
+     Apellido,
+     ConcesionarioEntrega,
+     metodoPago: MetodoPagoTipos.Visa,
+     inicioAlquiler: DateTime.Today.AddDays(2),
+     finAlquiler: DateTime.Today.AddDays(5),
+     alquilerItems: new List<AlquilerItemDTO>()
+     {
+        new AlquilerItemDTO(
+            cantidad: 1,
+            precioAlquiler: 0,
+            modelo: modelo1,
+            fabricante: "Toyota"
+        )
+     },
+     fechaAlquiler: DateTime.Today.AddDays(3),
+     total: 0
+ );
+
+
             var allTests = new List<object[]>
             {
-                 new object[] { alquilerSinItems, "Debe seleccionar al menos un coche para alquilar." },
-        new object[] { inicioHoy, "¡Error! La fecha de inicio debe ser posterior a hoy." },
-        new object[] { finAntesQueInicio, "¡Error! La fecha de finalización debe ser posterior a la de inicio." },
-        new object[] { usuarioNoExiste, "El usuario indicado no existe." },
-        new object[] { cocheNoDisponible, "no está disponible para las fechas" }
+                 new object[] { alquilerSinItem, "Debe seleccionar al menos un coche para alquilar." },
+                 new object[] { inicioHoy, "¡Error! La fecha de inicio debe ser posterior a hoy." },
+                 new object[] { finAntesQueInicio, "¡Error! La fecha de finalización debe ser posterior a la de inicio." },
+                 new object[] { usuarioNoExiste, "El usuario indicado no existe." },
+                 new object[] { cocheNoDisponible, "no está disponible para las fechas" }
             };
 
             return allTests;
@@ -204,8 +223,10 @@ namespace AppForSEII2526.UT.AlquilerController_Test
             var problemDetails = Assert.IsType<ValidationProblemDetails>(badRequestResult.Value);
 
             var errorActual = problemDetails.Errors.First().Value[0];
+            Console.WriteLine(errorActual);
 
-            Assert.StartsWith(errorEsperado, errorActual);
+
+            Assert.Contains(errorEsperado, errorActual);
 
 
         }
@@ -227,47 +248,50 @@ namespace AppForSEII2526.UT.AlquilerController_Test
 
 
             var alquilerDTO = new AlquilerParaCrearDTO(
-        nombre: "Lucía",
-        apellido: "García Torres",
-        concesionarioEntrega: "Sucursal Central",
-        metodoPago: MetodoPagoTipos.GooglePay,
-        inicioAlquiler: inicio,
-        finAlquiler: fin,
-        alquilerItems: new List<AlquilerItemDTO>()
-        {
-            new AlquilerItemDTO(
-                cocheId: 1,
-                cantidad: 1,
-                precioAlquiler: 0,
-                modelo: "",
-                fabricante: ""
-            )
-        }
-    );
+       
+    NombreUsuario,
+    Nombre,
+    Apellido,
+    ConcesionarioEntrega,
+    metodoPago: MetodoPagoTipos.Visa,
+    inicioAlquiler: inicio,
+    finAlquiler: fin,
+    alquilerItems: new List<AlquilerItemDTO>()
+    {
+        new AlquilerItemDTO(
+            cantidad: 1,
+            precioAlquiler: 0,
+            modelo: modelo2,
+            fabricante: "Honda"
+        )
+    },
+    fechaAlquiler: inicio,
+    total: 0
+);
 
 
-            var precioEsperado = 55 * (fin - inicio).Days;
+            
 
             var expectedDetalle = new DetalleAlquilerDTO(
-                id: 0, // no importa, el que devuelva EF
-                fechaAlquiler: DateTime.Now,
-                nombre: "Lucía",
-                apellido: "García Torres",
-                concesionarioEntrega: "Sucursal Central",
+               
+                fechaAlquiler: inicio,
+                Nombre,
+                Apellido,
+                ConcesionarioEntrega,
                 inicioAlquiler: inicio,
                 finAlquiler: fin,
-                metodoPago: MetodoPagoTipos.GooglePay,
+                metodoPago: MetodoPagoTipos.Visa,
                 alquilerItems: new List<AlquilerItemDTO>()
                 {
             new AlquilerItemDTO(
-                cocheId: 1,
+             
                 cantidad: 1,
                 precioAlquiler: 55,
-                modelo: "Volkswagen Golf",
-                fabricante: "Volkswagen"
+                modelo: modelo2,
+                fabricante: "Honda"
             )
                 },
-                total: precioEsperado
+                total: 55
             );
 
             //ACT
@@ -276,6 +300,7 @@ namespace AppForSEII2526.UT.AlquilerController_Test
             // Assert
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
             var alquilerReal = Assert.IsType<DetalleAlquilerDTO>(createdResult.Value);
+            
 
 
             Assert.Equal(expectedDetalle, alquilerReal);

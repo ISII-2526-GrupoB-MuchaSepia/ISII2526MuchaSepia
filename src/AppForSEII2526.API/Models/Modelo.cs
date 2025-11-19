@@ -13,6 +13,7 @@
             Name = name;
         }
 
+        [Key]
         public int Id { get; set; }
 
         [StringLength(50, ErrorMessage = "El nombre no puede tener más de 50 caracteres.", MinimumLength = 4)]

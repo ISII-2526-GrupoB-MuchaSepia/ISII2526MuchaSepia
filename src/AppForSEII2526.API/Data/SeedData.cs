@@ -202,8 +202,7 @@ namespace AppForSEII2526.API.Data
 
                 // Creamos el alquiler
                 var alquiler = new Alquiler(
-                    nombre: "Juan",
-                    apellido: "Pérez",
+                 
                     concesionarioEntrega: "C/Rosario 11",
                     fechaAlquiler: DateTime.Today,
                     metodoPago: MetodoPagoTipos.GooglePay,
