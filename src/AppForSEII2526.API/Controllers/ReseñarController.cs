@@ -130,9 +130,21 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
         public async Task<ActionResult> Create(CreacionesReseñarDTO reseñaForCreate)
         {
-            if (!ModelState.IsValid)
+            // Validar lista de reseñas vacía
+            if (reseñaForCreate.ReseñarItems == null || !reseñaForCreate.ReseñarItems.Any())
+            {
+                ModelState.AddModelError("", "Debes añadir al menos una reseña de coche.");
                 return BadRequest(new ValidationProblemDetails(ModelState));
+            }
 
+            // Validar tipo de conductor estricto
+            if (reseñaForCreate.TipoConductor != "Titular" && reseñaForCreate.TipoConductor != "Adicional")
+            {
+                ModelState.AddModelError("", "El tipo de conductor debe ser 'Titular' o 'Adicional'.");
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+
+            // Validar usuario registrado
             var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName == reseñaForCreate.Usuario);
             if (user == null)
             {
@@ -140,6 +152,18 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
+            // Validar existencia de cada coche
+            foreach (var itemDto in reseñaForCreate.ReseñarItems)
+            {
+                var coche = await _context.Coches.FindAsync(itemDto.CocheId);
+                if (coche == null)
+                {
+                    ModelState.AddModelError("", $"Error! El coche {itemDto.CocheNombre} no existe.");
+                    return BadRequest(new ValidationProblemDetails(ModelState));
+                }
+            }
+
+            // Si todo es correcto, crear la reseña
             var reseña = new Reseñar
             {
                 Usuario = reseñaForCreate.Usuario,
@@ -147,8 +171,20 @@ namespace AppForSEII2526.API.Controllers
                 TipoConductor = reseñaForCreate.TipoConductor,
                 Creado = reseñaForCreate.Creado,
                 ApplicationUser = user,
-                ReseñarItems = new System.Collections.Generic.List<ReseñarItem>() // Los items pueden añadirse después o con otro endpoint
+                ReseñarItems = new System.Collections.Generic.List<ReseñarItem>()
             };
+
+            foreach (var itemDto in reseñaForCreate.ReseñarItems)
+            {
+                var coche = await _context.Coches.FindAsync(itemDto.CocheId);
+
+                reseña.ReseñarItems.Add(new ReseñarItem(
+                    coche,
+                    itemDto.Calificacion,
+                    reseña,
+                    itemDto.Descripcion ?? string.Empty
+                ));
+            }
 
             _context.Reseñas.Add(reseña);
 
@@ -169,7 +205,12 @@ namespace AppForSEII2526.API.Controllers
                 reseña.Pais,
                 reseña.TipoConductor,
                 reseña.ApplicationUser,
-                new System.Collections.Generic.List<ReseñarItemDTO>());
+                reseña.ReseñarItems.Select(ri => new ReseñarItemDTO(
+                    ri.ReseñarId,
+                    ri.CocheId,
+                    ri.Coche.ClaseCoche,
+                    ri.Calificacion,
+                    ri.Descripcion)).ToList());
 
             return CreatedAtAction(nameof(GetDetails), new { id = reseña.Id }, detallesDTO);
         }
