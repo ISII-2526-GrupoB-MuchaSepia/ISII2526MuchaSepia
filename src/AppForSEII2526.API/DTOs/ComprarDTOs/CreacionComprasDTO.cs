@@ -4,7 +4,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 {
     public class CreacionComprasDTO
     {
-        public CreacionComprasDTO(decimal precioCompra, string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, IList<ComprarItemDTO> comprarItems)
+        public CreacionComprasDTO(double precioCompra, string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, IList<ComprarItemDTO> comprarItems)
         {
             PrecioCompra = precioCompra;
             Nombre = nombre ?? throw new ArgumentNullException(nameof(Nombre));
@@ -13,7 +13,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
             MetodoPago = metodoPago;
             ComprarItems = comprarItems ?? throw new ArgumentNullException(nameof(ComprarItems));
         }
-        public decimal PrecioCompra { get; set; }
+        public double PrecioCompra { get; set; }
 
         [StringLength(20, ErrorMessage = "Nombre no puede tener mas de 20 cararcteres y menos de 2.", MinimumLength = 2)]
         public string Nombre { get; set; }
@@ -29,6 +29,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
         public MetodoPagoTipos MetodoPago { get; set; }
 
         public IList<ComprarItemDTO> ComprarItems { get; set; }
+
 
         public override bool Equals(object? obj)
         {

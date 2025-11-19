@@ -4,7 +4,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 {
     public class ComprarItemDTO
     {
-        public ComprarItemDTO(int cocheID, string modelo, decimal precioCompra,decimal cantidad,string color)
+        public ComprarItemDTO(int cocheID, string modelo, double precioCompra,int cantidad,string color)
         {
             CocheID = cocheID;
             PrecioCompra = precioCompra;
@@ -15,13 +15,14 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 
         public int CocheID { get; set; }
 
-        public decimal PrecioCompra { get; set; }
+        public double PrecioCompra { get; set; }
 
-        public decimal Cantidad { get; set; }
+        public int Cantidad { get; set; }
 
         public string Modelo { get; set; }
 
         public string Color { get; set; }
+
 
         public override bool Equals(object? obj)
         {

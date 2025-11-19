@@ -33,9 +33,6 @@
 
         public int Id { get; set; }
 
-        [Precision(10, 2)]
-        public double PrecioTotal { get; set; }
-
         public string Nombre { get; set; }
 
         public string Apellido { get; set; }
@@ -45,7 +42,7 @@
 
         [Precision(10, 2)]
         [Display(Name = "Precio de compra")]
-        public decimal PrecioCompra { get; set; }
+        public double PrecioCompra { get; set; }
 
         [Display(Name = "Fecha de compra")]
         public DateTime FechaCompra { get; set; }
@@ -60,7 +57,7 @@
         public enum MetodoPagoTipos
         {
             GooglePlay,
-            PayPal,
+            Visa,
             
         }
     }

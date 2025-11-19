@@ -8,7 +8,8 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
         {
         }
 
-        public CocheParaCompraDTO(int id, string modelo, decimal precioCompra,string color, string tCompbustible,string fabricante)
+
+        public CocheParaCompraDTO(int id, string modelo, double precioCompra,string color, string tCompbustible,string fabricante)
         {
             Id = id;
             Modelo = modelo;
@@ -36,7 +37,7 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
         [DataType(System.ComponentModel.DataAnnotations.DataType.Currency)]
         [Range(1, float.MaxValue, ErrorMessage = "Precio minimo 1")]
         [Display(Name = "Precio compra")]
-        public decimal PrecioCompra{get; set;}
+        public double PrecioCompra{get; set;}
 
 
         public override bool Equals(object? obj)

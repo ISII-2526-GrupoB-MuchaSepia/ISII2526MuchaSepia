@@ -4,7 +4,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 {
     public class DetallesCompraDTO 
     {
-        public DetallesCompraDTO(string nombre, string apellido, DateTime fechaCompra, string concesionarioEntrega, decimal precioCompra, IList<ComprarItemDTO> compraItems)
+        public DetallesCompraDTO(string nombre, string apellido, DateTime fechaCompra, string concesionarioEntrega, double precioCompra, IList<ComprarItemDTO> compraItems)
         {
             FechaCompra = fechaCompra;
             Nombre = nombre;
@@ -28,19 +28,19 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
         [StringLength(60, ErrorMessage = "El concesionario de entrega no puede tener más de 60 caracteres .", MinimumLength = 1)]
         public string ConcesionarioEntrga {  get; set; }
 
-        public decimal PrecioCompra { get; set; }
+        public double PrecioCompra { get; set; }
         public IList<ComprarItemDTO> ComprarItemDTOs { get; set; }
+
 
         public override bool Equals(object? obj)
         {
             return obj is DetallesCompraDTO dTO &&
-                   base.Equals(obj) &&
                    FechaCompra == dTO.FechaCompra &&
                    Nombre == dTO.Nombre &&
                    Apellido == dTO.Apellido &&
-                   ComprarItemDTOs == dTO.ComprarItemDTOs &&
                    ConcesionarioEntrga == dTO.ConcesionarioEntrga &&
-                   PrecioCompra == dTO.PrecioCompra;
+                   PrecioCompra == dTO.PrecioCompra &&
+                   ComprarItemDTOs.SequenceEqual(dTO.ComprarItemDTOs);
         }
 
         public override int GetHashCode()
