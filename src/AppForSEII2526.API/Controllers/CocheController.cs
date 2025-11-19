@@ -12,6 +12,8 @@ using System.Net;
 using System.Threading.Tasks;
 using AppForSEII2526.API.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using AppForSEII2526.API.Models;
+using System.Drawing;
 
 namespace AppForSEII2526.API.Controllers
 {
@@ -28,19 +30,21 @@ namespace AppForSEII2526.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet] //Get_Coches_Alquiler_test (GET)
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<CocheParaAlquilerDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetCochesParaAlquilar(string? modelo,double? precioAlquiler)
+        public async Task<ActionResult> GetCochesParaAlquilar(string? modelo,double? precioAlquiler) //son opcionales(?) y se usan como filtros
         {
-            var coches= await _context.Coches
+            var coches= await _context.Coches //accede a la tabla/DbSet de coches en la base de datos y  carga también la entidad relacionada Modelo para poder usar c.Modelo.Name
                                 .Include(c => c.Modelo)
                 .Where(c=>
-                    (modelo == null || c.Modelo.Name.Contains(modelo)) &&
-                    (precioAlquiler == null || c.PrecioAlquiler <= precioAlquiler))
+                    (modelo == null || c.Modelo.Name.Contains(modelo)) && //Si modelo es null, no se filtra por modelo.Si modelo tiene valor, busca coches cuyo nombre de modelo contenga ese texto
+                    (precioAlquiler == null || c.PrecioAlquiler <= precioAlquiler))//Si precioAlquiler es null, no se filtra por precio.Si tiene valor, devuelve solo coches con precio de alquiler menor o igual a ese valor.
+
+
                 .Select(c => new CocheParaAlquilerDTO(
-                    c.Id,
-                    c.Modelo.Name ,
+                c.Id,
+                c.Modelo.Name ,
                     c.Color,
                     c.PrecioAlquiler,
                     c.TipoCombustible,

@@ -165,6 +165,35 @@ DELETE FROM [dbo].[Modelos];
 DELETE FROM [dbo].[AspNetUsers];
 
 
+//prueba para el examen
+{
+  "total": 0,
+  "nombreUsuario": "sergio.gn",
+  "inicioAlquiler": "2025-11-20",
+  "finAlquiler": "2025-11-22",
+  "fechaAlquiler": "2025-11-19",
+  "concesionarioEntrega": "C/ Prado Verde nº 21",
+  "nombre": "Sergio",
+  "apellido": "Giménez",
+  "alquilerItems": [
+    {
+      "cantidad": 1,
+      "modelo": "Honda Civic",
+      "fabricante": "Honda",
+      "precioAlquiler": 0
+    }
+  ],
+  "metodoPago": "Visa"
+}
+
+
+DELETE FROM [dbo].[AlquilerItem]
+WHERE AlquilerId = 11;
+DELETE FROM [dbo].[Alquileres]
+WHERE Id = 11;
+
+
+
 */
 
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppForSEII2526.UT.AlquilerController_Test
 {
-    public class PostAlquiler_test : AppForSEII25264SqliteUT
+    public class Crear_Alquiler_test : AppForSEII25264SqliteUT
     {
 
         private const string NombreUsuario = "lucas.mdn";
@@ -21,7 +21,7 @@ namespace AppForSEII2526.UT.AlquilerController_Test
         private const string modelo2 = "Honda Civic Type R";
 
 
-        public PostAlquiler_test()
+        public Crear_Alquiler_test()
         {
 
             var modelos = new List<Modelo>
@@ -186,15 +186,15 @@ new Coche(
      fechaAlquiler: DateTime.Today.AddDays(3),
      total: 0
  );
-
+            //Cada caso corresponde EXACTAMENTE con una validación de tu CreateAlquiler:
 
             var allTests = new List<object[]>
             {
-                 new object[] { alquilerSinItem, "Debe seleccionar al menos un coche para alquilar." },
-                 new object[] { inicioHoy, "¡Error! La fecha de inicio debe ser posterior a hoy." },
-                 new object[] { finAntesQueInicio, "¡Error! La fecha de finalización debe ser posterior a la de inicio." },
-                 new object[] { usuarioNoExiste, "El usuario indicado no existe." },
-                 new object[] { cocheNoDisponible, "no está disponible para las fechas" }
+                 new object[] { alquilerSinItem, "Debe seleccionar al menos un coche para alquilar." },//0 coches seleccionados
+                 new object[] { inicioHoy, "¡Error! La fecha de inicio debe ser posterior a hoy." }, //inicio = hoy
+                 new object[] { finAntesQueInicio, "¡Error! La fecha de finalización debe ser posterior a la de inicio." },//fin < inicio
+                 new object[] { usuarioNoExiste, "El usuario indicado no existe." },//usuario incorrecto
+                 new object[] { cocheNoDisponible, "no está disponible para las fechas" }//unidad no disponible
             };
 
             return allTests;

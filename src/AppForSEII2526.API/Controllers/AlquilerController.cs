@@ -31,7 +31,7 @@ namespace AppForSEII2526.API.Controllers
 
         //DEVUELVE EL RECIBO/DETALLE DE UN ALQUILER POR SU ID
 
-        [HttpGet]
+        [HttpGet] //Get_Alquiler_test (DETAIL)
         [Route("[action]")]
         [ProducesResponseType(typeof(DetalleAlquilerDTO), (int)HttpStatusCode.OK)] //200 OK CON UN DETALLEALQUILERDTO SI LO ENCUENTRA
         [ProducesResponseType((int)HttpStatusCode.NotFound)] //404 NOT FOUND SI NO LO ENCUENTRA
@@ -46,10 +46,10 @@ namespace AppForSEII2526.API.Controllers
             }
             var alquiler = await _context.Alquileres
                 .Where(a => a.Id == id)//filtra por el id del alquiler
-                .Include(a=> a.ApplicationUser)
-                .Include(a => a.AlquilerItems)
-                .ThenInclude(ai => ai.Coche)
-                .ThenInclude(coche => coche.Modelo)
+                .Include(a=> a.ApplicationUser) //El usuario que hizo la reserva.
+                .Include(a => a.AlquilerItems) //Los items del alquiler.
+                .ThenInclude(ai => ai.Coche)//Cada coche de esos items. por eso es thenInclude
+                .ThenInclude(coche => coche.Modelo) //El modelo de cada coche.
                 .Select(a => new DetalleAlquilerDTO(
                     
                     a.FechaAlquiler,
@@ -99,11 +99,11 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(DetalleAlquilerDTO), (int)HttpStatusCode.Created)] //201 si se crea correctamente
         [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)] //400 si hay errores de validacion
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)] //409 si hay conflicto al guardar en la base de datos
-        public async Task<ActionResult> CreateAlquiler(AlquilerParaCrearDTO alquilerParaCrear)
+        public async Task<ActionResult> CreateAlquiler(AlquilerParaCrearDTO alquilerParaCrear) //Crear_Alquiler_test (POST)
         {
 
 
-           
+           //VALIDACIONES INICIALES
 
             if (alquilerParaCrear.InicioAlquiler <= DateTime.Today)
                 ModelState.AddModelError("InicioAlquiler", "¡Error! La fecha de inicio debe ser posterior a hoy.");
@@ -133,21 +133,21 @@ namespace AppForSEII2526.API.Controllers
 
             if (alquilerParaCrear.AlquilerItems.Count == 0)
                 ModelState.AddModelError("AlquilerItems", "Debe seleccionar al menos un coche para alquilar.");
-
+            // FLUJO ALTERNATIVO 4: Si falta algún dato obligatorio o hay un error de validación, el sistema notifica al usuario y regresa al paso anterior para corregirlo.
             if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
-            // FLUJO ALTERNATIVO 4: Si falta algún dato obligatorio o hay un error de validación, el sistema notifica al usuario y regresa al paso anterior para corregirlo.
+           
 
             var cochesSeleccionados = alquilerParaCrear.AlquilerItems
                 .Select(ai => ai.Modelo)
                 .ToList<string>(); //guardo los modelos de los coches que hemos seleccionado
 
-            //  Buscamos los coches en la base de datos e incluimos sus alquileres
+            //   Buscamos en la BD los coches que coinciden con los modelos seleccionados
             var coches = _context.Coches
                 .Include(a => a.AlquilerItems)
                     .ThenInclude(ai => ai.Coche).ThenInclude(coche=>coche.Modelo)
 
-                .Where(a => cochesSeleccionados.Contains(a.Modelo.Name))
+              .Where(a => cochesSeleccionados.Contains(a.Modelo.Name))
 
                 //  Proyectamos solo los datos necesarios
                 .Select(coche=> new
@@ -157,12 +157,15 @@ namespace AppForSEII2526.API.Controllers
                   
                     coche.PrecioAlquiler,
                     coche.CantidadAlquiler,
-                    //  Contamos los coches alquilados dentro del rango de fechas
+                    // // Contamos cuántos coches de este modelo YA ESTÁN ALQUILADOS en este rango de fechas
                     NumeroCochesAlquilados = coche.AlquilerItems.Count(ai =>
                         ai.Alquiler.InicioAlquiler <= alquilerParaCrear.FinAlquiler &&
                         ai.Alquiler.FinAlquiler >= alquilerParaCrear.InicioAlquiler)
                 })
                 .ToList();
+
+
+            //  CREACIÓN DEL ALQUILER
 
             Alquiler alquiler = new Alquiler(
 
@@ -182,7 +185,7 @@ namespace AppForSEII2526.API.Controllers
 
             // Calculamos la cantidad de días del alquiler
             var numeroDias =  (int)Math.Ceiling((alquiler.FinAlquiler - alquiler.InicioAlquiler).TotalDays);
-
+            //  VALIDACIÓN DE DISPONIBILIDAD DE CADA COCHE
 
             foreach (var item in alquilerParaCrear.AlquilerItems)
             {
@@ -199,9 +202,11 @@ namespace AppForSEII2526.API.Controllers
                 else
                 {
 
-
+                    // // Si el coche está disponible → se añade el AlquilerItem
                     alquiler.AlquilerItems.Add(new AlquilerItem(coche.Id, alquiler, item.Cantidad));
+                    // Asignamos el precio para que el cliente lo vea
                     item.PrecioAlquiler = coche.PrecioAlquiler;
+                    // Sumamos al total
                     alquiler.Total+= coche.PrecioAlquiler * item.Cantidad * numeroDias;
                 }
             }

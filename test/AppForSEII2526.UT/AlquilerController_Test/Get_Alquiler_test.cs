@@ -87,10 +87,10 @@ new Coche(
 
             alquiler.AlquilerItems.Add(alquilerItem);
 
-            
 
 
-            // Calcular el total del alquiler
+
+            // Calcular el total del alquiler para comparar con el esperado en el test.
 
             foreach (var item in alquiler.AlquilerItems)
             {
@@ -112,7 +112,7 @@ new Coche(
         [Trait("Database", "WithoutFixture")]
         [Trait("LevelTesting", "Unit Testing")]
 
-        public async Task Get_Detalle_Alquiler_NotFound_Test()
+        public async Task Get_Detalle_Alquiler_NotFound_Test() //Llama Get_Detalle_Alquiler(0) YA QUE NO EXISTE EL ID 0 EN MI BBDD
         {
 
             //ARRANGE

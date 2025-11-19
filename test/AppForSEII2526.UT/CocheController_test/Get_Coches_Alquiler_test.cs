@@ -147,7 +147,7 @@ new CocheParaAlquilerDTO(4, "Lamborghini Aventador", "Amarillo", 900, "Gasolina"
             {
                 new object[] { null, null, cocheDTOsTest1 }, //sin filtros
                 new object[] { "BMW M3", null, cocheDTOsTest2 }, //filtro por modelo
-                new object[] { null, 200.0, cocheDTOsTest3 }, //filtro por precio alquiler (<1000)
+                new object[] { null, 200.0, cocheDTOsTest3 }, //filtro por precio alquiler (<200)
                 new object[] { "Honda Civic Type R", 100.0, cocheDTOsTest4 }, //filtro por modelo y precio alquiler (<100)
 
             };
