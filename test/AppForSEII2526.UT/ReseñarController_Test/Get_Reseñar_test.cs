@@ -11,8 +11,10 @@ using Xunit;
 
 namespace AppForSEII2526.UT.ReseñarController_Test
 {
+    // CLASE DE PRUEBAS UNITARIAS PARA EL MÉTODO GET DETAILS DEL CONTROLADOR RESEÑAR
     public class Get_Reseñar_test : AppForSEII25264SqliteUT
     {
+        // CONSTRUCTOR QUE INICIALIZA LA BASE DE DATOS EN MEMORIA CON DATOS DE PRUEBA
         public Get_Reseñar_test()
         {
             var modelo = new Modelo("Mercedes Clase C");
@@ -52,18 +54,23 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 creado: DateTime.Today,
                 applicationUser: usuario
             );
+
             var reseñarItem = new ReseñarItem(
                 coche: coche,
                 calificacion: 5,
                 reseñar: reseñar,
                 descripcion: "Excelente coche"
             );
+
+            // Añade el item a la reseña
             reseñar.ReseñarItems.Add(reseñarItem);
 
+            // Agrega todos los datos a la base de datos en memoria y guarda cambios
             _context.AddRange(modelo, coche, usuario, reseñar, reseñarItem);
             _context.SaveChanges();
         }
 
+        // PRUEBA PARA CASO EN QUE NO EXISTE RESEÑA CON ID SOLICITADO, SE ESPERA NOTFOUND (404)
         [Fact]
         public async Task Get_Detalle_Reseñar_NotFound_Test()
         {
@@ -75,20 +82,21 @@ namespace AppForSEII2526.UT.ReseñarController_Test
             Assert.IsType<NotFoundResult>(result);
         }
 
+        // PRUEBA PARA CASO EXITOSO QUE EXISTE RESEÑA, SE ESPERA OK CON EL DTO CORRECTO
         [Fact]
         public async Task Get_Detalle_Reseñar_Found_Test()
         {
             var mock = new Moq.Mock<ILogger<ReseñarController>>();
             var controller = new ReseñarController(_context, mock.Object);
 
-            // Lo que se espera que devuelva el controlador
+            // DTO esperado con los datos para comparar después
             var esperado = new DetallesReseñarDTO(
                 id: 1,
                 creado: DateTime.Today,
                 usuario: "Lucas",
                 pais: "España",
                 tipoConductor: "Titular",
-                applicationUser: null, // no es relevante para la comparación
+                applicationUser: null, // No relevante para comparación en este test
                 reseñarItems: new List<ReseñarItemDTO>
                 {
                     new ReseñarItemDTO(
@@ -103,18 +111,21 @@ namespace AppForSEII2526.UT.ReseñarController_Test
 
             var result = await controller.GetDetails(id: 1);
 
+            // Se comprueba que la respuesta sea ok con un DTO del tipo esperado
             var okResult = Assert.IsType<OkObjectResult>(result);
             var actual = Assert.IsType<DetallesReseñarDTO>(okResult.Value);
 
+            // Verifica los campos principales
             Assert.Equal(esperado.Id, actual.Id);
             Assert.Equal(esperado.Usuario, actual.Usuario);
             Assert.Equal(esperado.Pais, actual.Pais);
             Assert.Equal(esperado.TipoConductor, actual.TipoConductor);
             Assert.Equal(esperado.ReseñarItems.Count, actual.ReseñarItems.Count);
 
-            // Comparación de los campos de ReseñarItemDTO
+            // Compara en detalle el item de la lista de reseña
             var esperadoItem = esperado.ReseñarItems.First();
             var actualItem = actual.ReseñarItems.First();
+
             Assert.Equal(esperadoItem.CocheId, actualItem.CocheId);
             Assert.Equal(esperadoItem.CocheNombre, actualItem.CocheNombre);
             Assert.Equal(esperadoItem.Calificacion, actualItem.Calificacion);

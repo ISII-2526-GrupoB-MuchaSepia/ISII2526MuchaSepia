@@ -54,34 +54,38 @@ namespace AppForSEII2526.API.Controllers
             return Ok(coches);
 
         }
-     
-    
-    
+
+
+
+        // MÉTODO GET PARA OBTENER COCHES DISPONIBLES PARA RESEÑAR, CON FILTROS OPCIONALES POR CLASE Y COLOR
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof(IList<CocheParaReseñarDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IList<CocheParaReseñarDTO>), (int)HttpStatusCode.OK)] // DEVUELVE LISTA DE DTO DE COCHES CON STATUS 200
         public async Task<ActionResult> GetCochesParaReseñar(string? claseCoche, string? color)
         {
+            // CREA CONSULTA FILTRANDO LOS COCHES POR CLASE Y COLOR SI SE PROPORCIONAN
             var query = _context.Coches
-                .Include(c => c.Modelo)
+                .Include(c => c.Modelo) // INCLUYE DATOS DEL MODELO DEL COCHE (RELACIÓN NAVEGACIONAL)
                 .Where(c =>
-                    (claseCoche == null || c.ClaseCoche.Contains(claseCoche)) &&
-                    (color == null || c.Color.Contains(color))
+                    (claseCoche == null || c.ClaseCoche.Contains(claseCoche)) && // FILTRA POR CLASE SI SE INDICA
+                    (color == null || c.Color.Contains(color)) // FILTRA POR COLOR SI SE INDICA
                 )
-                .OrderBy(c => c.ClaseCoche);
+                .OrderBy(c => c.ClaseCoche); // ORDENA RESULTADOS POR CLASE DE COCHE PARA MEJOR LECTURA
 
+            // PROYECTA RESULTADOS A DTO SIMPLIFICADO Y OBTIENE RESULTADO ASINCRÓNICAMENTE
             var coches = await query
                 .Select(c => new CocheParaReseñarDTO(
                     c.Id,
                     c.ClaseCoche,
                     c.Color,
                     c.Descripcion,
-                    c.Modelo != null ? c.Modelo.Name : ""
+                    c.Modelo != null ? c.Modelo.Name : "" // PROTEGE SI NO HAY MODELO ASOCIADO
                 ))
                 .ToListAsync();
 
-            return Ok(coches);
+            return Ok(coches); // DEVUELVE RESPUESTA 200 CON LISTA DE COCHES FILTRADOS
         }
+
 
         [HttpGet]
         [Route("[action]")]
