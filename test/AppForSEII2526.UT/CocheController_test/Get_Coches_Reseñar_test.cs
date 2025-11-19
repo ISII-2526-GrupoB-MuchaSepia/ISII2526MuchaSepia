@@ -24,9 +24,9 @@ namespace AppForSEII2526.UT.CocheController_test
 
             var coches = new List<Coche>
             {
-                new Coche("Berlina", "Negro", "Sedán premium", "180 CV", "Diesel", "Mercedes", 25000m, 4, 2, 120, "17", modelos[0], Coche.TipoMantenimiento.Aceite),
-                new Coche("Compacto", "Azul", "Versátil y eficiente", "110 CV", "Gasolina", "Volkswagen", 20000m, 6, 3, 80, "16", modelos[1], Coche.TipoMantenimiento.Frenos),
-                new Coche("Sedán", "Blanco", "Cómodo para familias", "140 CV", "Híbrido", "Toyota", 23000m, 7, 2, 90, "17", modelos[2], Coche.TipoMantenimiento.Refrigeracion)
+                new Coche("Berlina", "Negro", "Sedán premium", "180 CV", "Diesel", "Mercedes", 25000d, 4, 2, 120, "17", modelos[0], Coche.TipoMantenimiento.Aceite),
+                new Coche("Compacto", "Azul", "Versátil y eficiente", "110 CV", "Gasolina", "Volkswagen", 20000d, 6, 3, 80, "16", modelos[1], Coche.TipoMantenimiento.Frenos),
+                new Coche("Sedán", "Blanco", "Cómodo para familias", "140 CV", "Híbrido", "Toyota", 23000d, 7, 2, 90, "17", modelos[2], Coche.TipoMantenimiento.Refrigeracion)
             };
 
             _context.AddRange(modelos);
