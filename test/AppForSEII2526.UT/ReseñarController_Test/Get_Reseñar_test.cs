@@ -23,7 +23,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 desplazamientoMotor: "180 CV",
                 tipoCombustible: "Diesel",
                 fabricante: "Mercedes",
-                precioCompra: 25000m,
+                precioCompra: 25000d,
                 cantidadCompra: 4,
                 cantidadAlquiler: 2,
                 precioAlquiler: 120,
