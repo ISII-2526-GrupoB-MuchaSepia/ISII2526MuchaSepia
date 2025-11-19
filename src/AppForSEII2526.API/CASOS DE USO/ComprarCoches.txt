@@ -1,0 +1,53 @@
+Caso de uso 1. Comprar coches
+Flujo Básico
+1. El cliente selecciona Comprar coche en el menú principal.
+
+2. El sistema muestra los coches disponibles para comprar indicando el modelo, el color,
+el tipo de gasoil, el fabricante y el precio.
+
+3. El cliente selecciona el coche o los coches que desea comprar, actualizando el precio
+total, que será la suma de las compras de todos los coches que haya seleccionado.
+
+4. El cliente selecciona Comprar coche.
+
+5. El sistema muestra los coches que el cliente ha seleccionado, indicando su modelo,
+color, descripción y precio, así como el precio total de la compra, y solicita al cliente que
+introduzca su nombre, apellidos, dirección y método de pago (Google Pay o Visa) con
+sus datos obligatorios. Para cada coche seleccionado se solicita indicar la cantidad de
+compra, siendo obligatorio.
+
+6. El usuario rellena los datos y selecciona Confirmar compra.
+
+7. El sistema muestra la compra realizada indicando los datos del cliente (nombre y
+apellidos), dirección, cuando se realizó la compra, el precio total y los coches
+comprados (modelo, precio, color y cantidad).
+
+Flujo alternativo 0 - al paso 2
+Si el sistema detecta que no hay coches disponibles, se notificará al usuario.
+
+Flujo alternativo 1.- al paso 2
+
+2.1 El sistema ofrece al cliente la opción de filtrar los artículos por color y modelo.
+2.2 El cliente fija los filtros que le interesan.
+2.3 El sistema muestra solo los artículos que cumplen los criterios de los filtros
+establecidos.
+
+Flujo Alternativo 2 - al Paso 4
+Si el sistema detecta que no se ha seleccionado ningún coche, la opción para continuar
+el proceso no estará activa.
+
+Flujo Alternativo 3 - al Paso 5
+El cliente elige modificar el carrito para eliminar alguno de los coches seleccionados.
+Automáticamente, el sistema actualiza el precio total del contenido del carrito de
+compra.
+
+Flujo Alternativo 4 – al Paso 6
+Si el sistema detecta que algún dato obligatorio no se ha rellenado, notificará al usuario
+y volverá al paso 5.
+
+Flujo Alternativo 5 - al Paso 7
+El cliente elige modificar los coches seleccionados. El sistema volverá al paso 2 sin perder
+la información que el usuario ya había introducido.
+
+Precondición
+El usuario debe estar conectado como Cliente para iniciar el caso de uso.
