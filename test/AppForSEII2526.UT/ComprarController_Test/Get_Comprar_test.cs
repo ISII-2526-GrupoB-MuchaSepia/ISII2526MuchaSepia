@@ -145,7 +145,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
                 "Balatro Balatrez",                             // Apellido
                 DateTime.Today,                       // Fecha de compra
                 "Concesionario Central de Toledo",         // Concesionario / dirección de entrega
-                0,                                    // PrecioTotal (aquí lo pones a 0 en el test)
+                0,                                    // PrecioTotal (se inicializa a 0, luego se calcula más abajo)
                 new List<ComprarItemDTO>()            // Lista de items de compra
             );
 
@@ -153,7 +153,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
             compraEsperada.ComprarItemDTOs.Add(
                 new ComprarItemDTO(
                     2,                 // Id del coche 
-                    "Ford Pickup",    // Descripción del coche
+                    "Ford Pickup",    // Nombre del coche
                     42000,            // Precio de compra
                     1,                 // Cantidad
                     "Blanco"             // Color
@@ -164,7 +164,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
                 compraEsperada.PrecioCompra += item.Cantidad * item.PrecioCompra;
 
             }
-            // Act: llamamos al controlador para obtener los detalles de la compra con id 2
+            // Act: llamamos al controlador para obtener los detalles de la compra con id 1
             var result = await controller.GetDetallesCompra(1);
 
             // Assert:

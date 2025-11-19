@@ -86,22 +86,22 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<CocheParaCompraDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetCochesParaComprar( string? fcolor, string? modeloCoche)
-        {
-            IList<CocheParaCompraDTO> selectCoche = await _context.Coches
+        public async Task<ActionResult> GetCochesParaComprar( string? fcolor, string? modeloCoche)//son opcionales(?) y se usan como filtros
+        {   
+            IList<CocheParaCompraDTO> selectCoche = await _context.Coches// // Consulta a la tabla Coches del contexto
 
-                .Include(m => m.Modelo)
-                .Include(m => m.ComprarItems).ThenInclude(pi => pi.Comprar)
+                .Include(m => m.Modelo)// Incluye la entidad relacionada Modelo (para acceder a Modelo.Name)
+                .Include(m => m.ComprarItems).ThenInclude(pi => pi.Comprar)// Incluye la relación ComprarItems y luego la entidad Comprar vinculada
 
                 .Where(m =>
                          m.CantidadCompra > 0 &&
-                        (fcolor == null || m.Color.Contains(fcolor)) &&
-                        (modeloCoche == null || m.Modelo.Name.Contains(modeloCoche))
+                        (fcolor == null || m.Color.Contains(fcolor)) && //Si color , no se filtra por color .Si tiene valor, devuelve solo coches con color igual al dado
+                        (modeloCoche == null || m.Modelo.Name.Contains(modeloCoche))//Si modelo es null, no se filtra por modelo.Si modelo tiene valor, busca coches cuyo nombre de modelo contenga ese texto
                  )
                 .OrderBy(m => m.Modelo)
 
-                .Select(m => new CocheParaCompraDTO(m.Id, m.Modelo.Name, m.PrecioCompra, m.Color,m.TipoCombustible, m.Fabricante))
-                .ToListAsync();
+                .Select(m => new CocheParaCompraDTO(m.Id, m.Modelo.Name, m.PrecioCompra, m.Color,m.TipoCombustible, m.Fabricante))// Selecciona solo los campos necesarios para el DTO CocheParaCompraDTO
+                .ToListAsync(); // Ejecuta la consulta en la base de datos de forma asíncrona
 
             return Ok(selectCoche);
         }
