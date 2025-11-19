@@ -53,7 +53,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
             _context.Add(compra);
             _context.SaveChanges();
         }
-
+        // Casos de prueba de entrada para Crear_Compra que deben producir errores de validación
         public static IEnumerable<object[]> TestCasesFor_CreatePurchases() 
         {
             var comprarNOItem = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>());
@@ -64,10 +64,10 @@ namespace AppForSEII2526.UT.ComprarController_Test
 
             var comprarCocheNoExiste = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, "Toyota Corola", 1, 0, "Rosa") });
 
-            var comprarCocheNoDisponible = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 9, "Azul") });
+            var comprarCocheNoDisponible = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 9, "Azul") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
 
             var allTests = new List<object[]>
-            {             //input for create purchase- Error expected
+            {             // Casos de prueba para crear compra - se espera ERROR
                 
                 new object[] { comprarNOItem, "Error! Debes incluir un coche al menos para comprar", },
                 new object[] { comprarApplicationUser, "Error! Usuario no registrado", },
@@ -94,13 +94,13 @@ namespace AppForSEII2526.UT.ComprarController_Test
             var result = await controller.Crear_Compra(compraDTO);
 
             //Assert
-            //we check that the response type is BadRequest and obtain the error returned
+            // Comprobamos que la respuesta es BadRequest y obtenemos el error devuelto
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var problemDetails = Assert.IsType<ValidationProblemDetails>(badRequestResult.Value);
 
             var errorActual = problemDetails.Errors.First().Value[0];
 
-            //we check that the expected error message and actual are the same
+            // Comprobamos que el mensaje de error esperado y el real coinciden
             Assert.StartsWith(errorEsperado, errorActual); //compruebo si el error que sale es mi error esperado
         }
 

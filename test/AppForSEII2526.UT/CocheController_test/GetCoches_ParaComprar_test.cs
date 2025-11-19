@@ -27,7 +27,7 @@ namespace AppForSEII2526.UT.CocheController_test
                 new Modelo ("Mazda cx-5")
             };
 
-            // Creamos una lista de coches (entidad Coche) asociándolos a los modelos anteriores.
+            // Creamos una lista de coches (entidad Coche) asociándolos a los modelos anteriores. // Estos datos serán los que el controlador use para filtrar en los tests.
             var coches = new List<Coche>
             {
                 // Coche 1
@@ -39,7 +39,7 @@ namespace AppForSEII2526.UT.CocheController_test
                           "Citroen",              // Fabricante
                           12000d,                 // PrecioCompra
                           2,                      // CantidadCompra
-                          3,                      // CantidadVenta (por ejemplo)
+                          3,                      // CantidadVenta (por ejemplo) (campo no relevante para esta prueba)
                           40f,                    // Consumo
                           "16",                   // Llanta
                           modelos[0],             // Modelo asociado (Citroen Berlingo)
@@ -168,7 +168,7 @@ namespace AppForSEII2526.UT.CocheController_test
 
             // Empaquetamos todos los casos de prueba:
             //  - primer elemento: parámetro fcolor (color)
-            //  - segundo: parámetro modelo (que en el controlador se usa como fabricante)
+            //  - segundo: parámetro modelo (que en el controlador se usa como fabricante) Modelo.name
             //  - tercero: lista esperada de CocheParaCompraDTO
             var allTests = new List<object[]>
             {
