@@ -126,6 +126,7 @@ namespace AppForSEII2526.API.Controllers
                 return Conflict("Error: " + ex.Message);
             }
 
+
             // DTO de respuesta (ajústalo si tu clase se llama distinto)
             var detallesCompra = new DetallesCompraDTO(
                 comprar.ApplicationUser.Nombre,

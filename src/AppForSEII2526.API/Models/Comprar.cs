@@ -33,9 +33,6 @@
 
         public int Id { get; set; }
 
-        [Precision(10, 2)]
-        public double PrecioTotal { get; set; }
-
         public string Nombre { get; set; }
 
         public string Apellido { get; set; }

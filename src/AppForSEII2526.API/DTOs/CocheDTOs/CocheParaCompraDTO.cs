@@ -8,6 +8,7 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
         {
         }
 
+
         public CocheParaCompraDTO(int id, string modelo, double precioCompra,string color, string tCompbustible,string fabricante)
         {
             Id = id;

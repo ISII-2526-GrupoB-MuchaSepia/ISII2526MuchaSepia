@@ -30,6 +30,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 
         public IList<ComprarItemDTO> ComprarItems { get; set; }
 
+
         public override bool Equals(object? obj)
         {
             return obj is CreacionComprasDTO dTO &&

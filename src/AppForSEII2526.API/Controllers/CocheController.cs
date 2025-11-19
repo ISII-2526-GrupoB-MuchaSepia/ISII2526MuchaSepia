@@ -90,7 +90,7 @@ namespace AppForSEII2526.API.Controllers
                 .Include(m => m.ComprarItems).ThenInclude(pi => pi.Comprar)
 
                 .Where(m =>
-                        m.CantidadCompra > 0 &&
+                         m.CantidadCompra > 0 &&
                         (fcolor == null || m.Color.Contains(fcolor)) &&
                         (modeloCoche == null || m.Modelo.Name.Contains(modeloCoche))
                  )

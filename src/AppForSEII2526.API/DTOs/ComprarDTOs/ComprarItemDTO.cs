@@ -23,6 +23,7 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 
         public string Color { get; set; }
 
+
         public override bool Equals(object? obj)
         {
             return obj is ComprarItemDTO dTO &&
