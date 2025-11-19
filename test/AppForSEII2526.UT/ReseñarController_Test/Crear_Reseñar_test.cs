@@ -11,18 +11,19 @@ using Xunit;
 
 namespace AppForSEII2526.UT.ReseñarController_Test
 {
+    // CLASE DE PRUEBAS UNITARIAS PARA CREACION DE RESEÑAS EN EL CONTROLADOR
     public class Crear_Reseñar_test : AppForSEII25264SqliteUT
     {
+        // CONSTANTES CON DATOS DE PRUEBA USADOS EN LOS TESTS
         private const string UsuarioExistente = "lucas@correo.com";
         private const string NombreUsuarioExistente = "Lucas";
         private const string PaisUsuarioExistente = "España";
         private const string TipoConductorExistente = "Titular";
-
         private const string CocheModeloExistente = "Mercedes Clase C";
 
+        // CONSTRUCTOR: INICIALIZA DATOS DE PRUEBA EN LA BASE DE DATOS EN MEMORIA
         public Crear_Reseñar_test()
         {
-            // Datos de prueba para la base de datos en memoria
             var modelo = new Modelo(CocheModeloExistente);
             var coche = new Coche(
                 claseCoche: "Berlina",
@@ -56,9 +57,10 @@ namespace AppForSEII2526.UT.ReseñarController_Test
             _context.SaveChanges();
         }
 
+        // DATOS DE PRUEBA PARA CASOS DE ERROR AL CREAR RESEÑA
         public static IEnumerable<object[]> TestCasesFor_CreateReseñar()
         {
-            // Caso sin items
+            // CASO: RESENA SIN ITEMS (ERROR)
             var reseñaSinItems = new CreacionesReseñarDTO(
                 usuario: "lucas@correo.com",
                 tipoConductor: "Titular",
@@ -69,7 +71,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 ReseñarItems = new List<ReseñarItemDTO>()
             };
 
-            // Caso con tipo de conductor inválido
+            // CASO: TIPO DE CONDUCTOR INVÁLIDO
             var tiposInvalido = new CreacionesReseñarDTO(
                 usuario: "lucas@correo.com",
                 tipoConductor: "Inválido",
@@ -83,7 +85,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 }
             };
 
-            // Caso usuario no registrado
+            // CASO: USUARIO NO REGISTRADO
             var usuarioNoExiste = new CreacionesReseñarDTO(
                 usuario: "noexiste@correo.com",
                 tipoConductor: "Titular",
@@ -97,7 +99,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 }
             };
 
-            // Caso coche no existe
+            // CASO: COCHE NO EXISTENTE
             var cocheNoExiste = new CreacionesReseñarDTO(
                 usuario: "lucas@correo.com",
                 tipoConductor: "Titular",
@@ -111,6 +113,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 }
             };
 
+            // RETORNA LOS CASOS DE PRUEBA: DTO Y MENSAJE DE ERROR ESPERADO
             return new List<object[]>
             {
                 new object[] { reseñaSinItems, "Debes añadir al menos una reseña de coche." },
@@ -120,36 +123,36 @@ namespace AppForSEII2526.UT.ReseñarController_Test
             };
         }
 
+        // PRUEBA PARAMETRIZADA USANDO DATOS DE ERROR, ESPERANDO BAD REQUEST CON MENSAJE ESPERADO
         [Theory]
         [MemberData(nameof(TestCasesFor_CreateReseñar))]
         public async Task CrearReseñar_Error_test(CreacionesReseñarDTO dto, string errorEsperado)
         {
-            // Arrange
+            // ARRANGE: MOCK DEL LOGGER Y CREACION DEL CONTROLADOR CON CONTEXTO DE BD Y LOGGER
             var mock = new Moq.Mock<ILogger<ReseñarController>>();
             ILogger<ReseñarController> logger = mock.Object;
-
             var controller = new ReseñarController(_context, logger);
 
-            // Act
+            // ACT: LLAMADA ASINCRÓNICA AL MÉTODO Create DEL CONTROLADOR
             var result = await controller.Create(dto);
 
-            // Assert
+            // ASSERT: SE ESPERA BADREQUEST, CON ValidationProblemDetails CONTENIENDO EL ERROR CORRECTO
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var problemDetails = Assert.IsType<Microsoft.AspNetCore.Mvc.ValidationProblemDetails>(badRequestResult.Value);
-
             var errorActual = problemDetails.Errors.First().Value[0];
             Assert.StartsWith(errorEsperado, errorActual);
         }
 
+        // PRUEBA PARA CREAR UNA RESEÑA EXITOSAMENTE
         [Fact]
         public async Task CrearReseñar_Success_test()
         {
-            // Arrange
+            // ARRANGE: MOCK LOGGER Y CONTROLADOR COMO EN PRUEBA DE ERROR
             var mock = new Moq.Mock<ILogger<ReseñarController>>();
             ILogger<ReseñarController> logger = mock.Object;
-
             var controller = new ReseñarController(_context, logger);
 
+            // CREA ITEMS PARA LA RESEÑA
             var items = new List<ReseñarItemDTO>()
             {
                 new ReseñarItemDTO(
@@ -161,6 +164,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 )
             };
 
+            // CREA DTO DE RESEÑA CON DATOS VALIDOS
             var dto = new CreacionesReseñarDTO(
                 usuario: UsuarioExistente,
                 tipoConductor: TipoConductorExistente,
@@ -171,10 +175,10 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 ReseñarItems = items
             };
 
-            // Act
+            // ACT: LLAMADA AL MÉTODO Create
             var result = await controller.Create(dto);
 
-            // Assert
+            // ASSERT: SE ESPERA CREATED (201) CON EL DTO DETALLE CON LOS DATOS COINCIDENTES
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
             var detalleDTO = Assert.IsType<DetallesReseñarDTO>(createdResult.Value);
 

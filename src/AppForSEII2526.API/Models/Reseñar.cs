@@ -20,7 +20,7 @@
  
         }
 
-        public int Id { get; set; }
+        public int Id { get; set; } // CLAVE PRIMARIA DE LA TABLA
         public string Usuario { get; set; }
         [Display(Name = "País")]
         public string Pais { get; set; }

@@ -184,3 +184,22 @@ DELETE FROM [dbo].[Compras];
 DELETE FROM [dbo].[Coches];
 DELETE FROM [dbo].[Modelos];
 */
+
+
+/*
+{
+  "usuario": "lucas.mdn",
+  "tipoconductor": "Titular",
+  "pais": "España",
+  "creado": "2025-11-14T19:45:00",
+  "reseñarItems": [
+    {
+      "reseñarId": 0,
+      "cocheId": 1,
+      "cocheNombre": "Berlina",
+      "calificacion": 5,
+      "descripcion": "Un coche excelente y cómodo"
+    }
+  ]
+}
+*/

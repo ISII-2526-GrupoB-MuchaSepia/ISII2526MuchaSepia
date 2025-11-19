@@ -16,8 +16,8 @@ namespace AppForSEII2526.API.Controllers
     [ApiController]
     public class ReseñarController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<ReseñarController> _logger;
+        private readonly ApplicationDbContext _context; // PARA ACCEDER A LA BASE DE DATOS
+        private readonly ILogger<ReseñarController> _logger; // PARA REGISTRAR LOGS
 
         public ReseñarController(ApplicationDbContext context, ILogger<ReseñarController> logger)
         {
@@ -25,12 +25,13 @@ namespace AppForSEII2526.API.Controllers
             _logger = logger;
         }
 
-        // GET: api/Reseñar/GetDetails?id=#
+        // METODO GET PARA OBTENER DETALLES DE RESEÑAS
+        // PERMITE FILTRAR POR ID, USUARIO, PAIS, TIPO DE CONDUCTOR Y FECHAS
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)] // Retorna DetallesReseñarDTO o lista
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)] // RETORNA LA RESEÑA O LISTA DE RESEÑAS CON DETALLES
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // SI LA FECHA INICIO ES MAYOR A LA FIN
+        [ProducesResponseType(StatusCodes.Status404NotFound)] // SI NO SE ENCUENTRA LA RESEÑA PEDIDA
         public async Task<ActionResult> GetDetails(
             int? id = null,
             string? usuario = null,
@@ -39,6 +40,7 @@ namespace AppForSEII2526.API.Controllers
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null)
         {
+            // VALIDA QUE LA FECHA INICIO SEA ANTERIOR A LA FECHA FIN
             if (fechaInicio.HasValue && fechaFin.HasValue && fechaInicio > fechaFin)
             {
                 ModelState.AddModelError("", "La fecha de inicio debe ser anterior a la fecha de fin.");
@@ -47,7 +49,7 @@ namespace AppForSEII2526.API.Controllers
 
             if (id.HasValue)
             {
-                // Obtener sólo la reseña concreta por id
+                // OBTENER SOLO UNA RESEÑA ESPECÍFICA POR ID INCLUYENDO SUS ITEMS Y COCHES
                 var reseña = await _context.Reseñas
                     .Where(r => r.Id == id.Value)
                     .Include(r => r.ReseñarItems)
@@ -71,14 +73,14 @@ namespace AppForSEII2526.API.Controllers
 
                 if (reseña == null)
                 {
-                    _logger.LogError($"Error: Reseña with id {id.Value} does not exist");
+                    _logger.LogError($"Error: Reseña con id {id.Value} no existe.");
                     return NotFound();
                 }
                 return Ok(reseña);
             }
             else
             {
-                // Obtener lista de reseñas con filtros
+                // OBTENER LISTA DE RESEÑAS CON FILTROS DINÁMICOS
                 var query = _context.Reseñas
                     .Include(r => r.ReseñarItems)
                         .ThenInclude(ri => ri.Coche)
@@ -121,38 +123,38 @@ namespace AppForSEII2526.API.Controllers
             }
         }
 
-
-        // POST: api/Reseñar/Create
+        // METODO POST PARA CREAR NUEVAS RESEÑAS
+        // VALIDA EL OBJETO DE ENTRADA Y LA EXISTENCIA DE USUARIO Y COCHES
         [HttpPost]
         [Route("Create")]
-        [ProducesResponseType(typeof(DetallesReseñarDTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(DetallesReseñarDTO), StatusCodes.Status201Created)] // RETORNA DTO DE RESEÑA CREADA
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)] // ERRORES DE VALIDACION
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)] // CONFLICTOS AL GUARDAR EN BASE DE DATOS
         public async Task<ActionResult> Create(CreacionesReseñarDTO reseñaForCreate)
         {
-            // Validar lista de reseñas vacía
+            // VALIDAR QUE LA LISTA DE ITEMS NO ESTE VACÍA
             if (reseñaForCreate.ReseñarItems == null || !reseñaForCreate.ReseñarItems.Any())
             {
                 ModelState.AddModelError("", "Debes añadir al menos una reseña de coche.");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
-            // Validar tipo de conductor estricto
+            // VALIDAR TIPO DE CONDUCTOR ESTRICTO (SÓLO TITULAR O ADICIONAL)
             if (reseñaForCreate.TipoConductor != "Titular" && reseñaForCreate.TipoConductor != "Adicional")
             {
                 ModelState.AddModelError("", "El tipo de conductor debe ser 'Titular' o 'Adicional'.");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
-            // Validar usuario registrado
+            // VERIFICAR QUE EL USUARIO EXISTE EN LA BASE DE DATOS
             var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.UserName == reseñaForCreate.Usuario);
             if (user == null)
             {
-                ModelState.AddModelError("Usuario", "Error! Usuario no registrado");
+                ModelState.AddModelError("Usuario", "Error! Usuario no registrado.");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
-            // Validar existencia de cada coche
+            // VERIFICAR QUE CADA COCHE DE LOS ITEMS EXISTE
             foreach (var itemDto in reseñaForCreate.ReseñarItems)
             {
                 var coche = await _context.Coches.FindAsync(itemDto.CocheId);
@@ -163,7 +165,7 @@ namespace AppForSEII2526.API.Controllers
                 }
             }
 
-            // Si todo es correcto, crear la reseña
+            // CREAR OBJETO RESEÑA CON LOS DATOS PROPORCIONADOS
             var reseña = new Reseñar
             {
                 Usuario = reseñaForCreate.Usuario,
@@ -174,6 +176,7 @@ namespace AppForSEII2526.API.Controllers
                 ReseñarItems = new System.Collections.Generic.List<ReseñarItem>()
             };
 
+            // AÑADIR CADA ITEM A LA RESEÑA CON LOS DATOS CORRESPONDIENTES
             foreach (var itemDto in reseñaForCreate.ReseñarItems)
             {
                 var coche = await _context.Coches.FindAsync(itemDto.CocheId);
@@ -186,18 +189,22 @@ namespace AppForSEII2526.API.Controllers
                 ));
             }
 
+            // AGREGAR RESEÑA AL CONTEXTO DE BASE DE DATOS
             _context.Reseñas.Add(reseña);
 
             try
             {
+                // GUARDAR CAMBIOS EN LA BASE DE DATOS ASINCRÓNICAMENTE
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
+                // SI FALLA AL GUARDAR, LOGUEAR ERROR Y DEVOLVER CONFLICTO
                 _logger.LogError(ex.Message);
                 return Conflict("Error al guardar la reseña: " + ex.Message);
             }
 
+            // PROYECTAR EL DTO DE LA RESEÑA CREADA PARA RESPUESTA
             var detallesDTO = new DetallesReseñarDTO(
                 reseña.Id,
                 reseña.Creado,
@@ -212,6 +219,7 @@ namespace AppForSEII2526.API.Controllers
                     ri.Calificacion,
                     ri.Descripcion)).ToList());
 
+            // RETORNAR RESPUESTA 201 CREATED INCLUYENDO EL DTO Y ENLACE A METODO GET PARA DETALLES
             return CreatedAtAction(nameof(GetDetails), new { id = reseña.Id }, detallesDTO);
         }
     }

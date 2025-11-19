@@ -11,8 +11,10 @@ using Xunit;
 
 namespace AppForSEII2526.UT.CocheController_test
 {
+    // CLASE DE PRUEBAS UNITARIAS PARA EL MÉTODO GET COCHES PARA RESEÑAR DEL CONTROLADOR COCHE
     public class Get_Coches_Reseñar_test : AppForSEII25264SqliteUT
     {
+        // CONSTRUCTOR QUE INICIALIZA DATOS DE PRUEBA EN LA BASE DE DATOS EN MEMORIA
         public Get_Coches_Reseñar_test()
         {
             var modelos = new List<Modelo>
@@ -34,6 +36,7 @@ namespace AppForSEII2526.UT.CocheController_test
             _context.SaveChanges();
         }
 
+        // DATOS DE PRUEBA PARAMETRIZADOS PARA DIFERENTES FILTROS Y RESULTADOS ESPERADOS
         public static IEnumerable<object[]> TestCasesFor_GetCochesParaReseñar_OK()
         {
             var cocheDTOs = new List<CocheParaReseñarDTO>
@@ -49,28 +52,29 @@ namespace AppForSEII2526.UT.CocheController_test
 
             var allTests = new List<object[]>
             {
-                new object[] { null, null, test1 },
-                new object[] { "Compacto", null, test2 },
-                new object[] { null, "Blanco", test3 }
+                new object[] { null, null, test1 },        // SIN FILTROS: RETORNA TODOS
+                new object[] { "Compacto", null, test2 },  // FILTRADO POR CLASE "Compacto"
+                new object[] { null, "Blanco", test3 }     // FILTRADO POR COLOR "Blanco"
             };
 
             return allTests;
         }
 
+        // PRUEBA PARAMETRIZADA QUE VERIFICA QUE EL MÉTODO DEVUELVE LOS COCHES ESPERADOS SEGÚN FILTROS
         [Theory]
         [MemberData(nameof(TestCasesFor_GetCochesParaReseñar_OK))]
         [Trait("Database", "WithoutFixture")]
         [Trait("LevelTesting", "Unit Testing")]
         public async Task GetCochesParaReseñar_OK_test(string? claseCoche, string? color, List<CocheParaReseñarDTO> expected)
         {
-            // Arrange
+            // ARRANGE: CREAR MOCK DEL LOGGER Y CONTROLADOR CON CONTEXTO DE BD
             var mock = new Moq.Mock<ILogger<CocheController>>();
             var controller = new CocheController(_context, mock.Object);
 
-            // Act
+            // ACT: LLAMAR ASINCRÓNICAMENTE AL MÉTODO CON FILTROS DE ENTRADA
             var result = await controller.GetCochesParaReseñar(claseCoche, color);
 
-            // Assert
+            // ASSERT: SE ESPERA RESPUESTA OK CON LISTA DE DTOs Y QUE COINCIDAN CON LOS ESPERADOS
             var okResult = Assert.IsType<OkObjectResult>(result);
             var cochesActual = Assert.IsAssignableFrom<IList<CocheParaReseñarDTO>>(okResult.Value);
 
