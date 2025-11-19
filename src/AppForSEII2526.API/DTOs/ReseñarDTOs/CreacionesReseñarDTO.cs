@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppForSEII2526.API.DTOs.ReseñarDTOs
 {
@@ -36,6 +38,10 @@ namespace AppForSEII2526.API.DTOs.ReseñarDTOs
         [System.ComponentModel.DataAnnotations.DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
         [Display(Name = "Fecha de creación")]
         public DateTime Creado { get; set; }
+
+        // Cambio obligatorio para que se puedan enviar varios items en una reseña
+        [Required(ErrorMessage = "Debes añadir al menos una reseña de coche.")]
+        public List<ReseñarItemDTO> ReseñarItems { get; set; }
 
         protected bool CompareDate(DateTime date1, DateTime date2)
         {
