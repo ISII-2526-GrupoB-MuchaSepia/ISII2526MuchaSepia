@@ -14,11 +14,16 @@
             Modelo = modelo;
             Fabricante = fabricante;
         }
-       
+
+        [Range(1, int.MaxValue)]
         public int Cantidad { get; set; }
 
+        [StringLength(20, MinimumLength = 1)]
         public string Modelo { get; set; }
 
+
+
+        [StringLength(20, MinimumLength = 1)]
         public string Fabricante { get; set; }
 
         public double PrecioAlquiler { get; set; }

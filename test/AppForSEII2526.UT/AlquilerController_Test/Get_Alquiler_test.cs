@@ -17,10 +17,10 @@ namespace AppForSEII2526.UT.AlquilerController_Test
 
 
             //MODELOS
-            var modelo = new List<Modelo>
+            var modelos = new List<Modelo>
             {
-                new Modelo("Toyota Sedán"),
-                new Modelo("Tesla SUV"),
+                new Modelo("Toyota Supra"),
+                new Modelo("Honda Civic Type R"),
                 
 
             };
@@ -30,80 +30,77 @@ namespace AppForSEII2526.UT.AlquilerController_Test
             var coches = new List<Coche>
             {
                 new Coche(
-                    claseCoche: "Sedán",
-                    color: "Rojo",
-                    descripcion: "Sedán económico y confiable",
-                    desplazamientoMotor: "1.8L",
-                    tipoCombustible: "Híbrido",
-                    fabricante: "Toyota",
-                    precioCompra: 18000m,
-                    cantidadCompra: 12,
-                    cantidadAlquiler: 4,
-                    precioAlquiler: 65,
-                    tamanoLlanta: "17",
-                    modelo: modelo[0],
-                    tiposdeMantenimiento: Coche.TipoMantenimiento.Frenos
-                ),
-                 new Coche(
-                    claseCoche: "SUV Lujo",
-                    color: "Negro",
-                    descripcion: "SUV eléctrico de alta gama",
-                    desplazamientoMotor: "0L",
-                    tipoCombustible: "Eléctrico",
-                    fabricante: "Tesla",
-                    precioCompra: 85000m,
-                    cantidadCompra: 3,
-                    cantidadAlquiler: 2,
-                    precioAlquiler: 120,
-                    tamanoLlanta: "19",
-                    modelo: modelo[1],
-                    tiposdeMantenimiento: Coche.TipoMantenimiento.Suspension
-                )
+    claseCoche: "Deportivo",
+    color: "Rojo",
+    descripcion: "Coupé de alto rendimiento",
+    desplazamientoMotor: "3.0L Twin-Turbo",
+    tipoCombustible: "Gasolina",
+    fabricante: "Toyota",
+    precioCompra: 55000m,
+    cantidadCompra: 4,
+    cantidadAlquiler: 2,
+    precioAlquiler: 190,
+    tamanoLlanta: "19 pulgadas",
+    modelo: modelos[0],
+    tiposdeMantenimiento: Coche.TipoMantenimiento.Aceite
+),
+
+new Coche(
+    claseCoche: "Compacto",
+    color: "Azul",
+    descripcion: "Hatchback deportivo para uso diario",
+    desplazamientoMotor: "2.0L Turbo",
+    tipoCombustible: "Gasolina",
+    fabricante: "Honda",
+    precioCompra: 23000m,
+    cantidadCompra: 8,
+    cantidadAlquiler: 4,
+    precioAlquiler: 55,
+    tamanoLlanta: "17 pulgadas",
+    modelo: modelos[1],
+    tiposdeMantenimiento: Coche.TipoMantenimiento.Aceite
+)
             };
 
             //USUARIO
-            var usuario = new ApplicationUser(
-               id: "10",
-               nombre: "Laura",
-               apellido: "García",
-               nombreUsuario: "laura@correo.com",
-               direccion: "Calle Valencia 123"
-           );
-
+            ApplicationUser usuario = new ApplicationUser(id: "1",
+            nombre: "Clara",
+            apellido: "Lopez",
+            nombreUsuario: "Clara@lopez",
+            direccion: "Calle Mayor 12, Toledo");
 
             //ALQUILER
             var alquiler = new Alquiler(
-                nombre: usuario.Nombre,
-                apellido: usuario.Apellido,
-                concesionarioEntrega: "Granada",
-                fechaAlquiler: DateTime.Today.AddDays(1),
-                metodoPago: MetodoPagoTipos.GooglePay,
-                inicioAlquiler: DateTime.Today,
-                finAlquiler: DateTime.Today.AddDays(7),
-                alquilerItems: new List<AlquilerItem>(),
-                applicationUser: usuario
-            );
+
+                  concesionarioEntrega: "Granada Central",
+                  fechaAlquiler: DateTime.Today,
+                  metodoPago: MetodoPagoTipos.GooglePay,
+                  inicioAlquiler: DateTime.Today.AddDays(1),
+                  finAlquiler: DateTime.Today.AddDays(7),
+                  alquilerItems: new List<AlquilerItem>(),
+                  applicationUser: usuario
+              );
 
             // ALQUILER ITEM
             var alquilerItem = new AlquilerItem(
-                coche: coches[0],      // Toyota Sedán Rojo y precio 65
-                alquiler: alquiler,
-                cantidad: 3
-            );
+                1, alquiler, 1);
 
             alquiler.AlquilerItems.Add(alquilerItem);
+
+            
+
 
             // Calcular el total del alquiler
 
             foreach (var item in alquiler.AlquilerItems)
             {
-                alquiler.Total += item.Coche.PrecioAlquiler *
-                         item.Cantidad *
-                         (alquiler.FinAlquiler - alquiler.InicioAlquiler).Days;
+                alquiler.Total += coches[item.CocheId - 1].PrecioAlquiler *
+                                 item.Cantidad *
+                                 (int)(alquiler.FinAlquiler - alquiler.InicioAlquiler).TotalDays;
             }
 
             _context.Add(usuario);
-            _context.AddRange(modelo);
+            _context.AddRange(modelos);
             _context.AddRange(coches);
             _context.Add(alquiler);
             _context.SaveChanges();
@@ -126,6 +123,8 @@ namespace AppForSEII2526.UT.AlquilerController_Test
             var result = await controller.Get_Detalle_Alquiler(0);
 
             //ASSERT
+            
+
             Assert.IsType<NotFoundResult>(result);
         }
 
@@ -142,33 +141,31 @@ namespace AppForSEII2526.UT.AlquilerController_Test
 
 
             var esperado = new DetalleAlquilerDTO(
-                id: 1,
-                fechaAlquiler: DateTime.Today.AddDays(1),
-                nombre: "Laura",
-                apellido: "García",
-                concesionarioEntrega: "Granada",
-                inicioAlquiler: DateTime.Today,
-                finAlquiler: DateTime.Today.AddDays(7),
-                metodoPago: MetodoPagoTipos.GooglePay,
-                alquilerItems: new List<AlquilerItemDTO>(),
-                total: 0
-            );
-
+     fechaAlquiler: DateTime.Today,
+     nombre: "Clara",
+     apellido: "Lopez",
+     concesionarioEntrega: "Granada Central",
+     inicioAlquiler: DateTime.Today.AddDays(1),
+     finAlquiler: DateTime.Today.AddDays(7),
+     metodoPago: MetodoPagoTipos.GooglePay,
+     alquilerItems: new List<AlquilerItemDTO>(),
+     total: 0
+ );
 
             esperado.AlquilerItems.Add(new AlquilerItemDTO(
-                cocheId: 1,
-                cantidad: 3,
-                precioAlquiler: 65,
-                modelo: "Toyota Sedán",
+                cantidad: 1,
+                precioAlquiler: 190,
+                modelo: "Toyota Supra",
                 fabricante: "Toyota"
             ));
+
 
             //total= precio x cantidad x dias
             foreach (var item in esperado.AlquilerItems)
             {
                 esperado.Total += item.PrecioAlquiler *
                                   item.Cantidad *
-                                  (esperado.FinAlquiler - esperado.InicioAlquiler).Days;
+                                  (esperado.FinAlquiler - esperado.InicioAlquiler).TotalDays;
             }
 
             //llamar al endpoint con id=1 ,ACT
@@ -181,7 +178,9 @@ namespace AppForSEII2526.UT.AlquilerController_Test
             //guarda true o false en eq
             var eq = esperado.Equals(actual);
 
-           //si todo lo guardado en DB durante el arrange coincide con expected, este assert pasa
+            //si todo lo guardado en DB durante el arrange coincide con expected, este assert pasa
+            
+
             Assert.Equal(esperado, actual);
 
         }

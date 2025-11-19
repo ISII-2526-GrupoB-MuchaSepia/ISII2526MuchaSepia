@@ -30,10 +30,18 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
             AlquilerItems = alquilerItems;
             
         }
-     
+
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaAlquiler { get; set; }
 
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+
         public DateTime InicioAlquiler { get; set; }
+
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FinAlquiler { get; set; }
         
         

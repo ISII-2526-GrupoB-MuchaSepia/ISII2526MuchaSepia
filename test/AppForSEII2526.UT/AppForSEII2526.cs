@@ -1,46 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
-namespace AppForSEII2526.UT
+public class AppForSEII25264SqliteUT
 {
-    public class AppForSEII25264SqliteUT
+    public AppForSEII25264SqliteUT()
     {
-        protected readonly DbConnection _connection;
-        protected readonly ApplicationDbContext _context;
-        protected readonly DbContextOptions<ApplicationDbContext> _contextOptions;
+        // ⛔ IMPORTANTE: evita que SeedData se ejecute durante los tests
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
 
-        protected ApplicationDbContext CreateContext() => new(_contextOptions);
-        ////This code is the same one as the above line. 
-        //ApplicationDBContext CreateContext() { 
-        //    new ApplicationDBContext(_contextOptions); 
-        //}
+        _connection = new SqliteConnection("Filename=:memory:");
+        _connection.Open();
 
-        void Dispose() => _connection.Dispose();
-        public AppForSEII25264SqliteUT()
-        {
-            // Create and open a connection. This creates the SQLite in-memory database, which will persist until the connection is closed
-            // at the end of the test (see Dispose below).
-            _connection = new SqliteConnection("Filename=:memory:");
-            _connection.Open();
+        _contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseSqlite(_connection)
+            .Options;
 
-            // These options will be used by the context instances in this test suite, including the connection opened above.
-            _contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlite(_connection).Options;
-
-            // Create the schema and seed some data
-            _context = new ApplicationDbContext(_contextOptions);
-            if (_context.Database.EnsureCreated())
-            {
-                using var viewCommand = _context.Database.GetDbConnection().CreateCommand();
-                viewCommand.CommandText = @"
-                CREATE VIEW AllResources AS
-                SELECT Name
-                FROM Movies;";
-                viewCommand.ExecuteNonQuery();
-            }
-        }
+        _context = new ApplicationDbContext(_contextOptions);
+        _context.Database.EnsureCreated();
     }
+
+    protected readonly DbConnection _connection;
+    protected readonly ApplicationDbContext _context;
+    protected readonly DbContextOptions<ApplicationDbContext> _contextOptions;
+
+    protected ApplicationDbContext CreateContext() => new(_contextOptions);
+
+    public void Dispose() => _connection.Dispose();
 }

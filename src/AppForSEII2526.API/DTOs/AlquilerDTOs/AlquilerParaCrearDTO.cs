@@ -11,7 +11,7 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         //obligatorios.
 
 
-        public AlquilerParaCrearDTO(string nombreUsuario,string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItemDTO> alquilerItems,DateTime fechaAlquiler, double total)
+        public AlquilerParaCrearDTO(string nombreUsuario, string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItemDTO> alquilerItems, DateTime fechaAlquiler, double total)
         {
             NombreUsuario = nombreUsuario ?? throw new ArgumentNullException(nameof(nombreUsuario));
             Nombre = nombre ?? throw new ArgumentNullException(nameof(nombre)); // validar que no sea nulo, asigna a Nombre un valor de nombre, a no ser que nombre sea null. En ese caso se lanza una excepcion
@@ -33,23 +33,32 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         public double Total { get; set; }
 
         public string NombreUsuario { get; set; }
+
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime InicioAlquiler { get; set; }
+
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FinAlquiler { get; set; }
+
+        [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime FechaAlquiler { get; set; }
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.MultilineText)]//multiLineText sugiere que en un formulario web podria ser un campo de texto con varias lineas
         [Display(Name = "Concesionario de entrega")]
-        [StringLength(50, MinimumLength = 10, ErrorMessage = "Debe tener minimo 10 caracteres")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Debe tener minimo 10 caracteres")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, configure su concesionario de entrega")]
         public string ConcesionarioEntrega { get; set; }
 
 
         [Required]
-        [StringLength(50, MinimumLength = 2)]
+        [StringLength(20, MinimumLength = 1)]
         public string Nombre { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, escriba su nombre y apellido")]
-        [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y apellido con minimo 10 caracteres")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Nombre y apellido con minimo 10 caracteres")]
         public string Apellido { get; set; }
 
         public IList<AlquilerItemDTO> AlquilerItems { get; set; } //lista de coches alquilados
@@ -57,33 +66,11 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         public MetodoPagoTipos MetodoPago { get; set; }
 
 
-        private int NumeroDias
-        {
-            get
-            {
-                return (FinAlquiler - InicioAlquiler).Days;
-            }
-        }
-        [Display(Name = "Precio Total")]
-        [JsonPropertyName("PrecioTotal")]
-        public double TotalFinal
-        {
-            get
-            {
-                return AlquilerItems.Sum(ri => ri.PrecioAlquiler * NumeroDias);
-                //calcula el precio total del alquiler, suma el precio de todos los coches multiplicando el precio por los dias
-                // 2coches -> 50 cada uno -> 3 dias = (50*2)*3=300
-            }
-        }
 
 
 
-        protected bool CompareDate(DateTime date1, DateTime date2)
-        {
-            return (date1.Subtract(date2) < new TimeSpan(0, 1, 0));
 
-            //considera dos fechas iguales si su diferencia es menor de un minuto
-        }
+
 
         public override bool Equals(object? obj)
         {
@@ -97,9 +84,7 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
                    Nombre == dTO.Nombre &&
                    Apellido == dTO.Apellido &&
                    AlquilerItems.SequenceEqual(dTO.AlquilerItems) &&
-                   MetodoPago == dTO.MetodoPago &&
-                   NumeroDias == dTO.NumeroDias &&
-                   Total == dTO.Total;
+                   MetodoPago == dTO.MetodoPago;
         }
     }
 }
