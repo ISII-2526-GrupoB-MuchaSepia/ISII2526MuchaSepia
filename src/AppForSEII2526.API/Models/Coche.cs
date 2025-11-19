@@ -14,7 +14,7 @@ namespace AppForSEII2526.API.Models
 
         public Coche(
             string claseCoche, string color, string descripcion, string desplazamientoMotor,
-            string tipoCombustible, string fabricante, decimal precioCompra, int cantidadCompra,
+            string tipoCombustible, string fabricante, double precioCompra, int cantidadCompra,
             int cantidadAlquiler, double precioAlquiler, string tamanoLlanta,Modelo modelo,
             TipoMantenimiento tiposdeMantenimiento)
         {
@@ -66,7 +66,7 @@ namespace AppForSEII2526.API.Models
         [Range(0.5, double.MaxValue, ErrorMessage = "El precio mínimo es 0.5")]
         [Display(Name = "Precio de compra")]
         [Precision(10, 2)]
-        public decimal PrecioCompra { get; set; }
+        public double PrecioCompra { get; set; }
 
 
         [Range(0.5, 100, ErrorMessage = "El precio de alquiler debe estar entre 0.5 y 100")]
