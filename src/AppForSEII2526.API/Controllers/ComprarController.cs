@@ -54,11 +54,11 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(DetallesCompraDTO), (int)HttpStatusCode.Created)] //devuelve OK cuando consigue meter en la base de datos el código
         [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)] //devuelve BadRequest cuando hay un error durante la comprobación de la petición
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)] //devuelve Conflict cuando hay un error al añadir a la base de datos
-        public async Task<ActionResult> Create_Purchase(CreacionComprasDTO creacionCompras)
+        public async Task<ActionResult> Crear_Compra(CreacionComprasDTO creacionCompras)
         {
             if (creacionCompras.ComprarItems.Count == 0) //compruebo que he seleccionado algún coche para comprar.
             {
-                ModelState.AddModelError("CompraItems", "Error! Debes incluir un coche almenos para comprar");
+                ModelState.AddModelError("CompraItems", "Error! Debes incluir un coche al menos para comprar");
             }
 
             var usuario = _context.ApplicationUsers.FirstOrDefault(au => au.Nombre == creacionCompras.Nombre); //compruebo que el usuario que compra existe en la base de datos
@@ -79,30 +79,30 @@ namespace AppForSEII2526.API.Controllers
                 .Include(c => c.Modelo)
                 .Where(c => purchaseCars.Contains(c.Modelo.Name))
                 .ToList();
-                
-                
 
-            Comprar comprar = new Comprar(creacionCompras.Nombre, creacionCompras.Apellido, usuario, creacionCompras.ConcesionarioEntrega, DateTime.Now, new List<ComprarItem>(), (Comprar.MetodoPagoTipos)creacionCompras.MetodoPago);
+
+
+            Comprar comprar = new Comprar(creacionCompras.Nombre, creacionCompras.Apellido, usuario, creacionCompras.ConcesionarioEntrega, DateTime.Today, new List<ComprarItem>(), (Comprar.MetodoPagoTipos)creacionCompras.MetodoPago);
 
             comprar.PrecioCompra = 0;
 
             foreach (var item in creacionCompras.ComprarItems)
             {
                 // Busca el coche por nombre de modelo
-                var coche = coches.FirstOrDefault(c => c.Id == item.CocheID);
+                var coche = coches.FirstOrDefault(c => c.Modelo.Name == item.Modelo);
 
                 if (coche == null)
                 {
-                    ModelState.AddModelError("ComprarItems", $"Error: ¡El coche '{item.Modelo}' no está en venta por ese concesionario!");
+                    ModelState.AddModelError("ComprarItems", $"Error: ¡El coche '{item.Modelo}' no está disponible para la compra!");
                 }
-                else if ((coche.CantidadCompra + item.Cantidad) > coche.CantidadCompra)
+                else if (coche.ComprarItems.Sum(ci => ci.Cantidad) + item.Cantidad > coche.CantidadCompra)
                 {
                     ModelState.AddModelError("ComprarItems", $"Error: ¡No hay suficientes unidades disponibles del coche '{item.Modelo}'!");
                 }
                 else
                 {
 
-                    comprar.ComprarItems.Add(new ComprarItem(coche, comprar, (decimal)item.Cantidad));// ERRORES NO SE QUE PASA
+                    comprar.ComprarItems.Add(new ComprarItem(coche, comprar, item.Cantidad));// ERRORES NO SE QUE PASA
                     item.PrecioCompra = coche.PrecioCompra;
                     comprar.PrecioCompra += (coche.PrecioCompra * item.Cantidad);
                 }
