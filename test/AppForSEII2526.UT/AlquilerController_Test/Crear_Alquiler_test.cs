@@ -186,6 +186,31 @@ new Coche(
      fechaAlquiler: DateTime.Today.AddDays(3),
      total: 0
  );
+
+
+            var NoCalle = new AlquilerParaCrearDTO(
+     NombreUsuario,
+     Nombre,
+     Apellido,
+    "C/Rosario",
+     metodoPago: MetodoPagoTipos.Visa,
+     inicioAlquiler: DateTime.Today.AddDays(2),
+     finAlquiler: DateTime.Today.AddDays(5),
+     alquilerItems: new List<AlquilerItemDTO>()
+     {
+        new AlquilerItemDTO(
+            cantidad: 1,
+            precioAlquiler: 0,
+            modelo: modelo2,
+            fabricante: "Honda"
+        )
+     },
+     fechaAlquiler: DateTime.Today.AddDays(3),
+     total: 0
+ );
+
+
+
             //Cada caso corresponde EXACTAMENTE con una validación de tu CreateAlquiler:
 
             var allTests = new List<object[]>
@@ -194,7 +219,8 @@ new Coche(
                  new object[] { inicioHoy, "¡Error! La fecha de inicio debe ser posterior a hoy." }, //inicio = hoy
                  new object[] { finAntesQueInicio, "¡Error! La fecha de finalización debe ser posterior a la de inicio." },//fin < inicio
                  new object[] { usuarioNoExiste, "El usuario indicado no existe." },//usuario incorrecto
-                 new object[] { cocheNoDisponible, "no está disponible para las fechas" }//unidad no disponible
+                 new object[] { cocheNoDisponible, "no está disponible para las fechas" },//unidad no disponible
+                 new object[] {NoCalle, "la dirección debe contener la palabra calle" }
             };
 
             return allTests;
