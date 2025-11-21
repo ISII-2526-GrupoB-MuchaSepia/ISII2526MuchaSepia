@@ -118,6 +118,13 @@ namespace AppForSEII2526.API.Controllers
             if (string.IsNullOrEmpty(alquilerParaCrear.ConcesionarioEntrega))
                 ModelState.AddModelError("ConcesionarioEntrega", "Debe indicar un concesionario de entrega.");
 
+            if (!alquilerParaCrear.ConcesionarioEntrega.Contains("Calle"))
+            {
+                ModelState.AddModelError("ConcesionarioEntrega", "la dirección debe contener la palabra calle");
+                return BadRequest(new ValidationProblemDetails(ModelState));
+
+            }
+
 
 
 
