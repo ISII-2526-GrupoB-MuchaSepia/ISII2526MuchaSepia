@@ -154,6 +154,12 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
+           
+           
+
+            
+            
+
             // VERIFICAR QUE CADA COCHE DE LOS ITEMS EXISTE
             foreach (var itemDto in reseñaForCreate.ReseñarItems)
             {
@@ -165,6 +171,19 @@ namespace AppForSEII2526.API.Controllers
                 }
             }
 
+            //EJERCICIOS EXAMEN
+            foreach (var examen in reseñaForCreate.ReseñarItems)
+            {
+
+                
+                if (!String.IsNullOrEmpty(examen.Descripcion) && !examen.Descripcion.StartsWith("Reseña para")) 
+                {
+                    ModelState.AddModelError("", "¡Error! La reseña debe empezar por Reseña para");
+                    //return BadRequest(new ValidationProblemDetails(ModelState));
+                }
+            }
+
+
             // CREAR OBJETO RESEÑA CON LOS DATOS PROPORCIONADOS
             var reseña = new Reseñar
             {
@@ -175,7 +194,7 @@ namespace AppForSEII2526.API.Controllers
                 ApplicationUser = user,
                 ReseñarItems = new System.Collections.Generic.List<ReseñarItem>()
             };
-
+           
             // AÑADIR CADA ITEM A LA RESEÑA CON LOS DATOS CORRESPONDIENTES
             foreach (var itemDto in reseñaForCreate.ReseñarItems)
             {
@@ -203,6 +222,7 @@ namespace AppForSEII2526.API.Controllers
                 _logger.LogError(ex.Message);
                 return Conflict("Error al guardar la reseña: " + ex.Message);
             }
+            
 
             // PROYECTAR EL DTO DE LA RESEÑA CREADA PARA RESPUESTA
             var detallesDTO = new DetallesReseñarDTO(
@@ -218,6 +238,12 @@ namespace AppForSEII2526.API.Controllers
                     ri.Coche.ClaseCoche,
                     ri.Calificacion,
                     ri.Descripcion)).ToList());
+            if (ModelState.ErrorCount > 0)
+            {
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+            // 6. Añade la compra al contexto para guardarla en la base de datos
+            _context.Add(reseña);
 
             // RETORNAR RESPUESTA 201 CREATED INCLUYENDO EL DTO Y ENLACE A METODO GET PARA DETALLES
             return CreatedAtAction(nameof(GetDetails), new { id = reseña.Id }, detallesDTO);

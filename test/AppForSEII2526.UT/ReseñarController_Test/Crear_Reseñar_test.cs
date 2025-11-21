@@ -112,6 +112,19 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                     new ReseñarItemDTO(0, 99, "NoExiste", 3, "Coche inexistente")
                 }
             };
+            
+            var exam = new CreacionesReseñarDTO(
+             usuario: "lucas@correo.com",
+             tipoConductor: "Titular",
+             pais: "España",
+             creado: DateTime.Today
+         )
+            {
+                ReseñarItems = new List<ReseñarItemDTO>()
+                {
+                    new ReseñarItemDTO(1,1,"Berlina",5,"as para olvidar")
+                }
+            };
 
             // RETORNA LOS CASOS DE PRUEBA: DTO Y MENSAJE DE ERROR ESPERADO
             return new List<object[]>
@@ -119,7 +132,8 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 new object[] { reseñaSinItems, "Debes añadir al menos una reseña de coche." },
                 new object[] { tiposInvalido, "El tipo de conductor debe ser 'Titular' o 'Adicional'." },
                 new object[] { usuarioNoExiste, "Error! Usuario no registrado" },
-                new object[] { cocheNoExiste, "Error! El coche NoExiste no existe." }
+                new object[] { cocheNoExiste, "Error! El coche NoExiste no existe." },
+                new object[] { exam, "¡Error! La reseña debe empezar por Reseña para" }
             };
         }
 
@@ -158,9 +172,9 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                 new ReseñarItemDTO(
                     reseñarId: 0,
                     cocheId: 1,
-                    cocheNombre: "Mercedes Clase C",
+                    cocheNombre: "Berlina",
                     calificacion: 5,
-                    descripcion: "Excelente coche"
+                    descripcion: "Reseña para coche"
                 )
             };
 
@@ -174,6 +188,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
             {
                 ReseñarItems = items
             };
+            
 
             // ACT: LLAMADA AL MÉTODO Create
             var result = await controller.Create(dto);
