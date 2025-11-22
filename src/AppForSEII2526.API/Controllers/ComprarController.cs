@@ -65,6 +65,13 @@ namespace AppForSEII2526.API.Controllers
             {
                 ModelState.AddModelError("CompraItems", "Error! Debes incluir un coche al menos para comprar");
             }
+            foreach (var it in creacionCompras.ComprarItems)
+            {
+                if (it.Cantidad == 2)
+                {
+                    ModelState.AddModelError("Descripcion y cant", "Error! Descripcion nula o  cantidad = 2");
+                }
+            }
 
             var usuario = _context.ApplicationUsers.FirstOrDefault(au => au.Nombre == creacionCompras.Nombre); //compruebo que el usuario  existe en la base de datos
             if (usuario == null)
