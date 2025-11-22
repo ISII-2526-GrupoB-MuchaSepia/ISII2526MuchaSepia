@@ -1,12 +1,5 @@
-﻿using AppForSEII2526.API.DTOs.ComprarDTOs;
-using AppForSEII2526.API.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
-using AppForSEII2526.API.Models;
+﻿using AppForSEII2526.API.Controllers;
+using AppForSEII2526.API.DTOs.ComprarDTOs;
 
 namespace AppForSEII2526.UT.ComprarController_Test
 {
@@ -17,6 +10,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
         private const string Apellidos = "Balatro Balatre";
         private const string Direccion = "balatorbbez@gmail.com";
         private const string ConcesionarioEntrega = "Concesionario Central de Toledo";
+
 
         private const string modelo1 = "Honda Compacto";
         private const string modelo2 = "Ford Pickup";
@@ -54,7 +48,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
             _context.SaveChanges();
         }
         // Casos de prueba de entrada para Crear_Compra que deben producir errores de validación
-        public static IEnumerable<object[]> TestCasesFor_CreatePurchases() 
+        public static IEnumerable<object[]> TestCasesFor_CreatePurchases()
         {
             var comprarNOItem = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>());
 
@@ -66,16 +60,21 @@ namespace AppForSEII2526.UT.ComprarController_Test
 
             var comprarCocheNoDisponible = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 9, "Azul") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
 
+            var nodecrip = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 2, "Azul") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
+
+
             var allTests = new List<object[]>
             {             // Casos de prueba para crear compra - se espera ERROR
-                
+               
                 new object[] { comprarNOItem, "Error! Debes incluir un coche al menos para comprar", },
                 new object[] { comprarApplicationUser, "Error! Usuario no registrado", },
                 new object[] { comprarCocheNoExiste, "Error: ¡El coche 'Toyota Corola' no está disponible para la compra!", },
                 new object[] { comprarCocheNoDisponible, "Error: ¡No hay suficientes unidades disponibles del coche 'Honda Compacto'!", },
+                new object[] { nodecrip, "Error! Descripcion nula o  cantidad = 2", }
             };
 
             return allTests;
+
         }
 
         [Theory]
