@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - 185-conexion-con-la-api
+      #-development
+      #paths:
+      #-'src/AppForSEII2526.API**'
   workflow_dispatch:
 
 jobs:
@@ -24,10 +27,12 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./src/AppForSEII2526.API/AppForSEII2526.API.csproj --configuration Release
+
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+        run: dotnet publish ./src/AppForSEII2526.API/AppForSEII2526.API.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -62,4 +67,5 @@ jobs:
           app-name: 'appforseii2526'
           slot-name: 'Production'
           package: .
+
           
