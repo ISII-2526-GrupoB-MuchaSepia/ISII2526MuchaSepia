@@ -12,7 +12,7 @@
             Cantidad = cantidad; //unidades alquiladas
             PrecioAlquiler = precioAlquiler;
             Modelo = modelo;
-            Fabricante = fabricante;
+            Fabricante = fabricante; //fabricante del coche
         }
 
         [Range(1, int.MaxValue)]
