@@ -6,10 +6,10 @@ name: Build and deploy ASP.Net Core app to Azure Web App - appforseii2526
 on:
   push:
     branches:
-      - 185-conexion-con-la-api
-      #-development
-      #paths:
-      #-'src/AppForSEII2526.API**'
+   #   - 185-conexion-con-la-api
+      -development
+    paths:
+      -'src/AppForSEII2526.API**'
   workflow_dispatch:
 
 jobs:
@@ -69,3 +69,4 @@ jobs:
           package: .
 
           
+
