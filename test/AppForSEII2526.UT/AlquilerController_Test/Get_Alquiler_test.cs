@@ -120,7 +120,7 @@ new Coche(
             var controller = new AlquilerController(_context, mock.Object);
 
             //ACT
-            var result = await controller.Get_Detalle_Alquiler(0);
+            var result = await controller.GetDetalleAlquiler(0);
 
             //ASSERT
             
@@ -169,7 +169,7 @@ new Coche(
             }
 
             //llamar al endpoint con id=1 ,ACT
-            var result = await controller.Get_Detalle_Alquiler(1);
+            var result = await controller.GetDetalleAlquiler(1);
 
             //comprobar que el resultado es 200 OK,ASSERT
             var ok = Assert.IsType<OkObjectResult>(result);
