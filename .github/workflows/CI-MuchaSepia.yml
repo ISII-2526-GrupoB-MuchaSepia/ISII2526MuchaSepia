@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "192-gadealopez-ci-cd" ]
+    branches: [ "development" ]
   pull_request:
-    branches: [ "192-gadealopez-ci-cd" ]
+    branches: [ "development" ]
 
 jobs:
   build:
