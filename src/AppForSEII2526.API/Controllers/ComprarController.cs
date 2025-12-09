@@ -57,7 +57,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(DetallesCompraDTO), (int)HttpStatusCode.Created)] 
         [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)] 
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)] 
-        public async Task<ActionResult> Crear_Compra(CreacionComprasDTO creacionCompras)
+        public async Task<ActionResult> CrearCompra(CreacionComprasDTO creacionCompras)
         {
             // 1. Validaciones iniciales de la petición
 
