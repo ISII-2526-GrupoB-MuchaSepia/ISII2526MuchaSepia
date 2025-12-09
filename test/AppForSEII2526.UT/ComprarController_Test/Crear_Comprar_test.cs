@@ -90,7 +90,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
             var controller = new ComprarController(_context, logger);
 
             // Act
-            var result = await controller.Crear_Compra(compraDTO);
+            var result = await controller.CrearCompra(compraDTO);
 
             //Assert
             // Comprobamos que la respuesta es BadRequest y obtenemos el error devuelto
@@ -119,7 +119,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
             var expectedpurchaseDetailDTO = new DetallesCompraDTO(Nombre, Apellidos, DateTime.Today, ConcesionarioEntrega, 42000d, new List<ComprarItemDTO> { new ComprarItemDTO(2, modelo2, 42000d, 1, "Blanco") });
 
             // Act
-            var result = await controller.Crear_Compra(purchaseDTO);
+            var result = await controller.CrearCompra(purchaseDTO);
 
             //Assert
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
