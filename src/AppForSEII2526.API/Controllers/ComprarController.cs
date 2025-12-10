@@ -36,7 +36,7 @@ namespace AppForSEII2526.API.Controllers
              .ThenInclude(pi => pi.Coche) //then join table Car // Incluye el coche de cada línea
              .ThenInclude(c => c.Modelo) //then join table Model   // Incluye el modelo del coche
              .Select(p => new DetallesCompraDTO(p.ApplicationUser.Nombre, p.ApplicationUser.Apellido, p.FechaCompra, p.ConcesionarioEntrega, p.PrecioCompra, p.ComprarItems
-             .Select(pi => new ComprarItemDTO(pi.Coche.Id, pi.Coche.Modelo.Name, pi.Coche.PrecioCompra, pi.Cantidad, pi.Coche.Color)).ToList<ComprarItemDTO>())) // Convierte a lista de DTOs
+             .Select(pi => new ComprarItemDTO(pi.Coche.Id, pi.Coche.Modelo.Name, pi.Coche.PrecioCompra, pi.Cantidad, pi.Coche.Color,pi.Descripcion)).ToList<ComprarItemDTO>())) // Convierte a lista de DTOs
              .FirstOrDefaultAsync();// Toma el primero o null si no hay
 
             // Si no se encontró ninguna compra con ese id

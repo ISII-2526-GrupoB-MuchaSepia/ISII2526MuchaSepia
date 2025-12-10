@@ -156,7 +156,8 @@ namespace AppForSEII2526.UT.ComprarController_Test
                     "Ford Pickup",    // Nombre del coche
                     42000,            // Precio de compra
                     1,                 // Cantidad
-                    "Blanco"             // Color
+                    "Blanco",           // Color
+                    "Pickup robusta para trabajo pesado"
                 )
             );
             foreach (var item in compraEsperada.ComprarItemDTOs)
