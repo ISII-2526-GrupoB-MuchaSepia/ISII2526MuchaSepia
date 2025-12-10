@@ -52,15 +52,15 @@ namespace AppForSEII2526.UT.ComprarController_Test
         {
             var comprarNOItem = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>());
 
-            var comprarItems = new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo2, 0, 1, "Blanco") };
+            var comprarItems = new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo2, 0, 1, "Blanco", "Pickup robusta para trabajo pesado") };
 
             var comprarApplicationUser = new CreacionComprasDTO(0, "Mucha", "SEPIA", ConcesionarioEntrega, MetodoPagoTipos.PayPal, comprarItems);
 
-            var comprarCocheNoExiste = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, "Toyota Corola", 1, 0, "Rosa") });
+            var comprarCocheNoExiste = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, "Toyota Corola", 1, 0, "Rosa","coche rosa") });
 
-            var comprarCocheNoDisponible = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 9, "Azul") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
+            var comprarCocheNoDisponible = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 9, "Azul", "Compacto urbano eficiente") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
 
-            var nodecrip = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 2, "Azul") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
+            var nodecrip = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.PayPal, new List<ComprarItemDTO>() { new ComprarItemDTO(1, modelo1, 1, 2, "Azul", "Compacto urbano eficiente") });// Pide más unidades de 'Honda Compacto' de las que hay disponibles
 
 
             var allTests = new List<object[]>
@@ -114,9 +114,9 @@ namespace AppForSEII2526.UT.ComprarController_Test
 
             var controller = new ComprarController(_context, logger);
 
-            var purchaseDTO = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.Visa, new List<ComprarItemDTO>() { new ComprarItemDTO(2, modelo2, 0d, 1, "Blanco") });
+            var purchaseDTO = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.Visa, new List<ComprarItemDTO>() { new ComprarItemDTO(2, modelo2, 0d, 1, "Blanco", "Pickup robusta para trabajo pesado") });
 
-            var expectedpurchaseDetailDTO = new DetallesCompraDTO(Nombre, Apellidos, DateTime.Today, ConcesionarioEntrega, 42000d, new List<ComprarItemDTO> { new ComprarItemDTO(2, modelo2, 42000d, 1, "Blanco") });
+            var expectedpurchaseDetailDTO = new DetallesCompraDTO(Nombre, Apellidos, DateTime.Today, ConcesionarioEntrega, 42000d, new List<ComprarItemDTO> { new ComprarItemDTO(2, modelo2, 42000d, 1, "Blanco", "Pickup robusta para trabajo pesado") });
 
             // Act
             var result = await controller.CrearCompra(purchaseDTO);

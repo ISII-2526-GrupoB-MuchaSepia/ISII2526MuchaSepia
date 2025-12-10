@@ -4,18 +4,21 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
 {
     public class ComprarItemDTO
     {
-        public ComprarItemDTO(int cocheID, string modelo, double precioCompra,int cantidad,string color)
+        public ComprarItemDTO(int cocheID, string modelo, double precioCompra,int cantidad,string color, string descripcion)
         {
             CocheID = cocheID;
             PrecioCompra = precioCompra;
             Modelo = modelo;
             Cantidad = cantidad;
             Color = color;
+            Description = descripcion;
         }
 
         public int CocheID { get; set; }
 
         public double PrecioCompra { get; set; }
+
+        public string? Description { get; set; }
 
         public int Cantidad { get; set; }
 
