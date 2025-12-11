@@ -104,7 +104,7 @@ namespace AppForSEII2526.API.Controllers
                  )
                 .OrderBy(m => m.Modelo)
 
-                .Select(m => new CocheParaCompraDTO(m.Id, m.Modelo.Name, m.PrecioCompra, m.Color,m.TipoCombustible, m.Fabricante))// Selecciona solo los campos necesarios para el DTO CocheParaCompraDTO
+                .Select(m => new CocheParaCompraDTO(m.Id, m.Modelo.Name, m.PrecioCompra, m.Color,m.TipoCombustible, m.Fabricante,m.Descripcion))// Selecciona solo los campos necesarios para el DTO CocheParaCompraDTO
                 .ToListAsync(); // Ejecuta la consulta en la base de datos de forma asíncrona
 
             return Ok(selectCoche);
