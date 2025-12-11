@@ -14,11 +14,11 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
     //alquiler, fecha en la que se realizó el alquiler y precio total del alquiler.
     {
 
-        public DetalleAlquilerDTO( DateTime fechaAlquiler, string nombre, string apellido, string concesionarioEntrega, DateTime inicioAlquiler, DateTime finAlquiler, MetodoPagoTipos metodoPago, double total, IList<AlquilerItemDTO> alquilerItems)
+        public DetalleAlquilerDTO(int id, DateTime fechaAlquiler, string nombre, string apellido, string concesionarioEntrega, DateTime inicioAlquiler, DateTime finAlquiler, MetodoPagoTipos metodoPago, double total, IList<AlquilerItemDTO> alquilerItems)
            
 
         {
-            
+            Id = id;
             FechaAlquiler = fechaAlquiler;
             Nombre = nombre;
             Apellido = apellido;
@@ -30,6 +30,9 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
             AlquilerItems = alquilerItems;
             
         }
+
+        public int Id { get; set; }
+
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
@@ -64,7 +67,7 @@ public MetodoPagoTipos MetodoPago { get; set; }
         public override bool Equals(object? obj)
         {
             return obj is DetalleAlquilerDTO dTO &&
-                  
+                  Id == dTO.Id &&
                    FechaAlquiler == dTO.FechaAlquiler &&
                    InicioAlquiler == dTO.InicioAlquiler &&
                    FinAlquiler == dTO.FinAlquiler &&

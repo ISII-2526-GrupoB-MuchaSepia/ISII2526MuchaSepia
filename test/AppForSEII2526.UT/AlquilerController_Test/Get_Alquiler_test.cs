@@ -140,7 +140,7 @@ new Coche(
             var controller = new AlquilerController(_context, mock.Object);
 
 
-            var esperado = new DetalleAlquilerDTO(
+            var esperado = new DetalleAlquilerDTO(1,
      fechaAlquiler: DateTime.Today,
      nombre: "Clara",
      apellido: "Lopez",
