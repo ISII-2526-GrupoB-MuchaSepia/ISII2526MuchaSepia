@@ -51,7 +51,7 @@ namespace AppForSEII2526.API.Controllers
                 .ThenInclude(ai => ai.Coche)//Cada coche de esos items. por eso es thenInclude
                 .ThenInclude(coche => coche.Modelo) //El modelo de cada coche.
                 .Select(a => new DetalleAlquilerDTO(
-                    
+                    a.Id,
                     a.FechaAlquiler,
                     a.ApplicationUser.Nombre,
                     a.ApplicationUser.Apellido,
@@ -242,7 +242,7 @@ namespace AppForSEII2526.API.Controllers
 
             var alquilerDetalle = new DetalleAlquilerDTO(
     // Crear el DetalleAlquilerDTO con la información del alquiler y se devuelve al cliente con HTTP 201 Created
-
+    alquiler.Id,
     alquiler.FechaAlquiler,
     alquiler.ApplicationUser.Nombre,
     alquiler.ApplicationUser.Apellido,

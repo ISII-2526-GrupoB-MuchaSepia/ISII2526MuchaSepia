@@ -299,7 +299,7 @@ new Coche(
             
 
             var expectedDetalle = new DetalleAlquilerDTO(
-               
+               2,
                 fechaAlquiler: inicio,
                 Nombre,
                 Apellido,
