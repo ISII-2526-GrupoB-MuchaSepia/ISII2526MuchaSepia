@@ -1,5 +1,6 @@
 ﻿using AppForSEII2526.API.Controllers;
 using AppForSEII2526.API.DTOs.CocheDTOs;
+using AppForSEII2526.API.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -136,10 +137,10 @@ namespace AppForSEII2526.UT.CocheController_test
         {
             // Creamos los DTOs que representan el resultado esperado del método del controlador.
             var cocheDTOs = new List<CocheParaCompraDTO>() {
-                new CocheParaCompraDTO(1,"Citroen Berlingo",12000d,"Blanco","Diesel","Citroen"),
-                new CocheParaCompraDTO(2,"Fiat Stilo",11000d,"Blanco","Diesel","Fiat"),
-                new CocheParaCompraDTO(3,"Fiat Talento",18000d,"Rojo","Diesel","Fiat"),
-                new CocheParaCompraDTO(4,"Mazda cx-5",27000d,"Rojo","Gasolina","Mazda"),
+                new CocheParaCompraDTO(1,"Citroen Berlingo",12000d,"Blanco","Diesel","Citroen","Una leyenda."),
+                new CocheParaCompraDTO(2,"Fiat Stilo",11000d,"Blanco","Diesel","Fiat","Literalmente un coche funebre."),
+                new CocheParaCompraDTO(3,"Fiat Talento",18000d,"Rojo","Diesel","Fiat", "Parece una limusina."),
+                new CocheParaCompraDTO(4,"Mazda cx-5",27000d,"Rojo","Gasolina","Mazda", "Coche bien lujoso."),
             };
 
             // Caso 1: sin filtros → esperamos todos los coches.

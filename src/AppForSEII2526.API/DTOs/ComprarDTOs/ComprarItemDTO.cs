@@ -11,14 +11,14 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
             Modelo = modelo;
             Cantidad = cantidad;
             Color = color;
-            Description = descripcion;
+            Descripcion = descripcion;
         }
 
         public int CocheID { get; set; }
 
         public double PrecioCompra { get; set; }
 
-        public string? Description { get; set; }
+        public string? Descripcion { get; set; }
 
         public int Cantidad { get; set; }
 
@@ -34,12 +34,14 @@ namespace AppForSEII2526.API.DTOs.ComprarDTOs
                    PrecioCompra == dTO.PrecioCompra &&
                    Cantidad == dTO.Cantidad &&
                    Modelo == dTO.Modelo &&
-                   Color == dTO.Color;
+                   Color == dTO.Color &&
+                   Descripcion==dTO.Descripcion
+                   ;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(CocheID, PrecioCompra, Cantidad, Modelo, Color);
+            return HashCode.Combine(CocheID, PrecioCompra, Cantidad, Modelo, Color,Descripcion);
         }
     }
 }

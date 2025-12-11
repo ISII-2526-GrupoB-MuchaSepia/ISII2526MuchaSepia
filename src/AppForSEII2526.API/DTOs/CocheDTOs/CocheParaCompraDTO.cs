@@ -9,7 +9,7 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
         }
 
 
-        public CocheParaCompraDTO(int id, string modelo, double precioCompra,string color, string tCompbustible,string fabricante)
+        public CocheParaCompraDTO(int id, string modelo, double precioCompra,string color, string tCompbustible,string fabricante,string descripcion)
         {
             Id = id;
             Modelo = modelo;
@@ -17,6 +17,7 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
             Color = color;
             Tcombustible = tCompbustible;
             Fabricante = fabricante;
+            Descripcion = descripcion;
         }
 
         public int Id { get; set; }
@@ -39,6 +40,7 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
         [Display(Name = "Precio compra")]
         public double PrecioCompra{get; set;}
 
+        public string? Descripcion { get; set; }
 
         public override bool Equals(object? obj)
         {
@@ -48,7 +50,8 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
                    Modelo == dTO.Modelo &&
                    Fabricante == dTO.Fabricante &&
                    PrecioCompra == dTO.PrecioCompra &&
-                   Tcombustible == dTO.Tcombustible;
+                   Tcombustible == dTO.Tcombustible &&
+                   Descripcion == dTO.Descripcion;
         }
         
 
@@ -56,7 +59,7 @@ namespace AppForSEII2526.API.DTOs.CocheDTOs
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id,Color, Modelo, Fabricante, PrecioCompra, Tcombustible);
+            return HashCode.Combine(Id,Color, Modelo, Fabricante, PrecioCompra, Tcombustible,Descripcion);
         }
     }
 }
