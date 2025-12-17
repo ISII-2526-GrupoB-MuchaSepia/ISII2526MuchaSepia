@@ -112,7 +112,7 @@ namespace AppForSEII2526.UT.ReseñarController_Test
                     new ReseñarItemDTO(0, 99, "NoExiste", 3, "Coche inexistente")
                 }
             };
-            
+
             var exam = new CreacionesReseñarDTO(
              usuario: "lucas@correo.com",
              tipoConductor: "Titular",
@@ -188,13 +188,18 @@ namespace AppForSEII2526.UT.ReseñarController_Test
             {
                 ReseñarItems = items
             };
-            
+
 
             // ACT: LLAMADA AL MÉTODO Create
             var result = await controller.Create(dto);
 
-            // ASSERT: SE ESPERA CREATED (201) CON EL DTO DETALLE CON LOS DATOS COINCIDENTES
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+            // ASSERT: SE ESPERA UN ObjectResult CON CÓDIGO 201
+            // CORRECCIÓN AQUÍ: Cambiado de CreatedAtActionResult a ObjectResult
+            var createdResult = Assert.IsType<ObjectResult>(result);
+
+            // Verificamos que el código de estado sea 201 (Created)
+            Assert.Equal(201, createdResult.StatusCode);
+
             var detalleDTO = Assert.IsType<DetallesReseñarDTO>(createdResult.Value);
 
             Assert.Equal(dto.Usuario, detalleDTO.Usuario);

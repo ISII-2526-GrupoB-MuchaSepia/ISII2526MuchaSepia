@@ -220,9 +220,9 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<double>("PrecioAlquiler")
                         .HasColumnType("float");
 
-                    b.Property<decimal>("PrecioCompra")
+                    b.Property<double>("PrecioCompra")
                         .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("float(10)");
 
                     b.Property<string>("TamanoLlanta")
                         .IsRequired()
@@ -272,13 +272,9 @@ namespace AppForSEII2526.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("PrecioCompra")
+                    b.Property<double>("PrecioCompra")
                         .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal>("PrecioTotal")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("float(10)");
 
                     b.HasKey("Id");
 
@@ -295,12 +291,12 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<int>("ComprarId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Cantidad")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("Precio")
+                    b.Property<double>("Precio")
                         .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("float(10)");
 
                     b.HasKey("CocheId", "ComprarId");
 
