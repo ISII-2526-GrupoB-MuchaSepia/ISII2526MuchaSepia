@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using AppForMovies.UIT.Shared;
 using AppForSEII2526.UIT.CU_Purchase;
 using AppForSEII2526.UIT.Shared;
 
