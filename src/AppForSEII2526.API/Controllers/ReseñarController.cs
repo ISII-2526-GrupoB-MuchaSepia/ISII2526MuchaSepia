@@ -27,91 +27,42 @@ namespace AppForSEII2526.API.Controllers
         }
 
         // METODO GET
-        [HttpGet]
-        [Route("[action]")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("GetDetails")]
+        [ProducesResponseType(typeof(DetallesReseñarDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetDetails(
-            int? id = null,
-            string? usuario = null,
-            string? pais = null,
-            string? tipoConductor = null,
-            DateTime? fechaInicio = null,
-            DateTime? fechaFin = null)
+        public async Task<ActionResult> GetDetails(int id)
         {
-            if (fechaInicio.HasValue && fechaFin.HasValue && fechaInicio > fechaFin)
+            var reseña = await _context.Reseñas
+                .Where(r => r.Id == id)
+                .Include(r => r.ReseñarItems)
+                    .ThenInclude(ri => ri.Coche)
+                .Select(r => new DetallesReseñarDTO(
+                    r.Id,
+                    r.Creado,
+                    r.Usuario,
+                    r.Pais,
+                    r.TipoConductor,
+                    r.ApplicationUser,
+                    r.ReseñarItems.Select(ri => new ReseñarItemDTO(
+                        ri.ReseñarId,
+                        ri.CocheId,
+                        ri.Coche.ClaseCoche,
+                        ri.Calificacion,
+                        ri.Descripcion ?? string.Empty
+                    )).ToList()
+                ))
+                .FirstOrDefaultAsync();
+
+            if (reseña == null)
             {
-                ModelState.AddModelError("", "La fecha de inicio debe ser anterior a la fecha de fin.");
-                return BadRequest(new ValidationProblemDetails(ModelState));
+                _logger.LogError($"Error: Reseña con id {id} no existe.");
+                return NotFound();
             }
 
-            if (id.HasValue)
-            {
-                var reseña = await _context.Reseñas
-                    .Where(r => r.Id == id.Value)
-                    .Include(r => r.ReseñarItems)
-                        .ThenInclude(ri => ri.Coche)
-                    .Select(r => new DetallesReseñarDTO(
-                        r.Id,
-                        r.Creado,
-                        r.Usuario,
-                        r.Pais,
-                        r.TipoConductor,
-                        r.ApplicationUser,
-                        r.ReseñarItems.Select(ri => new ReseñarItemDTO(
-                            ri.ReseñarId,
-                            ri.CocheId,
-                            ri.Coche.ClaseCoche,
-                            ri.Calificacion,
-                            ri.Descripcion ?? string.Empty
-                        )).ToList()
-                    ))
-                    .FirstOrDefaultAsync();
-
-                if (reseña == null)
-                {
-                    _logger.LogError($"Error: Reseña con id {id.Value} no existe.");
-                    return NotFound();
-                }
-                return Ok(reseña);
-            }
-            else
-            {
-                var query = _context.Reseñas
-                    .Include(r => r.ReseñarItems)
-                        .ThenInclude(ri => ri.Coche)
-                    .AsQueryable();
-
-                if (!string.IsNullOrEmpty(usuario)) query = query.Where(r => r.Usuario.Contains(usuario));
-                if (!string.IsNullOrEmpty(pais)) query = query.Where(r => r.Pais == pais);
-                if (!string.IsNullOrEmpty(tipoConductor)) query = query.Where(r => r.TipoConductor == tipoConductor);
-                if (fechaInicio.HasValue) query = query.Where(r => r.Creado >= fechaInicio.Value);
-                if (fechaFin.HasValue) query = query.Where(r => r.Creado <= fechaFin.Value);
-
-                var reseñas = await query
-                    .Select(r => new DetallesReseñarDTO(
-                        r.Id,
-                        r.Creado,
-                        r.Usuario,
-                        r.Pais,
-                        r.TipoConductor,
-                        r.ApplicationUser,
-                        r.ReseñarItems.Select(ri => new ReseñarItemDTO(
-                            ri.ReseñarId,
-                            ri.CocheId,
-                            ri.Coche.ClaseCoche,
-                            ri.Calificacion,
-                            ri.Descripcion ?? string.Empty
-                        )).ToList()
-                    ))
-                    .ToListAsync();
-
-                return Ok(reseñas);
-            }
+            return Ok(reseña);
         }
 
-     
+
         [HttpPost]
         [Route("Create")]
         [ProducesResponseType(typeof(DetallesReseñarDTO), StatusCodes.Status201Created)]
