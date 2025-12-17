@@ -89,7 +89,7 @@ else
         {
             // Llamada a  API tal como sale en ReseñarController
            
-            var resultado = await apiclient.GetDetailsAsync(Id, null, null, null, null, null);
+            var resultado = await apiclient.GetDetailsAsync(Id);
 
            
             if (resultado is ICollection<DetallesReseñarDTO> lista)
