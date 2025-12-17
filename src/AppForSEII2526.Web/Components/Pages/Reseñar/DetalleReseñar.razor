@@ -1,0 +1,120 @@
+﻿@page "/reseñar/details"
+
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Detalles de la Reseña</h3>
+
+@if (reseña == null)
+{
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger">@error</div>
+    }
+    else
+    {
+        <p>Cargando detalles...</p>
+    }
+}
+else
+{
+    @* IDs en Español para DetailReseñar_PO *@
+    <table class="table table-borderless table-sm mb-4">
+        <tr>
+            <th style="width: 200px;">Usuario</th>
+            @* ID 'Usuario' *@
+            <td id="Usuario">@reseña.Usuario</td>
+        </tr>
+        <tr>
+            <th>País</th>
+            @* ID 'Pais'  *@
+            <td id="Pais">@reseña.Pais</td>
+        </tr>
+        <tr>
+            <th>Tipo de Conductor</th>
+            @* ID 'TipoConductor' *@
+            <td id="TipoConductor">@reseña.TipoConductor</td>
+        </tr>
+        <tr>
+            <th>Fecha Creación</th>
+            
+            @*  Formato HH:mm:ss (24h)  *@
+            <td id="Creado">@reseña.Creado.ToString("dd/MM/yyyy HH:mm:ss")</td>
+        </tr>
+    </table>
+
+    <h4>Coches Reseñados</h4>
+
+    @*  ITEMS ID 'ReviewedCars' necesario   *@
+    <div class="table-responsive">
+        <table class="table table-striped" id="ReviewedCars">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Coche / Modelo</th>
+                    <th scope="col">Calificación</th>
+                    <th scope="col">Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in reseña.ReseñarItems)
+                {
+                    @* Usamos tus propiedades: CocheNombre, Calificacion, Descripcion *@
+                    <tr>
+                        <td>@item.CocheNombre</td>
+                        <td>@item.Calificacion</td>
+                        <td>@item.Descripcion</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3">
+        <a href="reseñar/select" class="btn btn-secondary">Volver</a>
+    </div>
+}
+
+@code {
+    
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    private DetallesReseñarDTO reseña;
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Llamada a  API tal como sale en ReseñarController
+           
+            var resultado = await apiclient.GetDetailsAsync(Id, null, null, null, null, null);
+
+           
+            if (resultado is ICollection<DetallesReseñarDTO> lista)
+            {
+                reseña = lista.FirstOrDefault();
+            }
+            else if (resultado is DetallesReseñarDTO dto)
+            {
+                reseña = dto;
+            }
+            else
+            {
+                // Fallback de serialización si llega como objeto generico
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(resultado);
+                reseña = Newtonsoft.Json.JsonConvert.DeserializeObject<DetallesReseñarDTO>(json);
+            }
+
+            if (reseña == null)
+            {
+                error = "No se encontró la reseña.";
+            }
+        }
+        catch (Exception ex)
+        {
+            error = $"Error al cargar la reseña: {ex.Message}";
+        }
+    }
+}

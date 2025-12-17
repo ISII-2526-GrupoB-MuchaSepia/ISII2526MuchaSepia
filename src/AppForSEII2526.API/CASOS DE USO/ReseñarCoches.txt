@@ -1,0 +1,44 @@
+Flujo Básico
+1. El cliente selecciona la opción Reseñar Coches en el menú principal.
+
+2. El sistema muestra la lista de coches que hay en el sistema indicando su modelo, clase,
+fabricante, tipo de gasoil y color.
+
+3. El cliente selecciona los coches que desea reseñar de la lista.
+
+4. El cliente selecciona Hacer reseña.
+
+5. El sistema muestra los coches seleccionados indicando su modelo, tipo de gasoil,
+fabricante y color, y solicita al usuario su nombre, país, tipo de conductor (novato o
+experto), siendo todos datos obligatorios. Para cada coche se pide de una descripción
+de la reseña y una puntuación (1-5 estrellas), siendo la puntuación obligatoria y la
+descripción opcional.
+
+6. El cliente rellena los datos y selecciona Publicar reseña.
+
+8. El sistema muestra la reseña indicando los coches afectados (modelo, fabricante y
+color y puntuación y descripción), y la reseña escrita (nombre y país, tipo de conductor
+y fecha en la que se realizó).
+
+Flujo alternativo 0 - al paso 2
+1.1 El sistema ofrece la posibilidad de filtrar los coches por fabricante y tipo de gasoil.
+1.2 El cliente selecciona los filtros que le interesan.
+1.3 El sistema muestra los coches disponibles que cumplen los filtros.
+
+Flujo Alternativo 1 - al Paso 4
+Si el sistema detecta que no se ha seleccionado ningún coche, la opción para continuar
+el proceso no estará activa.
+
+Flujo Alternativo 2 - al Paso 5
+El cliente elige modificar el carrito para eliminar alguno de los coches seleccionados.
+
+Flujo Alternativo 3 – al Paso 6
+Si el sistema detecta que algún dato obligatorio no se ha rellenado, notificará al usuario
+y volverá al paso 5.
+
+Flujo Alternativo 4 - al Paso 7
+El cliente elige modificar los cochesseleccionados. El sistema volverá al paso 2 sin perder
+la información que el usuario ya había introducido.
+
+Precondición
+El usuario debe estar conectado como Cliente para iniciar el caso de uso
