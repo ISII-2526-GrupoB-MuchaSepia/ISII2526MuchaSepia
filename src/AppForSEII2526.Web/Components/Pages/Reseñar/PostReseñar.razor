@@ -9,114 +9,140 @@
 
 <h3>Publicar Reseña</h3>
 
-<EditForm Model="reseña" OnValidSubmit="GuardarDirecto" OnInvalidSubmit="MostrarErroresValidacion">
-    <div class="row">
-        <DataAnnotationsValidator />
-        <ValidationSummary class="row alert alert-danger" />
+@* PROTECCIÓN CONTRA NULOS: Evita la barra amarilla si refrescas la página *@
+@if (reseña == null)
+{
+    <div class="alert alert-warning">
+        <p>No hay datos de reseña activos. Vuelve a seleccionar los coches.</p>
+        <button class="btn btn-primary" @onclick="VolverASeleccion">Ir a Selección</button>
     </div>
+}
+else
+{
+    <EditForm Model="reseña" OnValidSubmit="GuardarDirecto" OnInvalidSubmit="MostrarErroresValidacion">
+        <div class="row">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="row alert alert-danger" />
+        </div>
 
-    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
-        <p>@messageError</p>
-    </div>
+        <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+            <p>@messageError</p>
+        </div>
 
-    @* DATOS DE USUARIO *@
-    <div class="row g-3">
-        <div class="col-md">
-            <div class="form-floating mb-3">
-                @* ID necesario  "Usuario" *@
-                <InputText @bind-Value="reseña.Usuario" class="form-control" id="Usuario" placeholder="Usuario" />
-                <label for="Usuario">Usuario (Obligatorio)</label>
+        @* DATOS DE USUARIO *@
+        <div class="row g-3">
+            <div class="col-md">
+                <div class="form-floating mb-3">
+                    @* ID necesario  "Usuario" *@
+                    <InputText @bind-Value="reseña.Usuario" class="form-control" id="Usuario" placeholder="Usuario" />
+                    <label for="Usuario">Usuario (Obligatorio)</label>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-floating mb-3">
+                    @* ID necesario "Pais" *@
+                    <InputText @bind-Value="reseña.Pais" class="form-control" id="Pais" />
+                    <label for="Pais">País</label>
+                </div>
+            </div>
+            <div class="col-md">
+                @* --- AQUÍ ESTABA EL ERROR, CORREGIDO: --- *@
+                <div class="form-floating mb-3">
+                    @* ID necesario "TipoConductor" *@
+                    <InputSelect @bind-Value="reseña.TipoConductor" class="form-select" id="TipoConductor">
+                        <option value="Titular">Titular</option>
+                        <option value="Adicional">Adicional</option>
+                    </InputSelect>
+                    <label for="TipoConductor">Tipo de Conductor</label>
+                </div>
+                @* ---------------------------------------- *@
             </div>
         </div>
+
         <div class="col-md">
-            <div class="form-floating mb-3">
-                @* ID necesario "Pais" *@
-                <InputText @bind-Value="reseña.Pais" class="form-control" id="Pais" />
-                <label for="Pais">País</label>
+            <div class="form-floating">
+                @* ID necesario "Submit" *@
+                <button class="btn btn-primary" type="submit" id="Submit" disabled="@isProcesando">
+                    @if (isProcesando)
+                    {
+                        <span>Enviando...</span>
+                    }
+                    else
+                    {
+                        <span>Finalizar Reseña</span>
+                    }
+                </button>
             </div>
         </div>
-        <div class="col-md">
-            <div class="form-flo "TipoConductor" *@
-                <InputSelect @bind-Value="reseña.TipoConductor" class="form-select" id="TipoConductor">
-                    <option value="Titular">Titular</option>
-                    <option value="Adicional">Adicional</option>
-                </InputSelect>
-                <label for="TipoConductor">Tipo de Conductor</label>
+
+        <hr />
+
+        <h4>Coches a reseñar</h4>
+
+        @if (reseña.ReseñarItems != null && reseña.ReseñarItems.Any())
+        {
+            <p>
+                @* ID necesario: "ModifyCar" *@
+                <button class="btn btn-outline-primary" type="button" id="ModifyCar" @onclick="VolverASeleccion">
+                    Modificar lista
+                </button>
+            </p>
+
+            <div class="mh-100 table-responsive">
+                @* ID necesario "TableOfReviewItems" *@
+                <table class="table table-condensed table-hover" id="TableOfReviewItems">
+                    <thead>
+                        <tr>
+                            <th>Coche</th>
+                            <th>Puntuación (1-5)</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in reseña.ReseñarItems)
+                        {
+                            <tr>
+                                <td>@item.CocheNombre</td>
+                                <td style="width: 150px;">
+                                    @* ID Dinámico "rating_{id}" *@
+                                    <InputNumber @bind-Value="item.Calificacion"
+                                                 class="form-control"
+                                                 min="1" max="5"
+                                                 id="@("rating_" + item.CocheId)" />
+                                </td>
+                                <td>
+                                    @* ID Dinámico  "description_{id}" *@
+                                    <InputTextArea @bind-Value="item.Descripcion"
+                                                   class="form-control"
+                                                   placeholder="Ej: Reseña para..."
+                                                   id="@("description_" + item.CocheId)" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </div>
-
-    <div class="col-md">
-        <div class="form-floating">
-            @* ID necesario "Submit" *@
-            <button class="btn btn-primary" type="submit" id="Submit" disabled="@isProcesando">
-                @if (isProcesando)
-                {
-                    <span>Enviando...</span>
-                }
-                else
-                {
-                    <span>Finalizar Reseña</span>
-                }
-            </button>
-        </div>
-    </div>
-
-    <hr />
-
-    <h4>Coches a reseñar</h4>
-    <p>
-        @* ID necesario: "ModifyCar" *@
-        <button class="btn btn-outline-primary" type="button" id="ModifyCar" @onclick="VolverASeleccion">
-            Modificar lista
-        </button>
-    </p>
-
-    <div class="mh-100 table-responsive">
-        @* ID necesario "TableOfReviewItems" *@
-        <table class="table table-condensed table-hover" id="TableOfReviewItems">
-            <thead>
-                <tr>
-                    <th>Coche</th>
-                    <th>Puntuación (1-5)</th>
-                    <th>Descripción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in reseña.ReseñarItems)
-                {
-                    <tr>
-                        <td>@item.CocheNombre</td>
-                        <td style="width: 150px;">
-                            @* ID Dinámico "rating_{id}" *@
-                            <InputNumber @bind-Value="item.Calificacion"
-                                         class="form-control"
-                                         min="1" max="5"
-                                         id="@("rating_" + item.CocheId)" />
-                        </td>
-                        <td>
-                            @* ID Dinámico  "description_{id}" *@
-                            <InputTextArea @bind-Value="item.Descripcion"
-                                           class="form-control"
-                                           placeholder="Ej: Reseña para..."
-                                           id="@("description_" + item.CocheId)" />
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</EditForm>
+        }
+        else
+        {
+            <div class="alert alert-info">No hay coches seleccionados.</div>
+        }
+    </EditForm>
+}
 
 @code {
     private string messageError = "";
     private bool hideErrors => string.IsNullOrEmpty(messageError);
     private bool isProcesando = false;
 
-    private CreacionesReseñarDTO reseña => reseñarState.Reseña;
+    // Usamos el operador ?. para evitar crash si es null
+    private CreacionesReseñarDTO reseña => reseñarState?.Reseña;
 
     protected override async Task OnInitializedAsync()
     {
+        // Si el estado es nulo (por refrescar página), salimos para que el HTML muestre el mensaje de aviso
+        if (reseña == null) return;
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         if (user.Identity != null && user.Identity.IsAuthenticated)
@@ -124,10 +150,8 @@
             reseña.Usuario = user.Identity.Name;
         }
 
-       
-        // Inicializamos la fecha para evitar error 
+        // Inicializamos la fecha para evitar error
         reseña.Creado = DateTime.Now;
-        
 
         // if (string.IsNullOrEmpty(reseña.Pais)) reseña.Pais = "España"; fallan los test
         if (string.IsNullOrEmpty(reseña.TipoConductor)) reseña.TipoConductor = "Titular";
@@ -148,7 +172,7 @@
         isProcesando = true;
         messageError = "";
 
-        if (reseña.ReseñarItems.Count == 0)
+        if (reseña.ReseñarItems == null || reseña.ReseñarItems.Count == 0)
         {
             messageError = "No hay coches seleccionados.";
             isProcesando = false;
@@ -192,7 +216,9 @@
                 }
                 catch
                 {
-                    messageError = "Reseña guardada (201), pero no pude leer el ID.";
+                    // Fallback seguro si falla la lectura del ID
+                    reseñarState.ReseñaProcesada();
+                    navigation.NavigateTo("/reseñar/select");
                 }
             }
             else
