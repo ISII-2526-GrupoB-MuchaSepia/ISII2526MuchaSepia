@@ -1,0 +1,193 @@
+﻿@page "/Reseñar/select"
+
+@using Microsoft.AspNetCore.Authorization
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<CocheParaReseñarDTO> logger //cambiado
+@inject ReseñarStateContainer reseñarStateContainer
+@inject NavigationManager navigation
+
+
+
+<h3>Seleccionar coches para Reseñar</h3>
+
+<div class="container-fluid">
+
+   
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+
+    <div class="row">
+
+       
+        <div class="col-8">
+            <div class="row">
+                
+               @*FILTRO CLASE COCHE *@
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Clase Coche</span>
+                        <input type="text" id="inputClaseCoche" @bind="filtroClaseCoche" 
+                               class="form-control" placeholder="Clase (ej. Berlina)" 
+                               aria-label="ClaseCoche" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+
+                @*FILTRO COLOR*@
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon2">Color</span>
+                        <input type="text" id="inputColor" @bind="filtroColor" 
+                               class="form-control" placeholder="Color" 
+                               aria-label="Color" aria-describedby="basic-addon2">
+                    </div>
+                </div>
+
+                @*BOTON BUSCAR *@
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick="@BuscarCoches" id="searchCars">
+                        Buscar coches
+                    </button>
+                </div>
+            </div>
+
+            @*TABLA DE RESULTADOS *@
+            <div class="row">
+                @if (coches == null)
+                {
+                    <p>Cargando coches...</p>
+                }
+                else
+                {
+                    <div class="mh-100 table-responsive">
+                        <table class="table table-condensed table-hover" id="TableOfCars">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>Clase</th>
+                                    <th>Color</th>
+                                    <th>Descripción</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var coche in coches)
+                                {
+                                    <tr id="CarData_@coche.Id">
+                                        <td>@coche.Modelo</td>
+                                        <td>@coche.ClaseCoche</td>
+                                        <td>@coche.Color</td>
+                                        <td>@coche.Descripcion</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" 
+                                                    id="carToReview_@coche.Id" 
+                                                    @onclick="@(() => AñadirCoche(coche))">
+                                                Añadir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+       @* COLUMNA DERECHA: CARRITO DE RESEÑAS*@
+        <div class="col-2" hidden="@hideReviewCart">
+            <div class="row">
+                <h3>Carrito Reseñas</h3>
+            </div>
+            
+            @foreach (ReseñarItemDTO item in reseña.ReseñarItems)
+            {
+                <div class="row">
+                    <button type="button" class="btn btn-light" 
+                            id="removeCar_@item.CocheId" 
+                            @onclick="@(() => BorrarItem(item))">
+                        x @item.CocheNombre
+                    </button>
+                </div>
+            }
+
+            <div class="row mt-3">
+                <button type="button" class="btn btn-primary" 
+                        id="purchaseCarButton" 
+                        @onclick="@IrACrearReseña">
+                    Escribir Reseñas
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+
+    //PROPIEDADES VISUALES
+    private bool hideReviewCart { get { return reseña.ReseñarItems.Count == 0; } }
+    private ICollection<CocheParaReseñarDTO> coches;
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+
+    // FILTROS
+    private string filtroClaseCoche { get; set; }
+    private string filtroColor { get; set; }
+
+    // ESTADO
+    // Accedemos a la propiedad Reseña 
+    private CreacionesReseñarDTO reseña => reseñarStateContainer.Reseña;
+    private bool hiddenReviewCart = true;
+
+    // MÉTODOS 
+
+    private void AñadirCoche(CocheParaReseñarDTO coche)
+    {
+        reseñarStateContainer.AñadirCocheParaReseñar(coche);
+        // Forzamos actualización visual 
+        StateHasChanged(); 
+    }
+
+    private void BorrarItem(ReseñarItemDTO item)
+    {
+        reseñarStateContainer.BorrarCocheDeReseña(item);
+        if (reseña.ReseñarItems.Count == 0) hiddenReviewCart = true;
+    }
+
+    private void IrACrearReseña()
+    {
+        // Navegamos a la siguiente página (CreateReseñar) donde se rellenan los detalles
+        navigation.NavigateTo("/reseñar/createreview");
+    }
+
+    public async void BuscarCoches()
+    {
+        try
+        {
+            // Llamamos a  API usando los filtros  (Clase y Color)
+            coches = await apiclient.GetCochesParaReseñarAsync(filtroClaseCoche, filtroColor);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Error al conectar con el sistema";
+        }
+        catch (Exception ex) 
+        {
+            logger.LogError($"{DateTime.Now} Error General: {ex.Message}");
+            errors = ex.Message;
+        }
+        StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        // Cargamos los coches al entrar en la página
+        BuscarCoches();
+        return base.OnInitializedAsync();
+    }
+}
