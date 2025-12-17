@@ -35,8 +35,8 @@ namespace AppForSEII2526.API.Controllers
              .Include(p => p.ComprarItems) //join table PurchaseItem  // Incluye las líneas de compra
              .ThenInclude(pi => pi.Coche) //then join table Car // Incluye el coche de cada línea
              .ThenInclude(c => c.Modelo) //then join table Model   // Incluye el modelo del coche
-             .Select(p => new DetallesCompraDTO(p.ApplicationUser.Nombre, p.ApplicationUser.Apellido, p.FechaCompra, p.ConcesionarioEntrega, p.PrecioCompra, p.ComprarItems
-             .Select(pi => new ComprarItemDTO(pi.Coche.Id, pi.Coche.Modelo.Name, pi.Coche.PrecioCompra, pi.Cantidad, pi.Coche.Color,pi.Descripcion)).ToList<ComprarItemDTO>())) // Convierte a lista de DTOs
+             .Select(p => new DetallesCompraDTO(p.Id,p.ApplicationUser.Nombre, p.ApplicationUser.Apellido, p.FechaCompra, p.ConcesionarioEntrega, p.PrecioCompra, p.ComprarItems
+             .Select(pi => new ComprarItemDTO(pi.Coche.Id, pi.Coche.Modelo.Name, pi.Coche.PrecioCompra, pi.Cantidad, pi.Coche.Color)).ToList<ComprarItemDTO>())) // Convierte a lista de DTOs
              .FirstOrDefaultAsync();// Toma el primero o null si no hay
 
             // Si no se encontró ninguna compra con ese id
@@ -152,6 +152,7 @@ namespace AppForSEII2526.API.Controllers
 
             // 7. Construye el DTO de respuesta con los datos finales de la compra
             var detallesCompra = new DetallesCompraDTO(
+                comprar.Id,
                 comprar.ApplicationUser.Nombre,
                 comprar.ApplicationUser.Apellido,
                 comprar.FechaCompra,

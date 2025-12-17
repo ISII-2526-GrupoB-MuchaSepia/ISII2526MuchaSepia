@@ -1,0 +1,93 @@
+﻿﻿
+@page "/compra/detalles"
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+
+<h3>Detalles Comprar Coche</h3>
+
+
+
+@if (compra == null)
+{
+    <p>@error</p>
+}
+else
+{
+    <table class="table table-borderless table-sm">
+        <tr>
+            <th>Nombre y Apellido</th>
+            <td id="NombreApellidos">@compra.Nombre @compra.Apellido</td>
+        </tr>
+        <tr>
+            <th>Concesionario de Entregar</th>
+            <td id="ConcesionarioEntrga">@compra.ConcesionarioEntrga</td>
+        </tr>
+        <tr>
+            <th>Fecha de Compra</th>
+            <td id="FechaCompra">@compra.FechaCompra.ToString("dd/MM/yyyy hh:mm:ss")</td>
+        </tr>
+    </table>
+
+    <h4>Coches Comprados</h4>
+
+    <table class="table" id="CochesComprados">
+        <thead>
+            <tr>
+                <th scope="col">Modelo</th>
+                <th scope="col">PrecioCompra</th>
+                <th scope="col">Color</th>
+                <th scope="col">Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ComprarItemDTO item in compra.ComprarItemDTOs)
+            {
+                <tr id="CompraItem_@item.Modelo">
+                    <td>@item.Modelo</td>
+                    <td>@item.PrecioCompra</td>
+                    <td>@item.Color</td>
+                    <td>@item.Cantidad</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            @*colspan is used to state that TWO columns are collapsed*@
+        <th scope="row" colspan="2" class="text-end">Precio Total</th>
+        <td id="PrecioTotal">@compra.PrecioCompra</td>
+        </tfoot>
+
+    </table>
+}
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "id")] // Asegura que pilla ?id=X de la URL
+    public int CompraId { get; set; }
+
+    private DetallesCompraDTO compra;
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Llamamos a la API sin comprobar usuario para evitar bloqueos en los tests
+            compra = await apiclient.GetDetallesCompraAsync(CompraId);
+        }
+        catch (ApiException ex)
+        {
+            error = $"No se pudo cargar la compra {CompraId}. (Error {ex.StatusCode})";
+        }
+        catch (Exception ex)
+        {
+            error = $"Error crítico: {ex.Message}";
+        }
+
+        if (compra == null && string.IsNullOrEmpty(error))
+        {
+            error = "La compra no existe o no se devolvieron datos.";
+        }
+    }
+}

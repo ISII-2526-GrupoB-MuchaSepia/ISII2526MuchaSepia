@@ -15,12 +15,10 @@
             ComprarId = comprar.Id;
             Precio = coche.PrecioCompra;
             Cantidad = cantidad;
-            Descripcion = coche.Descripcion;
         }
 
         public Coche Coche { get; set; }
         public int CocheId { get; set; }
-        public string? Descripcion { get; set; }
         public Comprar Comprar { get; set; }
         public int ComprarId { get; set; }
 
