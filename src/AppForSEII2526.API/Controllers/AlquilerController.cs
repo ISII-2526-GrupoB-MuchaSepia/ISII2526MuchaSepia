@@ -46,7 +46,7 @@ namespace AppForSEII2526.API.Controllers
             }
             var alquiler = await _context.Alquileres
                 .Where(a => a.Id == id)//filtra por el id del alquiler
-                .Include(a=> a.ApplicationUser) //El usuario que hizo la reserva.
+                .Include(a => a.ApplicationUser) //El usuario que hizo la reserva.
                 .Include(a => a.AlquilerItems) //Los items del alquiler.
                 .ThenInclude(ai => ai.Coche)//Cada coche de esos items. por eso es thenInclude
                 .ThenInclude(coche => coche.Modelo) //El modelo de cada coche.
@@ -60,22 +60,22 @@ namespace AppForSEII2526.API.Controllers
                     a.FinAlquiler,
                     a.MetodoPago,
                     a.Total,
-                    
+
                     a.AlquilerItems.Select(ai => new AlquilerItemDTO(
-                        
+
                         ai.Cantidad,
                         ai.Coche.PrecioAlquiler,
                         ai.Coche.Modelo.Name,
                         ai.Coche.Fabricante
                         )).ToList<AlquilerItemDTO>()))
-                   
-                    
+
+
 
                   .FirstOrDefaultAsync(); //devuelve null si no existe el alquiler con ese id
 
             if (alquiler == null)
             {
-                _logger.LogError($"Error: Alquiler con id :  {id} no existe"); 
+                _logger.LogError($"Error: Alquiler con id :  {id} no existe");
                 return NotFound();
             }
 
@@ -83,8 +83,8 @@ namespace AppForSEII2526.API.Controllers
 
         }
 
-       
-       
+
+
         //5. El sistema muestra los coches seleccionados, indicando su modelo, fabricante y
         // precio de alquiler, y solicita al usuario su nombre, apellidos, dirección y método de pago
         //(Visa, Google Pay o Paypal) y la cantidad de cada coche seleccionado, siendo todos datos
@@ -103,7 +103,7 @@ namespace AppForSEII2526.API.Controllers
         {
 
 
-           //VALIDACIONES INICIALES
+            //VALIDACIONES INICIALES
 
             if (alquilerParaCrear.InicioAlquiler <= DateTime.Today)
                 ModelState.AddModelError("InicioAlquiler", "¡Error! La fecha de inicio debe ser posterior a hoy.");
@@ -111,18 +111,25 @@ namespace AppForSEII2526.API.Controllers
             if (alquilerParaCrear.InicioAlquiler >= alquilerParaCrear.FinAlquiler)
                 ModelState.AddModelError("InicioAlquilerFinAlquiler", "¡Error! La fecha de finalización debe ser posterior a la de inicio.");
 
-
-            if (string.IsNullOrEmpty(alquilerParaCrear.Nombre) || string.IsNullOrEmpty(alquilerParaCrear.Apellido))
+            if (string.IsNullOrEmpty(alquilerParaCrear.Nombre) ||
+                string.IsNullOrEmpty(alquilerParaCrear.Apellido))
+            {
                 ModelState.AddModelError("Usuario", "Debe indicar nombre y apellidos.");
+            }
 
             if (string.IsNullOrEmpty(alquilerParaCrear.ConcesionarioEntrega))
-                ModelState.AddModelError("ConcesionarioEntrega", "Debe indicar un concesionario de entrega.");
-
-            if (!alquilerParaCrear.ConcesionarioEntrega.Contains("Calle"))
             {
-                ModelState.AddModelError("ConcesionarioEntrega", "la dirección debe contener la palabra calle");
-                return BadRequest(new ValidationProblemDetails(ModelState));
-
+                ModelState.AddModelError(
+                    "ConcesionarioEntrega",
+                    "Debe indicar un concesionario de entrega."
+                );
+            }
+            else if (!alquilerParaCrear.ConcesionarioEntrega.Contains("Calle"))
+            {
+                ModelState.AddModelError(
+                    "ConcesionarioEntrega",
+                    "la dirección debe contener la palabra calle"
+                );
             }
 
 
@@ -130,20 +137,22 @@ namespace AppForSEII2526.API.Controllers
 
 
 
-           // Evitar crear un alquiler con un usuario inexistente en la base de datos.
-
-            var usuario = _context.ApplicationUsers.FirstOrDefault(au => au.NombreUsuario == alquilerParaCrear.NombreUsuario);
-            if (usuario == null)
-            {
-                ModelState.AddModelError("Usuario", "El usuario indicado no existe."); //Si el nombre no corresponde a ningún usuario, se agrega otro error.
-            }
+            // Evitar crear un alquiler con un usuario inexistente en la base de datos.
+            // var nombreUsuario = alquilerParaCrear.NombreUsuario?.Trim();
+            /*
+                        var usuario = _context.ApplicationUsers.FirstOrDefault(au => au.NombreUsuario == alquilerParaCrear.NombreUsuario);
+                        if (usuario == null)
+                        {
+                            ModelState.AddModelError("Usuario", "El usuario indicado no existe."); //Si el nombre no corresponde a ningún usuario, se agrega otro error.
+                        }
+                        */
 
             if (alquilerParaCrear.AlquilerItems.Count == 0)
                 ModelState.AddModelError("AlquilerItems", "Debe seleccionar al menos un coche para alquilar.");
             // FLUJO ALTERNATIVO 4: Si falta algún dato obligatorio o hay un error de validación, el sistema notifica al usuario y regresa al paso anterior para corregirlo.
             if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
-           
+
 
             var cochesSeleccionados = alquilerParaCrear.AlquilerItems
                 .Select(ai => ai.Modelo)
@@ -152,16 +161,16 @@ namespace AppForSEII2526.API.Controllers
             //   Buscamos en la BD los coches que coinciden con los modelos seleccionados
             var coches = _context.Coches
                 .Include(a => a.AlquilerItems)
-                    .ThenInclude(ai => ai.Coche).ThenInclude(coche=>coche.Modelo)
+                    .ThenInclude(ai => ai.Coche).ThenInclude(coche => coche.Modelo)
 
               .Where(a => cochesSeleccionados.Contains(a.Modelo.Name))
 
                 //  Proyectamos solo los datos necesarios
-                .Select(coche=> new
+                .Select(coche => new
                 {
                     coche.Id,
                     coche.Modelo.Name,
-                  
+
                     coche.PrecioAlquiler,
                     coche.CantidadAlquiler,
                     // // Contamos cuántos coches de este modelo YA ESTÁN ALQUILADOS en este rango de fechas
@@ -183,15 +192,15 @@ namespace AppForSEII2526.API.Controllers
            alquilerParaCrear.InicioAlquiler,
            alquilerParaCrear.FinAlquiler,
            new List<AlquilerItem>(),
-           usuario);
-            
+           null);
+
 
 
 
             alquiler.Total = 0;
 
             // Calculamos la cantidad de días del alquiler
-            var numeroDias =  (int)Math.Ceiling((alquiler.FinAlquiler - alquiler.InicioAlquiler).TotalDays);
+            var numeroDias = (int)Math.Ceiling((alquiler.FinAlquiler - alquiler.InicioAlquiler).TotalDays);
             //  VALIDACIÓN DE DISPONIBILIDAD DE CADA COCHE
 
             foreach (var item in alquilerParaCrear.AlquilerItems)
@@ -214,21 +223,21 @@ namespace AppForSEII2526.API.Controllers
                     // Asignamos el precio para que el cliente lo vea
                     item.PrecioAlquiler = coche.PrecioAlquiler;
                     // Sumamos al total
-                    alquiler.Total+= coche.PrecioAlquiler * item.Cantidad * numeroDias;
+                    alquiler.Total += coche.PrecioAlquiler * item.Cantidad * numeroDias;
                 }
             }
-         
+
 
             if (ModelState.ErrorCount > 0)
             {
                 return BadRequest(new ValidationProblemDetails(ModelState));
-                
+
                 //NUEVO CONTROL DE ERROR POR DISPONIBILIDAD DE COCHES
             }
 
             _context.Add(alquiler);
 
-            
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -239,24 +248,29 @@ namespace AppForSEII2526.API.Controllers
                 ModelState.AddModelError("Alquiler", "Error al guardar el alquiler en la base de datos.");
                 return Conflict("Error" + ex.Message);
             }
-
             var alquilerDetalle = new DetalleAlquilerDTO(
-    // Crear el DetalleAlquilerDTO con la información del alquiler y se devuelve al cliente con HTTP 201 Created
-    alquiler.Id,
-    alquiler.FechaAlquiler,
-    alquiler.ApplicationUser.Nombre,
-    alquiler.ApplicationUser.Apellido,
-    alquiler.ConcesionarioEntrega,
-    alquiler.InicioAlquiler,
-    alquiler.FinAlquiler,
-    alquiler.MetodoPago,
-    alquiler.Total,
-   alquilerParaCrear.AlquilerItems);
+                alquiler.Id,
+                alquiler.FechaAlquiler,
+                alquilerParaCrear.Nombre,
+                alquilerParaCrear.Apellido,
+                alquiler.ConcesionarioEntrega,
+                alquiler.InicioAlquiler,
+                alquiler.FinAlquiler,
+                alquiler.MetodoPago,
+                alquiler.Total,
+                alquilerParaCrear.AlquilerItems
+            );
+
 
             _logger.LogInformation(" El alquiler {alquiler.Id} se ha creado correctamente");
 
             // Retornamos un 201 Created con el recibo completo
-            return CreatedAtAction("Get_Detalle_Alquiler", new { id = alquiler.Id }, alquilerDetalle);
+            return CreatedAtAction(
+       nameof(GetDetalleAlquiler),
+       new { id = alquiler.Id },
+       alquilerDetalle
+   );
+
 
 
 

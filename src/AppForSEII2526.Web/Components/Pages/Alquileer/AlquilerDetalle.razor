@@ -1,0 +1,113 @@
+﻿@page "/alquileer/detalle"
+
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+
+<h3>Detalles de alquiler</h3>
+
+@if (alquiler == null)
+{
+    <p>@error</p>
+}
+else
+{
+    <table class="table table-borderless table-sm">
+        <tr>
+            <th>Nombre</th>
+            <td id="Nombre">
+                @alquiler.Nombre
+            </td>
+        </tr>
+
+        <tr>
+            <th>Apellido</th>
+            <td id="Apellido">
+                @alquiler.Apellido
+            </td>
+        </tr>
+
+        <tr>
+            <th>Concesionario de Entrega</th>
+            <td id="ConcesionarioEntrega">@alquiler.ConcesionarioEntrega</td>
+        </tr>
+
+        <tr>
+            <th>Método de pago</th>
+            <td id="MetodoPago">@alquiler.MetodoPago</td>
+        </tr>
+
+        <tr>
+            <th>Fecha Alquiler</th>
+            <td id="FechaAlquiler">
+                @alquiler.FechaAlquiler.ToString("dd/MM/yyyy")
+            </td>
+        </tr>
+
+        <tr>
+            <th>Periodo de alquiler</th>
+            <td id="PeriodoAlquiler">
+                @alquiler.InicioAlquiler.ToString("dd/MM/yyyy")
+                -
+                @alquiler.FinAlquiler.ToString("dd/MM/yyyy")
+            </td>
+        </tr>
+    </table>
+
+    <h4>Coches Alquilados</h4>
+
+    <table class="table" id="CochesAlquilados">
+        <thead>
+            <tr>
+                <th>Modelo</th>
+                <th>Fabricante</th>
+                <th>Precio Alquiler</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in alquiler.AlquilerItems)
+            {
+                <tr id="RentalItem_@item.Modelo">
+                    <td>@item.Modelo</td>
+                    <td>@item.Fabricante</td>
+                    <td>@item.PrecioAlquiler €</td>
+                    <td>@item.Cantidad</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="2" class="text-end">Precio Total</th>
+                <td id="PrecioTotal">@alquiler.Total €</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int AlquilerID { get; set; }
+
+    private DetalleAlquilerDTO? alquiler;
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            alquiler = await apiclient.GetDetalleAlquilerAsync(AlquilerID);
+        }
+        catch
+        {
+            alquiler = null;
+        }
+
+        if (alquiler == null)
+        {
+            error = $"No existe un alquiler con el id indicado={AlquilerID}";
+        }
+    }
+}

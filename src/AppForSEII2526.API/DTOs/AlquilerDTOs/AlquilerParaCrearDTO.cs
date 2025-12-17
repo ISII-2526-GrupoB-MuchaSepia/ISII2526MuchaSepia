@@ -11,9 +11,9 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         //obligatorios.
 
 
-        public AlquilerParaCrearDTO(string nombreUsuario, string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItemDTO> alquilerItems, DateTime fechaAlquiler, double total)
+        public AlquilerParaCrearDTO(string? nombreUsuario, string nombre, string apellido, string concesionarioEntrega, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItemDTO> alquilerItems, DateTime fechaAlquiler, double total)
         {
-            NombreUsuario = nombreUsuario ?? throw new ArgumentNullException(nameof(nombreUsuario));
+            NombreUsuario = nombreUsuario;
             Nombre = nombre ?? throw new ArgumentNullException(nameof(nombre)); // validar que no sea nulo, asigna a Nombre un valor de nombre, a no ser que nombre sea null. En ese caso se lanza una excepcion
             Apellido = apellido ?? throw new ArgumentNullException(nameof(apellido)); // validar que no sea nulo
             ConcesionarioEntrega = concesionarioEntrega ?? throw new ArgumentNullException(nameof(concesionarioEntrega)); // validar que no sea nulo garantiza que el DTO siempre tenga datos validos
@@ -31,8 +31,8 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         }
 
         public double Total { get; set; }
-
-        public string NombreUsuario { get; set; }
+        
+        public string? NombreUsuario { get; set; }
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
@@ -47,19 +47,14 @@ namespace AppForSEII2526.API.DTOs.AlquilerDTOs
         public DateTime FechaAlquiler { get; set; }
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.MultilineText)]//multiLineText sugiere que en un formulario web podria ser un campo de texto con varias lineas
-        [Display(Name = "Concesionario de entrega")]
-        [StringLength(50, MinimumLength = 1, ErrorMessage = "Debe tener minimo 10 caracteres")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, configure su concesionario de entrega")]
-        public string ConcesionarioEntrega { get; set; }
-
-
-        [Required]
-        [StringLength(20, MinimumLength = 1)]
+        [Required(ErrorMessage = "Debe indicar nombre y apellidos.")]
         public string Nombre { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Porfavor, escriba su nombre y apellido")]
-        [StringLength(50, MinimumLength = 1, ErrorMessage = "Nombre y apellido con minimo 10 caracteres")]
+        [Required(ErrorMessage = "Debe indicar nombre y apellidos.")]
         public string Apellido { get; set; }
+
+        [Required(ErrorMessage = "Debe indicar un concesionario de entrega.")]
+        public string ConcesionarioEntrega { get; set; }
 
         public IList<AlquilerItemDTO> AlquilerItems { get; set; } //lista de coches alquilados
         [Required]

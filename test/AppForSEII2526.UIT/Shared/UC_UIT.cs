@@ -3,7 +3,7 @@ using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 
 
-namespace AppForMovies.UIT.Shared
+namespace AppForSEII2526.UIT.Shared
 {
     public class UC_UIT : IDisposable
     {
@@ -64,6 +64,7 @@ namespace AppForMovies.UIT.Shared
 
         protected void Perform_login(string email, string password)
         {
+            _driver.Navigate().GoToUrl(_URI + "Account/Login");
             _driver.Navigate()
                     .GoToUrl(_URI + "Account/Login");
             // _driver.FindElement(By.Id("Input_Email"))
@@ -71,12 +72,13 @@ namespace AppForMovies.UIT.Shared
             _driver.FindElement(By.Name("Input.Email"))
                 .SendKeys(email);
 
-            _driver.FindElement(By.Name("Input.Password"))
-                .SendKeys(password);
+            _driver.FindElement(By.Name("Input.Email")).SendKeys(email);
+            _driver.FindElement(By.Name("Input.Password")).SendKeys(password);
 
-            _driver.FindElement(By.XPath("/html/body/div[1]/main/article/div/div[1]/section/form/div[4]/button"))
-                .Click();
+            _driver.FindElement(By.CssSelector("button[type='submit']")).Click();
         }
+
+
 
 
         protected void SetUp_Chrome4UIT()
@@ -137,5 +139,8 @@ namespace AppForMovies.UIT.Shared
             _driver.Dispose();
             GC.SuppressFinalize(this);
         }
+
+      
+
     }
 }

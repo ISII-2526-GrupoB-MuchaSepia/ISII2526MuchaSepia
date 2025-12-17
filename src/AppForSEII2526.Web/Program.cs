@@ -41,6 +41,8 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 string? URI2API = builder.Configuration.GetValue(typeof(string), "AppForSEII2526_API") as string;
 
 //We create the service for accessing the API from where .WEB project
+builder.Services.AddScoped<AppForSEII2526APIClient>(sp => new AppForSEII2526APIClient(URI2API, new HttpClient()));
+builder.Services.AddScoped<AlquilerStateContainer>();
 builder.Services.AddScoped<AppForSEII2526APIClient>(sp =>
 {
     var handler = new HttpClientHandler();
@@ -51,7 +53,7 @@ builder.Services.AddScoped<AppForSEII2526APIClient>(sp =>
 
 builder.Services.AddScoped<CompraStateContainer>();
 
-builder.Services.AddScoped<ReseñarStateContainer>();
+builder.Services.AddScoped<ReseÃ±arStateContainer>();
 
 var app = builder.Build();
 

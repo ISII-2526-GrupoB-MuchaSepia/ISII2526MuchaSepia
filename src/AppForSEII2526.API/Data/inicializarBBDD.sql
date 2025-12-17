@@ -136,12 +136,12 @@ VALUES
 
 SET IDENTITY_INSERT [dbo].[Coches] OFF;
 
-SET IDENTITY_INSERT [dbo].[Alquileres] ON; INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [Nombre], [Apellido], [MetodoPago], [ApplicationUserId]) VALUES (1, 240, '2025-01-05 10:30:00', '2025-01-05 10:30:00', '2025-01-07 18:00:00', 'C/ Toledo Nº 12', N'Carlos', N'López', 0, N'1'); 
-INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [Nombre], [Apellido], [MetodoPago], [ApplicationUserId]) VALUES (2, 160, '2025-02-12 14:15:00', '2025-02-12 14:30:00', '2025-02-14 19:00:00', 'Av. España Nº 44', N'María', N'Gómez', 1, N'2');
-INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [Nombre], [Apellido], [MetodoPago], [ApplicationUserId]) VALUES (3, 60, '2025-03-01 09:00:00', '2025-03-01 09:00:00', '2025-03-02 20:00:00', 'C/ Ciudad Real Nº 27', N'Pedro', N'Serrano', 2, N'3'); 
-INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [Nombre], [Apellido], [MetodoPago], [ApplicationUserId]) VALUES (4, 330, '2025-04-10 11:25:00', '2025-04-10 11:30:00', '2025-04-13 18:45:00', 'C/ Alemania Nº 8', N'Ana', N'Ruiz', 0, N'4'); 
-INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [Nombre], [Apellido], [MetodoPago], [ApplicationUserId]) VALUES (5, 150, '2025-05-21 16:00:00', '2025-05-21 16:15:00', '2025-05-23 17:00:00', 'Av. Libertad Nº 6', N'Sergio', N'Martínez', 1, N'5'); 
-INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [Nombre], [Apellido], [MetodoPago], [ApplicationUserId]) VALUES (6, 180, '2025-06-02 08:45:00', '2025-06-02 09:00:00', '2025-06-04 20:30:00', 'C/ Alicante Nº 3', N'Lucía', N'Fernández', 2, N'6'); 
+SET IDENTITY_INSERT [dbo].[Alquileres] ON; INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega],  [MetodoPago], [ApplicationUserId]) VALUES (1, 240, '2025-01-05 10:30:00', '2025-01-05 10:30:00', '2025-01-07 18:00:00', 'C/ Toledo Nº 12', 0, N'1'); 
+INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega], [MetodoPago], [ApplicationUserId]) VALUES (2, 160, '2025-02-12 14:15:00', '2025-02-12 14:30:00', '2025-02-14 19:00:00', 'Av. España Nº 44', 1, N'2');
+INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega],  [MetodoPago], [ApplicationUserId]) VALUES (3, 60, '2025-03-01 09:00:00', '2025-03-01 09:00:00', '2025-03-02 20:00:00', 'C/ Ciudad Real Nº 27',  2, N'3'); 
+INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega],  [MetodoPago], [ApplicationUserId]) VALUES (4, 330, '2025-04-10 11:25:00', '2025-04-10 11:30:00', '2025-04-13 18:45:00', 'C/ Alemania Nº 8',  0, N'4'); 
+INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega],  [MetodoPago], [ApplicationUserId]) VALUES (5, 150, '2025-05-21 16:00:00', '2025-05-21 16:15:00', '2025-05-23 17:00:00', 'Av. Libertad Nº 6',  1, N'5'); 
+INSERT INTO [dbo].[Alquileres] ([Id], [Total], [FechaAlquiler], [InicioAlquiler], [FinAlquiler], [ConcesionarioEntrega],  [MetodoPago], [ApplicationUserId]) VALUES (6, 180, '2025-06-02 08:45:00', '2025-06-02 09:00:00', '2025-06-04 20:30:00', 'C/ Alicante Nº 3',  2, N'6'); 
 SET IDENTITY_INSERT [dbo].[Alquileres] OFF;
 INSERT INTO [dbo].[AlquilerItem] (CocheId, AlquilerId, Cantidad) VALUES (1, 1, 1);
 INSERT INTO [dbo].[AlquilerItem] (CocheId, AlquilerId, Cantidad) VALUES (2, 2, 1);
@@ -191,6 +191,26 @@ DELETE FROM [dbo].[AlquilerItem]
 WHERE AlquilerId = 11;
 DELETE FROM [dbo].[Alquileres]
 WHERE Id = 11;
+
+
+Si queremos eliminar la última
+migración:
+Update-Database –Migration 0
+ Remove-Migration
+ Si quieres borrar más migraciones
+ejecuta remove-migration las veces
+que lo necesites.
+
+Si quieres borrar tu base de datos:
+ drop-database
+
+Podemos ejecutar la siguiente
+instrucción para crear una base de
+datos vacía:
+ Update-Database -Migration 0
+
+Add-Migration CreateIdentitySchema
+Update-Database
 
 
 

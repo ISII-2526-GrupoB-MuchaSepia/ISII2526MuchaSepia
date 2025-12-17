@@ -154,6 +154,8 @@ new Coche(
     fechaAlquiler: DateTime.Today.AddDays(1),
     total: 0
    );
+
+            /*
             var usuarioNoExiste = new AlquilerParaCrearDTO(
     "margarita@21",
     Nombre,
@@ -166,6 +168,8 @@ new Coche(
     fechaAlquiler: DateTime.Today.AddDays(4),
     total: 0
 );
+
+            */
             var cocheNoDisponible = new AlquilerParaCrearDTO(
      NombreUsuario,
      Nombre,
@@ -218,7 +222,7 @@ new Coche(
                  new object[] { alquilerSinItem, "Debe seleccionar al menos un coche para alquilar." },//0 coches seleccionados
                  new object[] { inicioHoy, "¡Error! La fecha de inicio debe ser posterior a hoy." }, //inicio = hoy
                  new object[] { finAntesQueInicio, "¡Error! La fecha de finalización debe ser posterior a la de inicio." },//fin < inicio
-                 new object[] { usuarioNoExiste, "El usuario indicado no existe." },//usuario incorrecto
+                 //new object[] { usuarioNoExiste, "El usuario indicado no existe." },//usuario incorrecto
                  new object[] { cocheNoDisponible, "no está disponible para las fechas" },//unidad no disponible
                  new object[] {NoCalle, "la dirección debe contener la palabra calle" }
             };
