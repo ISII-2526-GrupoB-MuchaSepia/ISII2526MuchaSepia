@@ -141,6 +141,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
 
             // Creamos el DTO que representa la compra que ESPERAMOS recibir del controlador
             var compraEsperada = new DetallesCompraDTO(
+                1,
                 "Bartolo",                            // Nombre
                 "Balatro Balatrez",                             // Apellido
                 DateTime.Today,                       // Fecha de compra
@@ -156,8 +157,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
                     "Ford Pickup",    // Nombre del coche
                     42000,            // Precio de compra
                     1,                 // Cantidad
-                    "Blanco",           // Color
-                    "Pickup robusta para trabajo pesado"
+                    "Blanco"           // Color
                 )
             );
             foreach (var item in compraEsperada.ComprarItemDTOs)

@@ -1089,6 +1089,10 @@
               "$ref": "#/components/schemas/ComprarItemDTO"
             },
             "nullable": true
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

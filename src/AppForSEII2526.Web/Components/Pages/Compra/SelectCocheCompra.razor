@@ -1,0 +1,206 @@
+﻿﻿
+@page "/compra/select"
+@using Microsoft.AspNetCore.Authorization
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectCocheCompra> logger
+@inject CompraStateContainer compraState
+@inject NavigationManager navigation
+
+
+
+<h3>Seleccionar Coches para Comprar</h3>
+
+<div class="container-fluid">
+
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+
+                <!-- FILTRO COLOR -->
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Color</span>
+                        <input type="text"
+                               id="inputColor"
+                               @bind="filtroColor"
+                               class="form-control"
+                               placeholder="Color" aria-label="Color" aria-describedby="basic-addon1" />
+                    </div>
+                </div>
+
+                <!-- FILTRO MODELO -->
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon2">Modelo</span>
+                        <input type="text"
+                               id="inputModelo"
+                               @bind="modelo"
+                               class="form-control"
+                               placeholder="Modelo" aria-label="Modelo" aria-describedby="basic-addon2" />
+                    </div>
+                </div>
+
+                <!-- BOTÓN BUSCAR -->
+                <div class="col">
+                    <button type="button"
+                            class="btn btn-primary"
+                            @onclick=@BuscarCoches
+                            id="buttonbuscarCoches">
+                        Buscar coches
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLA RESULTADOS -->
+            <div class="row">
+                @if (coches == null)
+                {
+                    <p>Cargando coches...</p>
+                }
+                else if (coches.Count == 0 && string.IsNullOrEmpty(filtroColor) && string.IsNullOrEmpty(modelo))
+                {
+                    <p><em>No hay coches para comprar.</em></p>
+                }
+                else
+                {
+                    <div class="mh-100 table-responsive">
+                        <table class="table table-condensed table-hover" id="tablaCoches">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>Color</th>
+                                    <th>Precio</th>
+                                    <th>Fabricante</th>
+                                    <th>Tipo de combustible</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var coche in coches)
+                                {
+                                    <tr id="CarData_@coche.Id">
+                                        <td>@coche.Modelo</td>
+                                        <td>@coche.Color</td>
+                                        <td>@coche.PrecioCompra</td>
+                                        <td>@coche.Fabricante</td>
+                                        <td>@coche.Tcombustible</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" id="cocheTocompra_@coche.Modelo"@onclick="@(() => AddCar(coche))">Añadir</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- CARRITO DE COMPRA -->
+        <div class="col-2" hidden="@hidePurchaseCart">
+
+            <div class="row">
+                <h3>Carrito</h3>
+            </div>
+
+            @foreach (var item in compra.ComprarItems)
+            {
+                <div class="row">
+                    <button type="button"
+                            class="btn btn-light"
+                            id="quitarCoche_@item.Modelo"
+                            @onclick="@(() => QuitarCompraItem(item))">
+                        x @item.Modelo - @item.PrecioCompra 
+                    </button>
+                </div>
+            }
+
+            <div class="row mt-3">
+                <button type="button"
+                        class="btn btn-primary"
+                        id="compraCocheButton"
+                        @onclick="ComprarCoches">
+                    Comprar coches
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+@code {
+    private bool hidePurchaseCart { get { return compra.ComprarItems.Count == 0; } }
+    private ICollection<CocheParaCompraDTO> coches;
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private string filtroColor { get; set; }
+    private string modelo { get; set; }
+
+    private CreacionComprasDTO compra => compraState.Compra;
+
+    private bool hiddenPurchaseCart = true;
+
+    private void AddCar(CocheParaCompraDTO car)
+    {
+        compraState.AddCarToPurchase(car);
+    }
+
+    private void QuitarCompraItem(ComprarItemDTO item)
+    {
+        compraState.RemovePurchaseItemToPurchase(item);
+        if (compra.ComprarItems.Count == 0) hiddenPurchaseCart = true;
+    }
+
+    public async void BuscarCoches()
+    {
+        try
+        {   
+            coches = await apiclient.GetCochesParaComprarAsync(filtroColor, modelo);
+            errors = "";
+
+            if (coches.Count == 0 && filtroColor == "." && modelo == ".")
+            {
+                errors = "No hay coches disponibles para comprar.";
+            }
+            else if (coches.Count == 0 && !string.IsNullOrEmpty(filtroColor) && !string.IsNullOrEmpty(modelo))
+            {
+                errors = $"Error! No hay coches de color '{filtroColor}'y modelo '{modelo}'. Porfavor  cambie los filtros de busqueda.";
+            }
+            else if (coches.Count == 0 && !string.IsNullOrEmpty(filtroColor))
+            {
+                errors = $"Error! No hay coches de color '{filtroColor}'. Porfavor  cambie los filtros de busqueda.";
+            }
+            else if (coches.Count == 0 && !string.IsNullOrEmpty(modelo))
+            {
+                errors = $"Error! No hay coches con ese modelo '{modelo}'. Porfavor  cambie los filtros de busqueda.";
+            }
+            
+
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Erro al conectarse al servidor";
+        }
+        StateHasChanged();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        BuscarCoches();
+
+        return base.OnInitializedAsync();
+    }
+
+    private void ComprarCoches()
+    {
+        navigation.NavigateTo("/comprar/post"); 
+    }
+}

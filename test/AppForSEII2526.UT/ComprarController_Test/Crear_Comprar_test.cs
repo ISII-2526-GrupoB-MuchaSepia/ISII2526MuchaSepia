@@ -116,7 +116,7 @@ namespace AppForSEII2526.UT.ComprarController_Test
 
             var purchaseDTO = new CreacionComprasDTO(0, Nombre, Apellidos, ConcesionarioEntrega, MetodoPagoTipos.Visa, new List<ComprarItemDTO>() { new ComprarItemDTO(2, modelo2, 0d, 1, "Blanco", "Pickup robusta para trabajo pesado") });
 
-            var expectedpurchaseDetailDTO = new DetallesCompraDTO(Nombre, Apellidos, DateTime.Today, ConcesionarioEntrega, 42000d, new List<ComprarItemDTO> { new ComprarItemDTO(2, modelo2, 42000d, 1, "Blanco", "Pickup robusta para trabajo pesado") });
+            var expectedpurchaseDetailDTO = new DetallesCompraDTO(2,Nombre, Apellidos, DateTime.Today, ConcesionarioEntrega, 42000d, new List<ComprarItemDTO> { new ComprarItemDTO(2, modelo2, 42000d, 1, "Blanco", "Pickup robusta para trabajo pesado") });
 
             // Act
             var result = await controller.CrearCompra(purchaseDTO);

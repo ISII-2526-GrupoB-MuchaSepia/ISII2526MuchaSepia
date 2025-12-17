@@ -1,0 +1,231 @@
+﻿
+@page "/comprar/post"
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigation
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<PostCocheCompra> logger
+@inject CompraStateContainer comprarState
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Crear Compra</h3>
+
+@* Usamos OnSubmit para tener control total y ver errores *@
+<EditForm Model="compra" OnValidSubmit="GuardarCompraDirecta">
+    <div class="row">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="row alert alert-danger" />
+    </div>
+
+    @* Mensajes de éxito o error *@
+    <div class="row alert @alertClass" role="alert" hidden="@hideMessage">
+        <p>@message</p>
+    </div>
+
+    @* --- DATOS DEL CLIENTE --- *@
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="compra.Nombre" class="form-control" id="Nombre" placeholder="Nombre" />
+                <label for="Nombre">Nombre</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="compra.Apellido" class="form-control" id="Apellidos" placeholder="Apellidos" />
+                <label for="Apellidos">Apellidos</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="compra.ConcesionarioEntrega" class="form-control" id="ConcesionarioEntrega" placeholder="Concesionario" />
+                <label for="ConcesionarioEntrega">Concesionario</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                <InputSelect class="form-select" @bind-Value="@compra.MetodoPago" id="MetodoPago">
+                    <option value="@MetodoPagoTipos.GooglePay">Google Pay</option>
+                    <option value="@MetodoPagoTipos.Visa">Visa</option>
+                    <option value="@MetodoPagoTipos.Visa">PayPal</option>
+                </InputSelect>
+                <label for="MetodoPago">Método de Pago</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating">
+                @* BOTÓN DE GUARDADO DIRECTO *@
+                <button class="btn btn-primary" type="submit" id="Submit" disabled="@isProcesando">
+                    @if (isProcesando)
+                    {
+                        <span>Procesando...</span>
+                    }
+                    else
+                    {
+                        <span>Confirmar Compra</span>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4>Resumen del pedido</h4>
+    <p>
+        <b>Total:</b>  <span id="PrecioTotal">@TotalCost</span> €
+        <button class="btn btn-outline-primary ms-3" type="button" @onclick="ModifyPurchaseItems" id="ModificarCoches">
+            Modificar Coches
+        </button>
+    </p>
+
+    <div class="mh-100 table-responsive">
+        <table class="table table-condensed table-hover" id="TablaCompraItems">
+            <thead>
+                <tr>
+                    <th>Modelo</th>
+                    <th>Color</th>
+                    <th>Description</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in compra.ComprarItems)
+                {
+                    <tr>
+                        <td>@item.Modelo</td>
+                        <td>@item.Color</td>
+                        <td>@item.Descripcion</td>
+                        <td>@item.PrecioCompra €</td>
+                        <td style="width: 150px;">
+                            <InputNumber @bind-Value="item.Cantidad" class="form-control" id="@($"quantity_{item.Modelo}")"/>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@code {
+    // --- ESTADO ---
+    private string message = "";
+    private string alertClass = "alert-danger";
+    private bool hideMessage => string.IsNullOrEmpty(message);
+    private bool isProcesando = false;
+
+    private CreacionComprasDTO compra => comprarState.Compra;
+
+    private decimal TotalCost
+    {
+        get
+        {
+            if (compra.ComprarItems == null) return 0;
+            double precio = compra.ComprarItems.Sum(ri => ri.PrecioCompra * ri.Cantidad);
+            return Convert.ToDecimal(precio);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // 1. Inicializar lista
+        if (compra.ComprarItems == null) compra.ComprarItems = new List<ComprarItemDTO>();
+
+        // 2. Obtener usuario
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            compra.UserName = user.Identity.Name;
+        }
+        else
+        {
+            compra.UserName = "invitado@auto.com"; // Fallback
+        }
+
+        // 3. Valores por defecto
+        if (string.IsNullOrEmpty(compra.Nombre)) compra.Nombre = "";
+        if (string.IsNullOrEmpty(compra.Apellido)) compra.Apellido = "";
+        if (string.IsNullOrEmpty(compra.ConcesionarioEntrega)) compra.ConcesionarioEntrega = "";
+    }
+
+    private void ModifyPurchaseItems()
+    {
+        navigation.NavigateTo("/compra/select");
+    }
+
+    // --- GUARDADO DIRECTO ---
+    private async Task GuardarCompraDirecta()
+    {
+        message = "";
+        alertClass = "alert-danger";
+        isProcesando = true;
+
+        if (compra.ComprarItems.Count == 0)
+        {
+            message = "El carrito está vacío.";
+            isProcesando = false;
+            return;
+        }
+
+        try
+        {
+            // LLAMADA API
+            var result = await apiclient.CrearCompraAsync(compra);
+
+            // ÉXITO
+            comprarState.PurchaseProcessed();
+            navigation.NavigateTo($"/compra/detalles?id={result.Id}");
+        }
+        catch (ApiException<ValidationProblemDetails> ex)
+        {
+            // Error 400 (Bad Request) - Validaciones o Error SQL controlado
+            if (ex.Result.Errors != null)
+            {
+                var errores = "";
+                foreach (var errorList in ex.Result.Errors.Values)
+                {
+                    errores += string.Join(" ", errorList) + ". ";
+                }
+                message = "Error: " + errores;
+            }
+        }
+        catch (ApiException ex)
+        {
+            // PARCHE CLAVE: Si es error de lectura pero el código es 201, ES UN ÉXITO
+            if (ex.StatusCode == 201 || ex.StatusCode == 200)
+            {
+                try
+                {
+                    var json = ex.Response;
+                    var partes = json.Split(new[] { "\"id\":" }, StringSplitOptions.None);
+                    if (partes.Length > 1)
+                    {
+                        var idString = partes[1].Split(',')[0].Trim();
+                        int id = int.Parse(idString);
+
+                        comprarState.PurchaseProcessed();
+                        navigation.NavigateTo($"/compra/detalles?id={id}");
+                        return;
+                    }
+                }
+                catch { }
+            }
+
+            message = $"Error del servidor ({ex.StatusCode}): {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            message = $"Error crítico: {ex.Message}";
+        }
+        finally
+        {
+            isProcesando = false;
+        }
+    }
+}
