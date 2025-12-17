@@ -101,7 +101,7 @@ namespace AppForSEII2526.API.Migrations
                     FechaAlquiler = table.Column<DateTime>(type: "datetime2", nullable: false),
                     InicioAlquiler = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinAlquiler = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ConcesionarioEntrega = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConcesionarioEntrega = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MetodoPago = table.Column<int>(type: "int", nullable: false),

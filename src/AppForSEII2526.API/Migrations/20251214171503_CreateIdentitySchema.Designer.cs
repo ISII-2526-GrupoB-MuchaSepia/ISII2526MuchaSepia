@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppForSEII2526.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251119164656_CreateIdentitySchema")]
+    [Migration("20251214171503_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
         /// <inheritdoc />
@@ -42,7 +42,8 @@ namespace AppForSEII2526.API.Migrations
 
                     b.Property<string>("ConcesionarioEntrega")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("FechaAlquiler")
                         .HasColumnType("datetime2");
