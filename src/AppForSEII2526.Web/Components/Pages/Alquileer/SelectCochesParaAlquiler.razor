@@ -42,26 +42,13 @@
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Inicio Alquiler</span>
-                        <InputDate @bind-Value="Inicio" id="inicio" />
-                    </div>
-                </div>
+                
 
-                <div class="col">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Fin Alquiler</span>
-                        <InputDate @bind-Value="Fin" id="fin" />
-                    </div>
-                </div>
+                
 
-                <div class="col">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Fecha Alquiler</span>
-                        <InputDate @bind-Value="FechaAlquiler" id="FechaAlquiler" />
-                    </div>
-                </div>
+                
+
+                
 
                 <div class="col">
                     <button type="button"
@@ -72,13 +59,17 @@
                     </button>
                 </div>
 
-            </div> @* cierre row filtros *@
+            </div> 
 
 
             <div class="row">
                 @if (coches == null)
                 {
                     <p>Cargando coches....</p>
+                }
+                else if(coches.Count == 0)
+                {
+                    <p>No se han encontrado coches con los criterios de búsqueda.</p>
                 }
                 else
                 {
@@ -100,14 +91,16 @@
                                     <tr id="CocheData_@coche.Modelo">
                                         <td>@coche.Modelo</td>
                                         <td>@coche.Color</td>
-                                        <td>@coche.PrecioAlquiler €</td>
+                                        <td>@coche.PrecioAlquiler </td>
                                         <td>@coche.Fabricante</td>
                                         <td>@coche.TipoCombustible</td>
                                         <td>
                                             <button class="btn btn-outline-secondary"
+                                                    id="cocheParaAlquilar_@coche.Modelo"
                                                     @onclick="@(() => AñadirCoche(coche))">
                                                 Añadir Coche
                                             </button>
+
                                         </td>
                                     </tr>
                                 }
@@ -115,9 +108,9 @@
                         </table>
                     </div>
                 }
-            </div> @* cierre row tabla *@
+            </div> 
 
-        </div> @* cierre col-8 *@
+        </div> 
 
 
 
@@ -132,6 +125,7 @@
             {
                 <div class="row">
                     <button type="button"
+                            id="removerAlquiler_@item.Modelo"
                             class="btn btn-light"
                             @onclick="@(() => RemoveRentalItem(item))">
                         x @item.Modelo - @item.PrecioAlquiler €
@@ -148,51 +142,38 @@
                 </button>
             </div>
 
-        </div> @* cierre col-2 *@
+        </div> 
 
 
-    </div> @* cierre row principal *@
+    </div> 
 
-</div> @* cierre container-fluid *@
-
-
-    @code {
-
-        private bool ocultarCarroAlquiler { get { return alquiler.AlquilerItems.Count == 0; } }
-        private ICollection<CocheParaAlquilerDTO> coches; //lista de coches que vienen de la API.
-        private bool hideErrors { get { return errors.Length == 0; } }
-        private string errors = "";
-        private string nombremodelo { get; set; } //filtro por modelo
-        private float? precioalquiler { get; set; } //filtro por precio de alquiler
+</div> 
 
 
-        private DateTime inicio;
-        private DateTime Inicio {
-            get { return inicio; }
-            set {
-                if (inicio != value) {
-                    //the rentingcart is cleared to ensure that only movies available for the selected period are selected
-                    inicio = value;
-                    alquiler.InicioAlquiler  = DateTime.SpecifyKind(inicio, DateTimeKind.Utc);
-                    alquilerState.VaciarCarro();
+@code {
 
-                }
+    private bool ocultarCarroAlquiler { get { return alquiler.AlquilerItems.Count == 0; } }
+    private ICollection<CocheParaAlquilerDTO> coches; //lista de coches que vienen de la API.
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private string nombremodelo { get; set; } //filtro por modelo
+    private float? precioalquiler { get; set; } //filtro por precio de alquiler
+
+
+    private DateTime inicio;
+    private DateTime Inicio {
+        get { return inicio; }
+        set {
+            if (inicio != value) {
+                //the rentingcart is cleared to ensure that only movies available for the selected period are selected
+                inicio = value;
+                alquiler.InicioAlquiler  = DateTime.SpecifyKind(inicio, DateTimeKind.Utc);
+                alquilerState.VaciarCarro();
+
             }
         }
-        private DateTime fechaalquiler;
-        private DateTime FechaAlquiler
-        {
-            get{ return fechaalquiler; }
-            set
-            {
-                if(fechaalquiler != value)
-                {
-                    fechaalquiler = value;
-                    alquiler.FinAlquiler = DateTime.SpecifyKind(fechaalquiler, DateTimeKind.Utc);
-                    alquilerState.VaciarCarro();
-                }
-            }
-        }
+    }
+
 
     private DateTime fin;
     private DateTime Fin {
@@ -208,7 +189,7 @@
         }
     }
 
-    
+
     private AlquilerParaCrearDTO alquiler => alquilerState.Alquiler;
 
     private bool hiddenRentingCart = true;
@@ -224,18 +205,9 @@
 
     public async void BuscarCoches() {
 
-       
 
-        if (alquiler.InicioAlquiler > alquiler.FinAlquiler) {
-            errors = "la fecha de inicio no puede ser después de la final.";
-            return;
-        }
 
-        if (alquiler.InicioAlquiler < DateTime.Today || alquiler.FinAlquiler < DateTime.Today) {
-            errors = "el alquiler debe ser en el futuro.";
-            return;
-        }
-        
+
         try {
             coches = await apiclient.GetCochesParaAlquilarAsync(nombremodelo, precioalquiler);
             errors = "";
@@ -248,28 +220,20 @@
         StateHasChanged();
     }
 
-    protected override async Task OnInitializedAsync() {
+    protected override  Task OnInitializedAsync() {
 
-        //Si inicio está sin inicializar, se pone a mañana.
-        //si fin está sin inicializar, se pone pasado mañana.
+        
+        
+            
+        
 
-       
-        inicio = (inicio == new DateTime(1, 1, 1)) ?
-            DateTime.SpecifyKind(DateTime.Today.AddDays(1), DateTimeKind.Utc)
-            : inicio;
-        alquiler.InicioAlquiler = inicio;
-
-       
-        fin = (fin == new DateTime(1, 1, 1)) ?
-            DateTime.SpecifyKind(DateTime.Today.AddDays(2), DateTimeKind.Utc)
-            : fin;
-        alquiler.FinAlquiler = fin;
+     
 
         
 
         BuscarCoches();
 
-       //return base.OnInitializedAsync();
+       return base.OnInitializedAsync();
     }
 
     private void AlquilarCoches() {

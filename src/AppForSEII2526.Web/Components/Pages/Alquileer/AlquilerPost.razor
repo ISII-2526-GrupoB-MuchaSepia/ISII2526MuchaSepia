@@ -1,0 +1,228 @@
+﻿@page "/alquileer/post"
+
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager navigation
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<AlquilerPost> logger
+@inject AlquilerStateContainer alquilerState
+@using AppForSEII2526.Web.Components.Shared
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+
+
+
+<h3>Crear Alquiler</h3>
+
+<EditForm Model="alquiler" OnValidSubmit="OpenDialog">
+    
+    <div class="row">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="row alert alert-danger" />
+    </div>
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @messageError</p>
+    </div>
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                
+                <InputText @bind-Value="alquiler.Nombre" class="form-control" id="AlquilerNombre" />
+                <label for="AlquilerNombre">Nombre </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="alquiler.Apellido" class="form-control" id="AlquilerApellido" />
+                <label for="AlquilerApellido">Apellido </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="alquiler.ConcesionarioEntrega" class="form-control" id="AlquilerConcesionarioEntrega" />
+                <label for="AlquilerConcesionarioEntrega">Concesionario de Entrega</label>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                @*a dropdown for selecting the payment method*@
+                <InputSelect class="form-select" @bind-Value="@alquiler.MetodoPago" id="AlquilerMetodoPago">
+                    <option value="@MetodoPagoTipos.Visa" default>Visa</option>
+                    <option value="@MetodoPagoTipos.GooglePay"> GooglePay</option>
+                    <option value="@MetodoPagoTipos.PayPal"> PayPal</option>
+                </InputSelect>
+                <label for="AlquilerMetodoPago">Metodo Pago</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating">
+               
+                <button class="btn btn-primary" type="submit" id="AlquilerSubmit" disabled="@BotonDeshabilitado">
+                    
+                    Alquila tus coches
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <h4>Detalles de alquiler</h4>
+    <p><b>Inicio:</b> @alquiler.InicioAlquiler.ToString("dd/MM/yyyy") <b>fin:</b> @alquiler.FinAlquiler.ToString("dd/MM/yyyy")</p>
+    <p><b>Fecha:</b> @alquiler.FechaAlquiler.ToString("dd/MM/yyyy")</p>
+    <p>
+        <b>Precio Total:</b><span id="PrecioTotal">  @Total</span> €
+        <button class="btn btn-outline-primary"
+                type="button"
+                id="ModificarCoches"
+                @onclick="ModificarArticulosAlquiler">
+            Modificar Coches
+        </button>
+       
+    </p>
+    
+    <div class="mh-100 table-responsive">
+        <table class="table table-condensed table-hover" id="TablaArticulosAlquiler">
+            <thead>
+                <tr>
+                    <th>Modelo</th>
+                    <th>Fabricante</th>
+                    <th>Precio Alquiler</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in alquiler.AlquilerItems)
+                {
+                    <tr id="CarData_@item.Modelo">
+                        <td>@item.Modelo</td>
+                        <td>@item.Fabricante</td>
+                        <td>@item.PrecioAlquiler €</td>
+                        <td><InputNumber @bind-Value="item.Cantidad" class="form-control" id="@($"cantidad_{item.Modelo}")" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@if (DialogIsOpen) //DIALOGO DE CONFIRMACIÓN
+{
+    <DialogAlquiler Caption="Alquilar coches"
+                  Message="¿Quieres alquilar estos coches?"
+                  OnClose="@OnDialogClose"
+                  Type="DialogAlquiler.Category.SaveNot">
+    </DialogAlquiler>
+}
+
+@code {
+    
+    private string messageError = "";
+    private bool hideErrors { get { return messageError.Length == 0; } }
+
+    private bool DialogIsOpen;
+    private AlquilerParaCrearDTO alquiler => alquilerState.Alquiler;
+    private bool BotonDeshabilitado { get { return (alquiler.AlquilerItems == null || alquiler.AlquilerItems.Count == 0); } }
+    private decimal Total
+    {
+        get
+        {
+            int days = (alquiler.FinAlquiler.DateTime - alquiler.InicioAlquiler.DateTime).Days;
+            double price = alquiler.AlquilerItems.Sum(ri => ri.PrecioAlquiler * days * ri.Cantidad );
+            return Convert.ToDecimal(price);
+        }
+    }
+
+
+
+    private void OpenDialog()
+    {
+        DialogIsOpen = true;
+    }
+
+    private async Task OnDialogClose(bool isOk)
+    {
+
+        DialogIsOpen = false;
+        if (isOk)
+        {
+            // comprobar si hay coches en el alquiler
+            if (alquiler.AlquilerItems.Count > 0)
+            {
+                try //Si el carrito no tiene coches → no entra en el try.
+                {
+                    alquiler.Total = (double)Total;
+                
+
+                    var alq = await apiclient.CreateAlquilerAsync(alquiler); //intentamos crear el alquiler en la API
+                    alquilerState.AlquilerProcesado(); //Vaciar el carrito
+                   navigation.NavigateTo($"/alquileer/detalle/?AlquilerID={alq.Id}"); //Redirigir a la página de detalles del alquiler
+                }
+                catch (ApiException<ValidationProblemDetails> apiexceptionvalidation) //errores de validación (400 Bad Request)
+                {
+
+                    if (apiexceptionvalidation.Result.Errors.Values != null)
+                    {
+                        messageError = "";
+                        foreach (var errors in apiexceptionvalidation.Result.Errors.Values)
+
+                            messageError = string.Join("(*) ", messageError, string.Join(" (*) ", errors));
+                    }
+                }
+                catch (ApiException ex)
+                {
+                    logger.LogError(ex, "Error al crear el alquiler");
+                    messageError = "Error al procesar su solicitud, por favor inténtelo de nuevo más tarde.";
+
+                }
+
+            }
+        }
+    }
+
+
+    private void ModificarArticulosAlquiler()
+    {
+        navigation.NavigateTo("/alquileer/selectcochesparaalquiler");
+    }
+ 
+  /*
+    private void VerDetalleSolo()
+    {
+        navigation.NavigateTo("/alquileer/detalle-solo");
+    }
+
+
+*/
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Inicializar fechas si no vienen del paso anterior
+        if (alquiler.FechaAlquiler == default)
+        {
+            alquiler.FechaAlquiler = DateTime.Today;
+        }
+
+        if (alquiler.InicioAlquiler == default)
+        {
+            alquiler.InicioAlquiler = DateTime.SpecifyKind(
+                DateTime.Today.AddDays(1),
+                DateTimeKind.Utc
+            );
+        }
+
+        if (alquiler.FinAlquiler == default)
+        {
+            alquiler.FinAlquiler = DateTime.SpecifyKind(
+                DateTime.Today.AddDays(2),
+                DateTimeKind.Utc
+            );
+        }
+
+       
+
+}
+}

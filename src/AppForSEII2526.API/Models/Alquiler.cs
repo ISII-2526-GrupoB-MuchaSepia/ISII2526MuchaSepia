@@ -5,7 +5,8 @@
         public Alquiler()
         {
         }
-        public Alquiler( string concesionarioEntrega, DateTime fechaAlquiler, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItem> alquilerItems, ApplicationUser applicationUser)
+        public Alquiler( string concesionarioEntrega, DateTime fechaAlquiler, MetodoPagoTipos metodoPago, DateTime inicioAlquiler, DateTime finAlquiler, IList<AlquilerItem> alquilerItems, ApplicationUser? applicationUser 
+)
         {
 
            
@@ -18,8 +19,8 @@
             MetodoPago = metodoPago;
             ApplicationUser = applicationUser;
 
-            Nombre = applicationUser?.Nombre;      
-            Apellido = applicationUser?.Apellido;
+            //Nombre = applicationUser?.Nombre;      
+            //Apellido = applicationUser?.Apellido;
         }
 
         [Key]
@@ -48,14 +49,16 @@
         
         public string ConcesionarioEntrega { get; set; }
 
-        public string Nombre { get; set; }
+        //public string Nombre { get; set; }
 
-        public string Apellido { get; set; }
+        //public string Apellido { get; set; }
+       
+        
         [Display(Name = "Metodos de pago")]
         public MetodoPagoTipos MetodoPago { get; set; }
 
        
-        public ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
         public IList<AlquilerItem> AlquilerItems { get; set; }
 
     }
