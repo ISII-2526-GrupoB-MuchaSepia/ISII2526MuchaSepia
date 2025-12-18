@@ -352,10 +352,68 @@ usuario.*/
         }
 
 
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void examen()
+        {
+
+
+            PasosInicialesParaAlquilarCoches();
+
+            var expected = new List<string[]>
+    {
+        new string[]
+        {
+
+
+             cocheModelo3,
+            cocheFabricante3,
+            precioAlquiler3 + " €",
+            Cantidad
+            
+        }
+    };
+
+            Thread.Sleep(1000);
+
+            selectCochesParaAlquiler_PO.BuscarCoches(cocheModelo1, null);
+            Thread.Sleep(1000);
+            selectCochesParaAlquiler_PO.AñadirCocheAlCarroAlquiler(cocheModelo1);
+
+            Thread.Sleep(1000);
+
+            selectCochesParaAlquiler_PO.BuscarCoches("", 120);
+            Thread.Sleep(1000);
+            selectCochesParaAlquiler_PO.AñadirCocheAlCarroAlquiler(cocheModelo3);
+            Thread.Sleep(1000);
+            selectCochesParaAlquiler_PO.AlquilarCoches();
+            Thread.Sleep(1000);
+            crearAlquiler_PO.PulsaModificarCoches();
+            Thread.Sleep(1000);
+            selectCochesParaAlquiler_PO.RemoveCocheDelCarroAlquiler(cocheModelo1);
+            Thread.Sleep(1000);
+            selectCochesParaAlquiler_PO.AlquilarCoches();
+
+            crearAlquiler_PO.RellenarDatosObligatorios(Nombre, Apellido, MetodoPago, ConcesionarioEntrega);
+            Thread.Sleep(1000);
+           
+            crearAlquiler_PO.RellenarCantidadAlquiler(cocheModelo3, Cantidad);
+            Thread.Sleep(1000);
+            crearAlquiler_PO.PulsarAlquilarCoches();
+            Thread.Sleep(1000);
+            crearAlquiler_PO.PressOkModalDialog();
+            Thread.Sleep(1000);
 
 
 
 
-    }
+            Assert.True(
+               detalleAlquiler_PO.CheckListaDeCoches(expected),
+               "Error: rental items are not as expected"
+           );
+        }
+
+
+        }
 }
 
