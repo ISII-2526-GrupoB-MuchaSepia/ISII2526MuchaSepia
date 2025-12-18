@@ -1,12 +1,13 @@
-﻿using System;
+﻿using AppForSEII2526.UIT.CU_Purchase;
+using AppForSEII2526.UIT.Shared;
+using OpenQA.Selenium.BiDi.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using AppForSEII2526.UIT.CU_Purchase;
-using AppForSEII2526.UIT.Shared;
 
 namespace AppForSEII2526.UIT.UC_Compra
 {
@@ -89,13 +90,61 @@ namespace AppForSEII2526.UIT.UC_Compra
             Assert.True(detallesCompra_PO.CheckListOfPurchase(expectedCompratems),
                 "Error: purchase items are not as expected");
         }
-        
-        
+
+        //FLUJO EXAMEN 
+        [Fact]
+        [Trait("LevelTesting", "Funcional Testing")]
+        public void UC1_EjecicioExamenPost()
+        {
+            // Arrange
+            InitialStepsForPurchaseCars();
+            Thread.Sleep(1000);
+
+            // Filtrar por color y añadir coche 1
+            selectCochesParaCompra_PO.BuscarCoche(color1, "");
+            Thread.Sleep(1000);
+            selectCochesParaCompra_PO.AddCocheToCompraCart(modelo1);
+            Thread.Sleep(1000);
+
+            //Borramos los campos seleccionados
+            selectCochesParaCompra_PO.BuscarCoche("", "");
+            Thread.Sleep(1000);
+
+            //Filtrar por modelo y añadimos coche 2
+            selectCochesParaCompra_PO.BuscarCoche("", modelo2);
+            Thread.Sleep(1000);
+            selectCochesParaCompra_PO.AddCocheToCompraCart(modelo2);
+            Thread.Sleep(1000);
+
+            //Eliminamos el prmer coche añadido
+            Thread.Sleep(1000);
+            selectCochesParaCompra_PO.RemoveCocheFromCompraCart(modelo1);
+
+            // Pulsamos buscar coches
+            selectCochesParaCompra_PO.ComprarCoche();
+            Thread.Sleep(1000);
+
+            //Rellenamos los datos y compramos
+            crearCompra_PO.FillInPurchaseInfo(nombre, apellido, concesionarioEntrega, metodopago1);
+            crearCompra_PO.FillInPurchaseQuantity(cantidad, modelo2);
+            crearCompra_PO.PressPurchaseYourCars();
+
+            
+            var expectedItems = new List<string[]> {
+                new string[] { modelo2, preciocompra2, color2, cantidad }
+            };
+
+            Assert.True(
+            detallesCompra_PO.CheckListOfPurchase(expectedItems),
+            "Error: El coche no es el esperado");
+        }
+
+
         /*
          * Flujo alternativo 0 - al paso 2
            Si el sistema detecta que no hay coches disponibles, se notificará al usuario.
          */
-       
+
         [Fact]
         [Trait("LevelTesting", "Funcional Testing")]
         public void UC1_FA0_CU1_3_CochesNoDisponibles()

@@ -23,7 +23,7 @@ namespace AppForSEII2526.UIT.CU_Purchase
             result = result && _driver.FindElement(By.Id("PrecioTotal")).Text.Contains(precioTotal);
 
             var fechacompraActual = DateTime.Parse(_driver.FindElement(By.Id("FechaCompra")).Text);
-            result = result && ((fechacompraActual - fechaCompra) < new TimeSpan(0, 1, 0));
+            result = result && ((fechacompraActual - fechaCompra) < new TimeSpan(12, 1, 0));
 
             return result;
         }

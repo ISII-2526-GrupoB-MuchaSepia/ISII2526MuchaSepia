@@ -18,15 +18,23 @@ namespace AppForSEII2526.UIT.UC_Compra
 
         public SelectCochesParaCompra_PO(IWebDriver driver, ITestOutputHelper output):base(driver, output) { 
         }
+      
         public void BuscarCoche(string color, string modelo)
         {
             //wait for the webelement to be clickable
             WaitForBeingClickable(inputColor);
             WaitForBeingClickable(inputModelo);
+
+            _driver.FindElement(inputColor).Clear();
             _driver.FindElement(inputColor).SendKeys(color);
+
+
+            _driver.FindElement(inputModelo).Clear();
             _driver.FindElement(inputModelo).SendKeys(modelo);
+
             _driver.FindElement(buttonbuscarCoches).Click();
         }
+
         public bool CheckListOfCoches(List<string[]> expectedCoches)
         {
             return CheckBodyTable(expectedCoches,tablaCoches);
